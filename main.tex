@@ -1,0 +1,7717 @@
+\documentclass[UTF8,a4paper,11pt,openany]{ctexbook}
+
+% ==========================================================
+% 基本宏包
+% ==========================================================
+
+% 数学
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+
+
+% 图片
+\usepackage{graphicx}
+
+% 页面布局
+\usepackage{geometry}
+
+% 列表
+\usepackage{enumitem}
+
+% 目录、章节等超链接
+\usepackage[hidelinks]{hyperref}
+
+
+% ==========================================================
+% 页面设置
+% ==========================================================
+
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+
+% ==========================================================
+% 章节与目录设置
+% ==========================================================
+
+% 目录显示到 subsection：
+% chapter -> section -> subsection
+\setcounter{tocdepth}{2}
+
+% 正文编号到 subsubsection
+\setcounter{secnumdepth}{3}
+
+
+% ==========================================================
+% 定义环境
+% ==========================================================
+
+% =========================================================
+% 教材式定义、命题与证明环境
+% =========================================================
+
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable,skins}
+
+% ---------- 定义 ----------
+\newtcolorbox{definition}[1][]{
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=orange!80!black,
+    boxrule=0.8pt,
+    arc=1mm,
+    left=2mm,
+    right=2mm,
+    top=1.5mm,
+    bottom=1.5mm,
+    before skip=6pt,
+    after skip=6pt,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+% ---------- 命题 ----------
+\newtcolorbox{proposition}[1][]{
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=blue!60!black,
+    boxrule=0.8pt,
+    arc=1mm,
+    left=2mm,
+    right=2mm,
+    top=1.5mm,
+    bottom=1.5mm,
+    before skip=6pt,
+    after skip=6pt,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+% ---------- 证明 ----------
+\newtcolorbox{proofblock}[1][证明]{
+    enhanced,
+    breakable,
+    colback=black!1.5,
+    frame hidden,
+    borderline west={1.0pt}{0pt}{black!45},
+    left=2.5mm,
+    right=1.5mm,
+    top=1.2mm,
+    bottom=1.2mm,
+    before skip=4pt,
+    after skip=6pt,
+    fonttitle=\bfseries,
+    coltitle=black!65,
+    title=#1,
+    after upper={\par\hfill$\square$}
+}
+
+
+% ==========================================================
+% 文档信息
+% ==========================================================
+
+\title{量子物理的数学方法}
+\author{万司聪}
+\date{2026年9月}
+
+\begin{document}
+
+\frontmatter
+
+\maketitle
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\mainmatter
+
+\chapter{态空间、可观测量与测量}
+
+\section{经典力学回顾}
+
+考虑一个具有 $N$ 个自由度的经典系统，以广义坐标 $q^1,\ldots,q^N$ 描述其构型，相应的广义速度为 $\dot q^1,\ldots,\dot q^N$。系统的 Lagrangian 写为 $L=L(q,\dot q,t)$。对于通常的力学系统，
+\[
+L=T-V,
+\]
+其中 $T$ 和 $V$ 分别为动能和势能。
+
+系统的运动由 Euler--Lagrange 方程决定：
+\begin{equation}
+    \frac{\partial L}{\partial q^\ell}
+    -
+    \frac{d}{dt}
+    \left(
+        \frac{\partial L}{\partial \dot q^\ell}
+    \right)
+    =0,
+    \qquad
+    \ell=1,\ldots,N.
+\end{equation}
+这是一组关于 $q^\ell(t)$ 的二阶微分方程。
+
+% ----------------------------------------------------------
+\subsection{Hamilton 描述}
+
+\begin{definition}[广义动量]
+与广义坐标 $q^\ell$ 共轭的广义动量定义为
+\begin{equation}
+    p^\ell
+    :=
+    \frac{\partial L}{\partial \dot q^\ell}.
+\end{equation}
+\end{definition}
+
+若可以由 $(q,\dot q)$ 解出 $(q,p)$，则可以通过 Legendre 变换把 Lagrange 描述改写为 Hamilton 描述。
+
+\begin{definition}[Hamiltonian]
+Hamiltonian 定义为
+\begin{equation}
+    H(q,p,t)
+    :=
+    \sum_{\ell=1}^{N}
+    \dot q^\ell p^\ell
+    -
+    L(q,\dot q,t),
+\end{equation}
+其中右端的 $\dot q$ 应理解为由 $(q,p)$ 所确定的函数。
+\end{definition}
+
+在这一变换下，Euler--Lagrange 方程可以等价地改写为一阶的 Hamilton 方程：
+\begin{equation}
+    \left\{
+    \begin{aligned}
+        \dot q^\ell
+        &=
+        \frac{\partial H}{\partial p^\ell},\\
+        \dot p^\ell
+        &=
+        -\frac{\partial H}{\partial q^\ell},
+    \end{aligned}
+    \right.
+    \qquad
+    \ell=1,\ldots,N.
+\end{equation}
+
+当系统不显含时间时，可以简写为 $H=H(q,p)$。
+
+% ----------------------------------------------------------
+\subsection{相空间}
+
+在 Hamilton 描述中，一个瞬时状态由全部广义坐标和广义动量确定，即
+\[
+z=
+(q^1,\ldots,q^N,p^1,\ldots,p^N)
+\in U\subseteq\mathbb R^{2N}.
+\]
+
+\begin{definition}[相空间]
+由全部广义坐标和广义动量组成的状态空间称为系统的\textbf{相空间}。在局部坐标下，可以写为
+\begin{equation}
+    U\subseteq\mathbb R^{2N},
+    \qquad
+    z=(q,p)\in U.
+\end{equation}
+更一般地，相空间可以是一个 $2N$ 维流形 $M$，此时系统状态写为 $z=(q,p)\in M$。
+\end{definition}
+
+与 Lagrange 描述中直接研究 $q^\ell(t)$ 的演化不同，Hamilton 描述把动力学写成相空间中状态点 $z(t)$ 的运动。
+
+% ----------------------------------------------------------
+\subsection{经典可观测量}
+
+\begin{definition}[经典可观测量]
+经典可观测量表示为相空间上的实值光滑函数
+\begin{equation}
+    f:U\longrightarrow\mathbb R,
+    \qquad
+    f\in C^\infty(U).
+\end{equation}
+若系统处于状态 $z\in U$，则测量可观测量 $f$ 所得到的数值为 $f(z)$。
+\end{definition}
+
+因此，经典可观测量把相空间中的状态映射为实数测量结果。
+
+% ----------------------------------------------------------
+\subsection{Poisson 括号与时间演化}
+
+设 $f=f(q,p)$ 不显含时间。沿 Hamilton 轨道 $z(t)$，由链式法则有
+\begin{align}
+    \frac{df}{dt}
+    &=
+    \sum_{\ell=1}^{N}
+    \left(
+        \frac{\partial f}{\partial q^\ell}\dot q^\ell
+        +
+        \frac{\partial f}{\partial p^\ell}\dot p^\ell
+    \right)
+    \nonumber\\
+    &=
+    \sum_{\ell=1}^{N}
+    \left(
+        \frac{\partial f}{\partial q^\ell}
+        \frac{\partial H}{\partial p^\ell}
+        -
+        \frac{\partial f}{\partial p^\ell}
+        \frac{\partial H}{\partial q^\ell}
+    \right),
+\end{align}
+其中第二步使用了 Hamilton 方程。右端具有固定的双线性组合形式，因此引入 Poisson 括号。
+
+\begin{definition}[Poisson 括号]
+对于两个相空间函数 $f$ 和 $g$，定义它们的 Poisson 括号为
+\begin{equation}
+    \{f,g\}
+    :=
+    \sum_{\ell=1}^{N}
+    \left(
+        \frac{\partial f}{\partial q^\ell}
+        \frac{\partial g}{\partial p^\ell}
+        -
+        \frac{\partial f}{\partial p^\ell}
+        \frac{\partial g}{\partial q^\ell}
+    \right).
+\end{equation}
+\end{definition}
+
+于是，不显含时间的可观测量 $f$ 沿 Hamilton 轨道的时间演化可以写为
+\begin{equation}
+    \frac{df}{dt}
+    =
+    \{f,H\}.
+\end{equation}
+
+若 $f=f(q,p,t)$ 显含时间，则链式法则中还需要加入其显式时间依赖，从而
+\begin{equation}
+    \frac{df}{dt}
+    =
+    \frac{\partial f}{\partial t}
+    +
+    \{f,H\}.
+\end{equation}
+
+特别地，取 $f=H$，有
+\[
+\frac{dH}{dt}
+=
+\frac{\partial H}{\partial t}
++
+\{H,H\}
+=
+\frac{\partial H}{\partial t}.
+\]
+因此，当 Hamiltonian 不显含时间时，$dH/dt=0$。对于通常的保守力学系统，$H$ 对应系统总能量，从而得到能量守恒。
+
+% ----------------------------------------------------------
+\subsection{相空间上的概率测度}
+
+前面的描述假定系统处于某一个确定的相空间点 $z\in U$。若不能确定具体状态，而只能给出状态在相空间中的统计分布，则可以在相空间 $U$ 上引入概率测度。
+
+\begin{definition}[相空间上的概率测度]
+相空间 $U$ 上的概率测度 $\mu$ 满足
+\begin{equation}
+    \mu(U)=1.
+\end{equation}
+对于可测的实值函数 $f:U\to\mathbb R$，其关于 $\mu$ 的期望值定义为
+\begin{equation}
+    \mathbb E_\mu[f]
+    =
+    \int_U f\,d\mu.
+\end{equation}
+\end{definition}
+
+设 $B\in\mathcal B(\mathbb R)$ 为一个 Borel 集。测量结果落在 $B$ 中，等价于系统状态属于相空间中的集合
+\begin{equation}
+    f^{-1}(B)
+    =
+    \{z\in U:f(z)\in B\}.
+\end{equation}
+因此测量结果落入 $B$ 的概率为
+\begin{equation}
+    P_\mu(f\in B)
+    =
+    \mu\!\left(f^{-1}(B)\right).
+\end{equation}
+
+也就是说，相空间上的概率测度 $\mu$ 经过可观测量 $f$ 后，会在实数轴上诱导出一个概率测度。
+
+\begin{definition}[推前测度]
+由可观测量 $f:U\to\mathbb R$ 将相空间上的概率测度 $\mu$ 诱导到 $\mathbb R$ 上得到的概率测度称为 $\mu$ 在 $f$ 下的\textbf{推前测度}，记作 $f_*\mu$，定义为
+\begin{equation}
+    (f_*\mu)(B)
+    :=
+    \mu\!\left(f^{-1}(B)\right),
+    \qquad
+    B\in\mathcal B(\mathbb R).
+\end{equation}
+\end{definition}
+
+% ==========================================================
+\section{量子态空间与 Hilbert 空间}
+% ==========================================================
+
+\subsection{从经典状态空间到量子态空间}
+
+经典力学与量子力学之间，可以先作如下形式上的对应：
+\[
+\begin{array}{ccc}
+\text{经典力学} && \text{量子力学} \\[1mm]
+\text{相空间} & \longrightarrow & \text{态空间} \\
+\text{可观测量} & \longrightarrow & \text{量子可观测量} \\
+\text{测量} & \longrightarrow & \text{量子测量}
+\end{array}
+\]
+
+对于具有 $N$ 个自由度的经典系统，局部相空间可以写为
+\[
+U\subseteq\mathbb R^{2N}.
+\]
+因此经典状态可以由有限多个实参数 $(q^1,\ldots,q^N,p^1,\ldots,p^N)$ 确定。
+
+量子力学中的情况不同。以粒子在 $\mathbb R^d$ 中的波函数表象为例，状态通常由一个复值函数
+\[
+\psi:\mathbb R^d\longrightarrow\mathbb C
+\]
+描述，而不是由有限多个参数描述。
+
+对于归一化波函数，
+\begin{equation}
+    \int_{\mathbb R^d}
+    |\psi(x)|^2\,d^dx
+    =1,
+\end{equation}
+其中 $x=(x^1,\ldots,x^d)\in\mathbb R^d$。相应的概率密度为
+\begin{equation}
+    \rho(x)=|\psi(x)|^2.
+\end{equation}
+
+需要注意，波函数 $\psi$ 不仅包含概率密度信息，还包含相位信息，因此一般不能仅用 $|\psi|^2$ 代替波函数本身。
+
+% ----------------------------------------------------------
+\subsection{复内积空间}
+
+量子态空间首先需要具有复向量空间结构。设 $V$ 是一个复线性空间。
+
+\begin{definition}[复内积]
+复线性空间 $V$ 上的内积是一个映射
+\[
+\langle\cdot,\cdot\rangle:
+V\times V\longrightarrow\mathbb C,
+\]
+满足以下性质。
+
+\textbf{1. 半双线性（sesquilinearity）}
+
+采用物理学中常用的约定：内积关于第二个变量线性，关于第一个变量共轭线性。对于任意 $v,v_1,v_2,w,w_1,w_2\in V$ 以及 $\lambda\in\mathbb C$，有
+\begin{align}
+    \langle v_1+v_2,w\rangle
+    &=
+    \langle v_1,w\rangle
+    +
+    \langle v_2,w\rangle,
+    \\
+    \langle \lambda v,w\rangle
+    &=
+    \overline{\lambda}\,
+    \langle v,w\rangle,
+    \\
+    \langle v,w_1+w_2\rangle
+    &=
+    \langle v,w_1\rangle
+    +
+    \langle v,w_2\rangle,
+    \\
+    \langle v,\lambda w\rangle
+    &=
+    \lambda\,
+    \langle v,w\rangle.
+\end{align}
+
+\textbf{2. 共轭对称性}
+\begin{equation}
+    \langle v,w\rangle
+    =
+    \overline{\langle w,v\rangle}.
+\end{equation}
+
+\textbf{3. 正定性}
+\begin{equation}
+    \langle v,v\rangle\geq 0,
+\end{equation}
+并且
+\begin{equation}
+    \langle v,v\rangle=0
+    \quad\Longleftrightarrow\quad
+    v=0.
+\end{equation}
+
+配备上述内积以后，$(V,\langle\cdot,\cdot\rangle)$ 称为\textbf{复内积空间}。
+\end{definition}
+
+% ----------------------------------------------------------
+\subsection{从内积到拓扑结构}
+
+Hilbert 空间中的内积不仅给出向量之间的几何关系，还可以依次诱导出长度、距离和邻域结构。
+
+% ----------------------------------------------------------
+\subsubsection{内积与范数}
+
+设 $V$ 为复内积空间。由于 $\langle v,v\rangle\geq 0$，可以定义
+\begin{equation}
+    \|v\|
+    :=
+    \sqrt{\langle v,v\rangle}.
+\end{equation}
+
+\begin{definition}[范数]
+由内积诱导的量
+\[
+\|v\|=\sqrt{\langle v,v\rangle}
+\]
+称为向量 $v$ 的\textbf{范数}，可以理解为向量的长度。具有范数的线性空间称为\textbf{赋范空间}。
+\end{definition}
+
+范数还可以用来衡量两个向量之间的差异，因为 $v-w$ 本身也是 $V$ 中的向量。
+
+% ----------------------------------------------------------
+\subsubsection{距离与开球}
+
+由范数定义
+\begin{equation}
+    d(v,w):=\|v-w\|.
+\end{equation}
+
+\begin{definition}[距离与开球]
+$d(v,w)$ 称为 $v$ 与 $w$ 之间的\textbf{距离}。具有距离 $d$ 的空间称为\textbf{度量空间}。
+
+给定 $p\in V$ 和 $r>0$，定义
+\begin{equation}
+    B(p,r)
+    :=
+    \{v\in V:d(v,p)<r\},
+\end{equation}
+称为以 $p$ 为中心、$r$ 为半径的\textbf{开球}。
+\end{definition}
+
+开球给出了一个点附近最基本的局部区域。有了开球以后，就可以不再逐点比较距离，而用集合描述空间中的邻近关系。
+
+% ----------------------------------------------------------
+\subsubsection{开集与拓扑}
+
+\begin{definition}[开集与拓扑]
+若 $U\subseteq V$ 满足：对任意 $p\in U$，都存在 $r>0$，使得
+\[
+B(p,r)\subseteq U,
+\]
+则称 $U$ 为\textbf{开集}。
+
+将 $V$ 中所有开集组成的集合族记作 $\mathcal T$。这个集合族称为由距离 $d$ 诱导的\textbf{拓扑}，$(V,\mathcal T)$ 称为\textbf{拓扑空间}。
+\end{definition}
+
+$\mathcal T$ 描述邻域结构的方式很直接：若 $U\in\mathcal T$ 且 $p\in U$，则 $U$ 必须包含某个以 $p$ 为中心的小开球，因此 $U$ 可以看作 $p$ 的一个邻域。
+
+以 $V=\mathbb C$ 为例，取通常的内积 $\langle z,w\rangle=\overline z\,w$，则 $\|z\|=|z|$，从而
+\[
+d(z,w)=|z-w|.
+\]
+此时
+\[
+B(z_0,r)
+=
+\{z\in\mathbb C:d(z,z_0)<r\}
+=
+\{z\in\mathbb C:|z-z_0|<r\}
+\]
+就是复平面中以 $z_0$ 为圆心、$r$ 为半径的开圆盘。
+
+例如单位圆盘
+\[
+U=\{z\in\mathbb C:|z|<1\}
+\]
+是开集。若 $z_0\in U$，总可以取 $0<r<1-|z_0|$，使得 $B(z_0,r)\subseteq U$。因此单位圆盘中的每一点都具有完全包含在 $U$ 内的小邻域。
+
+% ----------------------------------------------------------
+\subsubsection{从拓扑到 Borel 集}
+
+拓扑 $\mathcal T$ 只包含开集，而测度需要定义在一个对补集和可数集合运算封闭的集合族上。因此从 $\mathcal T$ 出发，考虑包含所有开集的最小 $\sigma$-代数。
+
+\begin{definition}[Borel $\sigma$-代数]
+由拓扑 $\mathcal T$ 生成的最小 $\sigma$-代数记作
+\begin{equation}
+    \mathcal B(V)
+    :=
+    \sigma(\mathcal T),
+\end{equation}
+称为 $V$ 上的\textbf{Borel $\sigma$-代数}，其中的元素称为\textbf{Borel 集}。
+\end{definition}
+
+例如在 $\mathbb R$ 上，开区间首先属于拓扑；闭区间可以由开集经过补集等集合运算得到，单点集也可以由可数个开区间取交得到，因此它们都属于 $\mathcal B(\mathbb R)$。
+
+% ----------------------------------------------------------
+\subsection{Hilbert 空间、完备性与可分性}
+
+内积诱导范数以后，便可以讨论向量序列的极限。设 $\{v_n\}_{n=1}^{\infty}\subset V$。若存在 $v\in V$，使得
+\[
+\|v_n-v\|\longrightarrow 0,
+\]
+则称 $\{v_n\}$ 收敛于 $v$。
+
+有时并不知道极限 $v$ 是否存在，但仍可以考察序列后面的各项是否彼此任意接近，由此得到 Cauchy 序列的概念。
+
+\begin{definition}[Cauchy 序列]
+若对任意 $\varepsilon>0$，都存在 $N\in\mathbb N$，使得当 $m,n>N$ 时，
+\[
+\|v_n-v_m\|<\varepsilon,
+\]
+则称 $\{v_n\}$ 为\textbf{Cauchy 序列}。
+\end{definition}
+
+收敛序列一定是 Cauchy 序列，但反过来是否成立取决于所讨论的空间。一个 Cauchy 序列的各项虽然在空间内部不断靠近，其极限却可能并不属于这个空间。
+
+例如考虑
+\[
+D
+=
+\mathbb Q+\mathrm{i}\mathbb Q
+=
+\{a+\mathrm{i}b:\ a,b\in\mathbb Q\}
+\subset\mathbb C.
+\]
+可以取两列有理数 $a_n\to\sqrt{2}$ 和 $b_n\to\sqrt{2}$。于是 $\{a_n+\mathrm{i}b_n\}$ 是 $D$ 中的 Cauchy 序列，但其极限
+\[
+\sqrt{2}+\mathrm{i}\sqrt{2}
+\notin D.
+\]
+因此 $D$ 并不包含所有 Cauchy 序列的极限。
+
+\begin{definition}[完备空间]
+若赋范空间 $V$ 中的每一个 Cauchy 序列都收敛到某个 $v\in V$，则称 $V$ 是\textbf{完备的}。
+\end{definition}
+
+完备性因此要求：由空间内部的逼近过程得到的极限仍属于该空间。例如 $\mathbb C$ 关于通常的范数 $|z|$ 是完备的，而 $\mathbb Q+\mathrm{i}\mathbb Q$ 不是完备的。
+
+\begin{definition}[Hilbert 空间]
+若内积空间 $(V,\langle\cdot,\cdot\rangle)$ 关于内积诱导的范数
+\[
+\|v\|
+=
+\sqrt{\langle v,v\rangle}
+\]
+是完备的，则称 $V$ 为\textbf{Hilbert 空间}。
+\end{definition}
+
+除了极限是否仍留在空间中，还需要考虑一个子集能否逼近整个空间。设 $D\subseteq V$。若对任意 $v\in V$ 和 $\varepsilon>0$，都存在 $u\in D$ 使得
+\[
+\|u-v\|<\varepsilon,
+\]
+则无论给定的精度多高，都可以用 $D$ 中的元素逼近 $V$ 中的任意元素。
+
+\begin{definition}[稠密子集]
+若对任意 $v\in V$ 和 $\varepsilon>0$，都存在 $u\in D$ 满足
+\[
+\|u-v\|<\varepsilon,
+\]
+则称 $D$ 在 $V$ 中\textbf{稠密}。
+\end{definition}
+
+例如前面的集合
+\[
+D=\mathbb Q+\mathrm{i}\mathbb Q
+\]
+虽然只是 $\mathbb C$ 的真子集，却在 $\mathbb C$ 中稠密，因为任意 $z=x+\mathrm{i}y$ 的实部和虚部都可以分别由有理数任意精确地逼近。
+
+进一步地，若这样的稠密子集可以取成可数集，就得到可分性的概念。首先介绍可数集。
+
+\begin{definition}[可数集]
+若集合 $A$ 中的元素可以按自然数顺序排列，即存在一个满射
+\[
+f:\mathbb N\to A,
+\]
+则称 $A$ 为\textbf{可数集}。
+
+若还能建立一一对应
+\[
+A\longleftrightarrow\mathbb N,
+\]
+则称 $A$ 为\textbf{可数无限集}。
+\end{definition}
+
+有理数集 $\mathbb Q$ 是可数无限集。虽然任意两个实数之间都有无穷多个有理数，但所有有理数仍可以按照某种顺序排列为
+\[
+\mathbb Q
+=
+\{q_1,q_2,q_3,\ldots\}.
+\]
+一个简单的理解方法是先把正有理数写成分数 $m/n$，其中 $m,n\in\mathbb N$，再按照 $m+n$ 的大小逐层枚举，并跳过重复表示；随后加入 $0$ 和负有理数。这样每个有理数最终都会出现在序列中，因此可以建立双射 $\mathbb N\leftrightarrow\mathbb Q$。
+
+与之相反，实数集 $\mathbb R$ 不可数。不存在一个序列
+\[
+x_1,x_2,x_3,\ldots
+\]
+能够包含所有实数。Cantor 对角线论证可以证明：无论怎样列出实数，总能构造出一个不在该序列中的新实数。因此不存在双射
+\[
+\mathbb N\leftrightarrow\mathbb R.
+\]
+
+\begin{definition}[可分空间]
+若空间 $V$ 存在一个可数稠密子集
+\[
+D=\{v_1,v_2,\ldots\},
+\]
+则称 $V$ 是\textbf{可分的}。
+\end{definition}
+
+例如，由于 $\mathbb Q$ 是可数集，$\mathbb Q+\mathrm{i}\mathbb Q$ 也是可数集；它又在 $\mathbb C$ 中稠密，因此 $\mathbb C$ 是可分的。
+
+这里的“可数稠密”意味着：虽然 $V$ 中可能包含不可数多个向量，但存在可数多个向量 $v_1,v_2,\ldots$，使得 $V$ 中任意向量都可以被这些向量中的元素任意精确地逼近。
+
+由于 $D\subseteq\operatorname{span}D$，而 $D$ 已经在 $V$ 中稠密，因此由 $v_1,v_2,\ldots$ 的有限线性组合构成的线性空间 $\operatorname{span}D$ 也在 $V$ 中稠密。换言之，对任意 $v\in V$ 和任意 $\varepsilon>0$，都存在有限多个系数 $c_1,\ldots,c_N$，使得
+\[
+\left\|
+v-\sum_{n=1}^{N}c_n v_n
+\right\|
+<\varepsilon.
+\]
+
+因此，对可分 Hilbert 空间而言，即使空间是无限维的，也可以从可数多个向量出发，通过有限线性组合逐步逼近任意量子态。
+
+进一步地，对这些向量作正交化并去除线性相关部分，可以得到一个正交归一基。若 Hilbert 空间是无限维可分的，这个基可以记为
+\[
+\{e_n\}_{n=1}^{\infty}.
+\]
+任意态 $\psi\in H$ 都可以展开为
+\[
+\psi
+=
+\sum_{n=1}^{\infty}c_n e_n,
+\qquad
+\sum_{n=1}^{\infty}|c_n|^2<\infty.
+\]
+
+
+% ----------------------------------------------------------
+\subsection{Hilbert 空间的基本例子}
+
+\subsubsection{有限维空间 $\mathbb C^n$}
+
+最简单的 Hilbert 空间是有限维复向量空间 $\mathbb C^n$。对于 $v=(v_1,\ldots,v_n)$ 和 $w=(w_1,\ldots,w_n)$，定义内积
+\begin{equation}
+    \langle v,w\rangle
+    =
+    \sum_{k=1}^{n}\overline{v_k}w_k.
+\end{equation}
+相应的范数为
+\[
+\|v\|^2
+=
+\sum_{k=1}^{n}|v_k|^2.
+\]
+
+在这一内积下，$\mathbb C^n$ 是完备的，因此是 Hilbert 空间。
+
+% ----------------------------------------------------------
+\subsubsection{平方可和数列空间 $\ell^2(\mathbb N)$}
+
+将有限维向量的分量数推广到无穷多个，可以得到平方可和数列空间。
+
+\begin{definition}[平方可和数列空间 $\ell^2(\mathbb N)$]
+定义
+\begin{equation}
+    \ell^2(\mathbb N)
+    :=
+    \left\{
+    c=(c_1,c_2,\ldots):
+    \sum_{n=1}^{\infty}|c_n|^2<\infty
+    \right\}.
+\end{equation}
+对于 $c,d\in\ell^2(\mathbb N)$，定义内积
+\begin{equation}
+    \langle c,d\rangle
+    =
+    \sum_{n=1}^{\infty}\overline{c_n}d_n.
+\end{equation}
+\end{definition}
+
+相应的范数满足
+\[
+\|c\|^2
+=
+\sum_{n=1}^{\infty}|c_n|^2.
+\]
+
+$\ell^2(\mathbb N)$ 是一个无限维可分 Hilbert 空间，可以看作 $\mathbb C^n$ 的无限维推广。
+
+% ----------------------------------------------------------
+\subsubsection{平方可积函数空间 $L^2(\mathbb R^d)$}
+
+量子力学中更常见的是函数空间。考虑复值函数 $f:\mathbb R^d\to\mathbb C$。若满足
+\[
+\int_{\mathbb R^d}|f(x)|^2\,d^dx<\infty,
+\]
+则称 $f$ 为平方可积函数。
+
+乍看之下，可以把所有平方可积函数直接组成一个内积空间。但这里存在一个重要细节：积分无法区分只在零测集上不同的两个函数。例如，若 $f$ 与 $g$ 只在有限个点上取值不同，则
+\[
+\int_{\mathbb R^d}|f(x)-g(x)|^2\,d^dx=0.
+\]
+因此由积分定义的范数满足 $\|f-g\|=0$，虽然作为逐点定义的函数，$f$ 和 $g$ 可能并不完全相同。
+
+为了使范数满足正定性，需要把只在零测集上不同的函数视为同一个元素。
+
+\begin{definition}[几乎处处相等]
+若函数 $f$ 与 $g$ 仅在一个测度为零的集合上不同，则称 $f$ 与 $g$ \textbf{几乎处处相等}，记作
+\[
+f=g\quad\text{a.e.},
+\]
+其中 a.e. 是 almost everywhere 的缩写。
+\end{definition}
+
+几乎处处相等构成一种等价关系，
+\[
+f\sim g
+\quad\Longleftrightarrow\quad
+f=g\ \text{a.e.}
+\]
+所谓等价类，就是把所有彼此等价的对象归为同一个集合。对于一个函数 $f$，其等价类记为
+\[
+[f]
+=
+\{g:g=f\ \text{a.e.}\}.
+\]
+
+因此，$L^2(\mathbb R^d)$ 中真正的元素不是某一个具体函数，而是所有与它几乎处处相等的函数组成的等价类。
+
+\begin{definition}[平方可积函数空间 $L^2(\mathbb R^d)$]
+定义
+\begin{equation}
+    L^2(\mathbb R^d)
+    =
+    \left\{
+    [f]:
+    \int_{\mathbb R^d}|f(x)|^2\,d^dx<\infty
+    \right\}.
+\end{equation}
+对于两个等价类 $[f],[g]\in L^2(\mathbb R^d)$，定义内积
+\begin{equation}
+    \langle [f],[g]\rangle
+    :=
+    \int_{\mathbb R^d}
+    \overline{f(x)}g(x)\,d^dx.
+\end{equation}
+\end{definition}
+
+由于改变零测集上的函数值不会改变积分，上述内积与具体代表函数的选择无关。因此定义是良好的。实际计算中通常仍简写为
+\[
+\langle f,g\rangle
+=
+\int_{\mathbb R^d}
+\overline{f(x)}g(x)\,d^dx.
+\]
+
+$L^2(\mathbb R^d)$ 在这一内积下是一个无限维可分 Hilbert 空间。
+
+% ----------------------------------------------------------
+\subsubsection{$\ell^2$ 与 $L^2$ 的关系}
+
+若一个无限维可分 Hilbert 空间选定一组可数正交归一基 $\{e_n\}_{n=1}^{\infty}$，则任意向量 $\psi$ 都可以展开为
+\[
+\psi
+=
+\sum_{n=1}^{\infty}c_n e_n,
+\qquad
+\sum_{n=1}^{\infty}|c_n|^2<\infty.
+\]
+
+因此其坐标序列 $(c_1,c_2,\ldots)$ 属于 $\ell^2(\mathbb N)$。从抽象 Hilbert 空间结构来看，任意无限维可分复 Hilbert 空间都与 $\ell^2(\mathbb N)$ 酉同构。
+
+因此，$L^2(\mathbb R^d)$ 可以看作函数表象，而 $\ell^2(\mathbb N)$ 可以看作选定可数正交归一基以后得到的系数表象。
+
+% ----------------------------------------------------------
+\subsection{量子力学公设一：态空间}
+
+\begin{definition}[态空间]
+量子系统的态空间取为一个可分 Hilbert 空间 $H$。
+\end{definition}
+
+本课程中，纯态用其中的归一化向量 $\phi\in H$ 表示，满足
+\[
+\|\phi\|=1.
+\]
+
+若两个归一化向量仅相差整体相位
+\[
+\phi'
+=
+e^{\mathrm{i}\theta}\phi,
+\]
+则它们对应相同的物理纯态。
+
+以位置表象中的波函数为例，若
+\[
+\psi'(x)
+=
+e^{\mathrm{i}\theta}\psi(x),
+\]
+则其位置概率密度满足
+\[
+|\psi'(x)|^2
+=
+|e^{\mathrm{i}\theta}\psi(x)|^2
+=
+|\psi(x)|^2.
+\]
+因此整体相位 $e^{\mathrm{i}\theta}$ 不改变测量得到的概率分布。
+
+更一般地，一个非零向量 $\phi\in H$ 所确定的射线定义为
+\begin{equation}
+    [\phi]
+    :=
+    \left\{
+    \lambda\phi:
+    \lambda\in\mathbb C\setminus\{0\}
+    \right\}.
+\end{equation}
+同一条射线中的非零向量对应同一个物理纯态；若限制在归一化向量上，这种等价关系就表现为彼此仅相差一个整体相位。
+
+从物理等价性的角度，纯态对应于 Hilbert 空间中的一条射线；但后文统一使用归一化向量表示量子态。这样既保留 Hilbert 空间的线性结构，也便于描述态的叠加、时间演化以及不同态之间的相位关系。
+
+
+
+% ==========================================================
+\section{量子可观测量与线性算符}
+% ==========================================================
+
+在经典力学中，状态是相空间中的一点 $z\in\Gamma$，可观测量是相空间上的实值函数 $f:\Gamma\to\mathbb R$；给定状态以后，测量值由 $f(z)$ 直接得到。
+
+量子力学的态空间则是 Hilbert 空间 $H$。由于量子态满足叠加原理，作用在态空间上的基本变换也要求保持线性结构。若 $\phi,\psi\in H$，$\alpha,\beta\in\mathbb C$，则
+\begin{equation}
+    A(\alpha\phi+\beta\psi)
+    =
+    \alpha A\phi+\beta A\psi.
+\end{equation}
+满足这一条件的映射称为线性算符。
+
+需要强调的是，线性只是量子可观测量的基本要求之一。真正表示可观测量的算符还需要满足更强的条件，后面将通过伴随算符进一步引出自伴算符。
+
+% ----------------------------------------------------------
+\subsection{有界算符}
+
+先考虑最简单的情形：线性算符 $A$ 定义在整个 Hilbert 空间 $H$ 上。为了保证算符作用不会使向量的范数失去控制，需要对其作用大小作统一限制。
+
+\begin{definition}[有界算符]
+若存在常数 $C>0$，使得对任意 $v\in H$ 都有
+\begin{equation}
+    \|Av\|\leq C\|v\|,
+\end{equation}
+则称 $A$ 为\textbf{有界算符}。
+\end{definition}
+
+这意味着 $A$ 不会把有限范数的向量以无限大的倍率放大。其最小统一放大界由算符范数给出：
+\begin{equation}
+    \|A\|
+    =
+    \sup_{v\neq0}
+    \frac{\|Av\|}{\|v\|}.
+\end{equation}
+其中 $\sup$ 表示上确界。因此 $\|A\|$ 可以理解为算符对向量长度所能达到或无限逼近的最大放大倍率。
+
+对于线性算符，有
+\begin{equation}
+    A\text{ 有界}
+    \quad\Longleftrightarrow\quad
+    A\text{ 连续}.
+\end{equation}
+
+有界算符的数学性质相对简单。特别地，即使一个有界线性算符最初只定义在 $H$ 的稠密子空间上，也可以唯一连续延拓到整个 $H$。因此在讨论有界算符时，通常可以把它看作
+\[
+A:H\to H,
+\]
+而不必持续处理定义域问题。
+
+量子力学中最重要的基本可观测量却往往不是有界算符。
+
+% ----------------------------------------------------------
+\subsection{无界算符：位置与动量}
+
+考虑一维粒子的 Hilbert 空间 $H=L^2(\mathbb R)$，并取自然单位 $\hbar=1$。位置算符形式上作用为
+\begin{equation}
+    x:\phi(x)\longmapsto x\phi(x),
+\end{equation}
+动量算符形式上作用为
+\begin{equation}
+    p:\phi(x)\longmapsto-\mathrm{i}\phi'(x).
+\end{equation}
+
+如果它们都是普通的算符 $H\to H$，那么任意平方可积函数经过算符作用以后都应当仍属于 $L^2(\mathbb R)$。但事实并非如此。
+
+考虑
+\begin{equation}
+    \phi(x)
+    =
+    \frac{\cos(x^2)}{\sqrt{1+x^2}}.
+\end{equation}
+当 $|x|$ 很大时，$|\phi(x)|^2$ 按 $1/x^2$ 的量级衰减，因此
+\[
+\phi\in L^2(\mathbb R).
+\]
+
+然而
+\[
+x\phi(x)
+=
+\frac{x\cos(x^2)}{\sqrt{1+x^2}}
+\]
+在无穷远处不再衰减，其平方不可积，因此
+\[
+x\phi\notin L^2(\mathbb R).
+\]
+
+类似地，
+\[
+\phi'(x)
+=
+-\frac{2x\sin(x^2)}{\sqrt{1+x^2}}
+-\frac{x\cos(x^2)}{(1+x^2)^{3/2}},
+\]
+其中第一项在无穷远处的振幅趋于常数量级，所以
+\[
+\phi'\notin L^2(\mathbb R).
+\]
+
+于是 $\phi$ 本身是合法的 Hilbert 空间向量，但位置算符或动量算符作用以后所得函数却不一定仍属于 Hilbert 空间。因此不能简单地写成
+\[
+x:H\to H,
+\qquad
+p:H\to H.
+\]
+
+问题在于：这些形式表达式只能作用于 Hilbert 空间中的一部分向量。这就要求我们把算符的定义域也作为算符定义的一部分。
+
+% ----------------------------------------------------------
+\subsection{无界算符的定义域}
+
+前面的例子说明，即使 $\phi\in H=L^2(\mathbb R)$，也可能有 $x\phi\notin H$ 或 $p\phi\notin H$。因此位置和动量算符不能定义在整个 Hilbert 空间上，而只能作用于使运算结果仍属于 $H$ 的那些向量。
+
+位置算符的自然定义域为
+\begin{equation}
+    D(x)
+    =
+    \{\phi\in L^2(\mathbb R):x\phi\in L^2(\mathbb R)\},
+\end{equation}
+于是应写成
+\[
+x:D(x)\to L^2(\mathbb R).
+\]
+
+对于动量算符 $p=-\mathrm{i}\,d/dx$，还需要要求 $\phi$ 具有适当意义下的导数，并且 $\phi'\in L^2(\mathbb R)$。在实数轴上可以取
+\begin{equation}
+    D(p)
+    =
+    \{\phi\in L^2(\mathbb R):
+    \phi'\in L^2(\mathbb R)\},
+\end{equation}
+其中导数理解为弱导数。于是
+\[
+p:D(p)\to L^2(\mathbb R).
+\]
+
+因此，对于无界算符，仅写出 $A$ 的作用公式是不完整的。一个算符应当连同其定义域一起指定，记作
+\[
+(A,D(A)),
+\qquad
+A:D(A)\to H.
+\]
+定义域是算符本身的一部分。特别是对于微分算符，同一个形式表达式配上不同的定义域或边界条件，可以得到不同的算符；这一点在后面讨论自伴性时尤其重要。
+
+% ----------------------------------------------------------
+\subsection{稠密定义算符}
+
+既然无界算符不能定义在整个 $H$ 上，接下来需要确定其定义域至少应该满足哪些条件。
+
+首先，$D(A)$ 应当是线性子空间。这样对于 $\phi,\psi\in D(A)$ 和 $\alpha,\beta\in\mathbb C$，线性组合 $\alpha\phi+\beta\psi$ 仍属于定义域，算符的线性关系才有意义。
+
+其次，通常要求 $D(A)$ 在 $H$ 中稠密。也就是说，对任意 $\psi\in H$ 和任意 $\varepsilon>0$，都存在 $\phi\in D(A)$ 使得
+\[
+\|\psi-\phi\|<\varepsilon.
+\]
+因此，虽然 $A$ 不能直接作用于所有态，但定义域中的向量可以任意精确地逼近 Hilbert 空间中的任意向量。
+
+\begin{definition}[稠密定义线性算符]
+设 $H$ 为 Hilbert 空间。若 $D(A)\subseteq H$ 是稠密线性子空间，并且
+\[
+A:D(A)\to H
+\]
+为线性映射，则称 $(A,D(A))$ 为一个\textbf{稠密定义线性算符}。
+\end{definition}
+
+稠密性还有一个重要作用：后面定义伴随算符 $A^\dagger$ 时，它将保证由内积确定的伴随向量是唯一的。
+
+% ----------------------------------------------------------
+\subsection{有界算符在稠密定义域上的延拓}
+
+定义域的问题对于无界算符是本质性的。相比之下，如果一个线性算符虽然只定义在稠密子空间 $D(A)$ 上，但满足统一的有界估计，那么这个定义域可以自然地补全到整个 Hilbert 空间。
+
+\begin{proposition}[有界算符的连续延拓]
+设 $D(A)\subseteq H$ 稠密，$A:D(A)\to H$ 为线性算符。若存在常数 $C>0$，使得
+\begin{equation}
+    \|Av\|\leq C\|v\|,
+    \qquad
+    \forall\,v\in D(A),
+\end{equation}
+则 $A$ 可以唯一地连续延拓为一个有界算符
+\[
+\widetilde A:H\to H,
+\]
+并满足
+\[
+\left.\widetilde A\right|_{D(A)}=A.
+\]
+\end{proposition}
+
+\begin{proofblock}
+任取 $v\in H$。由于 $D(A)$ 在 $H$ 中稠密，可以取序列 $\{v_n\}\subset D(A)$ 使得 $v_n\to v$。由有界性，
+\[
+\|Av_n-Av_m\|
+=
+\|A(v_n-v_m)\|
+\leq
+C\|v_n-v_m\|.
+\]
+由于 $\{v_n\}$ 收敛，所以它是 Cauchy 序列，从而 $\{Av_n\}$ 也是 Cauchy 序列。Hilbert 空间 $H$ 完备，因此 $\{Av_n\}$ 存在极限。定义
+\begin{equation}
+    \widetilde A v
+    :=
+    \lim_{n\to\infty}Av_n.
+\end{equation}
+
+若另一列 $\{u_n\}\subset D(A)$ 也满足 $u_n\to v$，则
+\[
+\|Av_n-Au_n\|
+\leq
+C\|v_n-u_n\|
+\longrightarrow0,
+\]
+所以极限与逼近序列的选择无关，$\widetilde A$ 定义良好。
+
+当 $v\in D(A)$ 时，可以直接取常值序列 $v_n=v$，于是 $\widetilde Av=Av$，故
+\[
+\left.\widetilde A\right|_{D(A)}=A.
+\]
+连续性还保证这样的延拓只能有一个，因此延拓唯一。
+\end{proofblock}
+
+其中 $\left.\widetilde A\right|_{D(A)}$ 表示把 $\widetilde A$ 的定义域限制到 $D(A)$。所以，对于有界算符，稠密定义域上的算符可以自然地补全到整个 $H$；真正需要持续追踪定义域的，是位置、动量和 Hamiltonian 这类无界算符。
+
+
+% ==========================================================
+\section{对偶空间与伴随算符}
+% ==========================================================
+
+前面把量子力学中的可观测量表示为 Hilbert 空间上的线性算符。接下来需要研究一个重要问题：给定算符 $A$，能否把它在内积中的作用从一个向量一侧转移到另一侧，即把
+\[
+\langle v,A\phi\rangle
+\]
+重新写成 $\langle w,\phi\rangle$ 的形式。
+
+对于固定的 $v$，映射 $\phi\mapsto\langle v,A\phi\rangle$ 把向量 $\phi$ 映射为一个复数，并且关于 $\phi$ 是线性的。因此它首先是一个线性泛函，而所有线性泛函组成的空间正是对偶空间。
+
+这就自然形成了后面的思路：先研究线性空间的对偶，再利用 Hilbert 空间的内积把连续线性泛函重新表示为向量，最后由此定义伴随算符 $A^\dagger$。
+
+% ----------------------------------------------------------
+\subsection{代数对偶与连续对偶}
+
+设 $V$ 是复线性空间。一个映射 $f:V\to\mathbb C$ 若满足
+\[
+f(\alpha v+\beta w)
+=
+\alpha f(v)+\beta f(w),
+\qquad
+\alpha,\beta\in\mathbb C,
+\]
+则称 $f$ 为线性泛函。
+
+线性泛函把向量映射为一个复数，可以理解为对向量进行一次线性的“标量读出”。例如对于 $V=\mathbb C^n$，
+\[
+f(v)
+=
+a_1v^1+\cdots+a_nv^n
+\]
+就是一个线性泛函。
+
+\begin{definition}[代数对偶空间]
+$V$ 上所有线性泛函组成的空间
+\[
+V^*
+=
+\{f:V\to\mathbb C:\ f\text{ 为线性映射}\}
+\]
+称为 $V$ 的\textbf{代数对偶空间}。
+\end{definition}
+
+因此，$V^*$ 不是某一个从向量到复数的映射，而是所有线性标量读出方式组成的空间。
+
+对于 Hilbert 空间 $H$，还需要考虑其范数和拓扑结构。若线性泛函 $f:H\to\mathbb C$ 连续，则向量的微小变化不会使 $f(v)$ 发生有限跳变。对于线性泛函，连续性等价于存在常数 $C>0$，使得
+\[
+|f(v)|
+\leq
+C\|v\|,
+\qquad
+\forall\,v\in H.
+\]
+
+\begin{definition}[连续对偶空间]
+Hilbert 空间 $H$ 上所有连续线性泛函组成的空间
+\[
+H^+
+=
+\{f:H\to\mathbb C:\ f\text{ 线性且连续}\}
+\]
+称为 $H$ 的\textbf{连续对偶空间}。
+\end{definition}
+
+在有限维空间中，所有线性泛函都自动连续；在无限维空间中，代数对偶通常比连续对偶大得多。Hilbert 空间理论中主要使用 $H^+$。
+
+% ----------------------------------------------------------
+\subsection{Riesz 表示定理}
+
+Hilbert 空间具有内积，因此每个向量 $v\in H$ 都可以自然地产生一个连续线性泛函
+\[
+f_v(\phi)
+=
+\langle v,\phi\rangle.
+\]
+由 Cauchy--Schwarz 不等式，
+\[
+|f_v(\phi)|
+=
+|\langle v,\phi\rangle|
+\leq
+\|v\|\,\|\phi\|,
+\]
+因此 $f_v\in H^+$。
+
+Riesz 表示定理说明，反过来，$H$ 上的每一个连续线性泛函都可以通过这种方式由某个向量表示。
+
+\begin{proposition}[Riesz 表示定理]
+对于任意 $f\in H^+$，存在唯一的 $v_f\in H$，使得对所有 $\phi\in H$ 都有
+\begin{equation}
+    f(\phi)
+    =
+    \langle v_f,\phi\rangle.
+\end{equation}
+\end{proposition}
+
+因此，Hilbert 空间中的每个连续线性泛函都可以由一个 Hilbert 空间向量通过内积表示。按照物理学中内积对第二个变量线性的约定，$v\mapsto f_v$ 是一个共轭线性的一一对应。
+
+在 Dirac 记号中，这正对应于
+\[
+|\psi\rangle
+\longleftrightarrow
+\langle\psi|,
+\]
+其中 $|\psi\rangle\in H$ 是 ket，而 $\langle\psi|\in H^+$ 是作用在态上的连续线性泛函。作用于 $|\phi\rangle$ 后得到复数
+\[
+\langle\psi|\phi\rangle.
+\]
+因此，bra 可以理解为 ket 通过 Hilbert 空间内积所对应的对偶对象。
+
+% ----------------------------------------------------------
+\subsection{从对偶映射到伴随算符}
+
+现在回到稠密定义算符
+\[
+A:D(A)\to H.
+\]
+为了研究 $\langle v,A\phi\rangle$，先固定一个向量 $v\in H$。由 Hilbert 空间的内积，对任意 $\psi\in H$ 定义
+\[
+f_v(\psi):=\langle v,\psi\rangle.
+\]
+由 Cauchy--Schwarz 不等式，$f_v$ 是 $H$ 上的连续线性泛函。
+
+对 $\phi\in D(A)$，先由 $A$ 将 $\phi$ 映射到 $A\phi\in H$，再由 $f_v$ 映射到复数：
+\[
+\phi
+\overset{A}{\longmapsto}
+A\phi
+\overset{f_v}{\longmapsto}
+\langle v,A\phi\rangle.
+\]
+因此得到定义在 $D(A)$ 上的线性泛函
+\begin{equation}
+    F_v(\phi)
+    :=
+    (f_v\circ A)(\phi)
+    =
+    \langle v,A\phi\rangle.
+\end{equation}
+从纯代数角度，这对应于 $A$ 所诱导的对偶映射
+\begin{equation}
+    A^*:H^*\to D(A)^*,
+    \qquad
+    f\mapsto f\circ A.
+\end{equation}
+
+问题在于，虽然 $f_v$ 在整个 $H$ 上连续，复合得到的 $F_v$ 却未必相对于 $H$ 的范数连续。因此 $D(A)^*$ 中的一般元素未必能够由 Hilbert 空间中的向量通过内积表示。
+
+若存在常数 $C_v>0$，使得对所有 $\phi\in D(A)$ 都有
+\begin{equation}
+    |\langle v,A\phi\rangle|
+    \leq
+    C_v\|\phi\|,
+\end{equation}
+则 $F_v(\phi)=\langle v,A\phi\rangle$ 是 $D(A)$ 上关于 $H$ 范数有界的线性泛函。由于 $D(A)$ 在 $H$ 中稠密，它可以唯一连续延拓到整个 $H$。
+
+\begin{proposition}[稠密子空间上线性泛函的连续延拓]
+设 $D\subseteq H$ 稠密，$F:D\to\mathbb C$ 为线性泛函，并存在常数 $C>0$ 使
+\[
+|F(\phi)|
+\leq
+C\|\phi\|,
+\qquad
+\forall\,\phi\in D.
+\]
+则 $F$ 可以唯一连续延拓为 $H$ 上的连续线性泛函 $\widetilde F:H\to\mathbb C$。
+\end{proposition}
+
+\begin{proofblock}
+任取 $\psi\in H$。由于 $D$ 稠密，可以找到一列 $\{\phi_n\}\subset D$，使得 $\phi_n\to\psi$。由有界性，
+\[
+|F(\phi_n)-F(\phi_m)|
+=
+|F(\phi_n-\phi_m)|
+\leq
+C\|\phi_n-\phi_m\|.
+\]
+因为 $\{\phi_n\}$ 收敛，所以它是 Cauchy 序列，从而 $\{F(\phi_n)\}$ 也是 $\mathbb C$ 中的 Cauchy 序列。由于 $\mathbb C$ 完备，其极限存在。定义
+\begin{equation}
+    \widetilde F(\psi)
+    :=
+    \lim_{n\to\infty}F(\phi_n).
+\end{equation}
+
+若另一列 $\{\chi_n\}\subset D$ 也满足 $\chi_n\to\psi$，则
+\[
+|F(\phi_n)-F(\chi_n)|
+\leq
+C\|\phi_n-\chi_n\|
+\longrightarrow0,
+\]
+因此两列给出相同的极限，故定义与逼近序列的选择无关。
+
+这样得到整个 $H$ 上唯一的连续线性泛函 $\widetilde F$，并满足
+\[
+\left.\widetilde F\right|_D=F.
+\]
+\end{proofblock}
+
+把这一命题应用于
+\[
+F_v(\phi)=\langle v,A\phi\rangle,
+\]
+便得到整个 $H$ 上的连续线性泛函 $\widetilde F_v$。由 Riesz 表示定理，存在唯一的 $w\in H$，使得
+\begin{equation}
+    \widetilde F_v(\psi)
+    =
+    \langle w,\psi\rangle,
+    \qquad
+    \forall\,\psi\in H.
+\end{equation}
+特别地，对于 $\phi\in D(A)$，
+\[
+\langle v,A\phi\rangle
+=
+F_v(\phi)
+=
+\widetilde F_v(\phi)
+=
+\langle w,\phi\rangle.
+\]
+
+因此，能够满足上述有界条件的 $v\in H$ 构成伴随算符的定义域，而对应的唯一向量 $w$ 将被定义为 $A^\dagger v$。
+
+% ----------------------------------------------------------
+\subsection{伴随算符}
+
+\begin{definition}[伴随算符]
+设 $A:D(A)\to H$ 是稠密定义线性算符。定义伴随算符的定义域为
+\begin{equation}
+    D(A^\dagger)
+    :=
+    \left\{
+    v\in H:
+    \exists\,C_v>0,\ 
+    |\langle v,A\phi\rangle|
+    \leq
+    C_v\|\phi\|,
+    \ \forall\,\phi\in D(A)
+    \right\}.
+\end{equation}
+
+对于每个 $v\in D(A^\dagger)$，由连续延拓和 Riesz 表示定理，存在唯一的 $w\in H$，使得
+\[
+\langle v,A\phi\rangle
+=
+\langle w,\phi\rangle,
+\qquad
+\forall\,\phi\in D(A).
+\]
+定义
+\begin{equation}
+    A^\dagger v:=w.
+\end{equation}
+于是得到算符
+\[
+A^\dagger:D(A^\dagger)\to H,
+\]
+称为 $A$ 的\textbf{伴随算符}。
+\end{definition}
+
+按照定义，伴随算符满足
+\begin{equation}
+    \langle v,A\phi\rangle
+    =
+    \langle A^\dagger v,\phi\rangle,
+    \qquad
+    v\in D(A^\dagger),\ 
+    \phi\in D(A).
+\end{equation}
+
+这里 $A^\dagger v$ 的唯一性依赖于 $D(A)$ 的稠密性。
+
+\begin{proposition}[伴随向量的唯一性]
+设 $D(A)$ 在 $H$ 中稠密。若 $w_1,w_2\in H$ 都满足
+\[
+\langle w_1,\phi\rangle
+=
+\langle w_2,\phi\rangle,
+\qquad
+\forall\,\phi\in D(A),
+\]
+则 $w_1=w_2$。
+\end{proposition}
+
+\begin{proofblock}
+由假设，
+\[
+\langle w_1-w_2,\phi\rangle
+=
+0,
+\qquad
+\forall\,\phi\in D(A).
+\]
+由于 $D(A)$ 在 $H$ 中稠密，而内积关于 $\phi$ 连续，上式可以由连续性延拓到所有 $\phi\in H$。特别取
+\[
+\phi=w_1-w_2,
+\]
+得到
+\[
+\|w_1-w_2\|^2=0.
+\]
+因此
+\[
+w_1=w_2.
+\]
+\end{proofblock}
+
+从这个角度看，伴随算符就是把 $A$ 在内积第二个位置上的作用转移到第一个位置：
+\[
+\langle v,A\phi\rangle
+\longrightarrow
+\langle A^\dagger v,\phi\rangle.
+\]
+
+需要注意，$D(A^\dagger)$ 是由上述连续性条件决定的，它不必等于 $D(A)$。甚至对于一般的稠密定义算符，$D(A^\dagger)$ 也不一定稠密；若 $D(A^\dagger)$ 稠密，则 $A$ 是可闭的。对于后面讨论的对称算符和自伴算符，这一条件自然满足。
+
+% ----------------------------------------------------------
+\subsection{自伴算符}
+
+伴随算符已经说明：给定 $A$，一般会得到另一个算符
+\[
+A^\dagger:D(A^\dagger)\to H.
+\]
+如果 $A$ 与它自己的伴随完全相同，不仅作用公式相同，而且定义域也相同，就得到自伴算符。
+
+\begin{definition}[自伴算符]
+若
+\begin{equation}
+    D(A^\dagger)=D(A)
+\end{equation}
+并且对任意 $v\in D(A)$ 都有
+\begin{equation}
+    A^\dagger v=Av,
+\end{equation}
+则称 $(A,D(A))$ 为\textbf{自伴算符}。
+\end{definition}
+
+对于自伴算符，由伴随算符的定义立即有
+\begin{equation}
+    \langle \phi,A\psi\rangle
+    =
+    \langle A\phi,\psi\rangle,
+    \qquad
+    \phi,\psi\in D(A).
+\end{equation}
+
+但反过来，仅有这个内积关系还不足以推出自伴性，因此需要把这种较弱的性质单独区分出来。
+
+
+% ==========================================================
+\section{自伴算符与微分算符的定义域}
+% ==========================================================
+
+上一节从有界线性泛函出发定义了伴随算符。设 $A:D(A)\subset H\to H$ 为稠密定义的线性算符，其伴随算符的定义域为
+\begin{equation}
+    D(A^\dagger)
+    :=
+    \left\{
+    v\in H:
+    \exists\,C_v>0,\ 
+    |\langle v,A\phi\rangle|
+    \leq C_v\|\phi\|,
+    \ \forall\,\phi\in D(A)
+    \right\}.
+\end{equation}
+对于每个 $v\in D(A^\dagger)$，由 Riesz 表示定理存在唯一的 $w\in H$，使得
+\[
+\langle v,A\phi\rangle
+=
+\langle w,\phi\rangle,
+\qquad
+\forall\,\phi\in D(A),
+\]
+并定义 $A^\dagger v=w$。课堂上常直接利用这个 $w$ 的存在性来刻画伴随算符的定义域。
+
+\begin{proposition}[伴随算符定义的等价刻画]
+设 $A:D(A)\subset H\to H$ 稠密定义，则
+\begin{equation}
+    D(A^\dagger)
+    =
+    \left\{
+    v\in H:
+    \exists\,w\in H,\ 
+    \langle v,A\phi\rangle
+    =
+    \langle w,\phi\rangle,
+    \ \forall\,\phi\in D(A)
+    \right\}.
+\end{equation}
+对于给定的 $v\in D(A^\dagger)$，其中的 $w$ 唯一，并且 $A^\dagger v=w$。
+\end{proposition}
+
+\begin{proofblock}
+若 $v$ 满足原定义，则
+\[
+F_v(\phi):=\langle v,A\phi\rangle
+\]
+是 $D(A)$ 上关于 $H$ 范数有界的线性泛函。由于 $D(A)$ 在 $H$ 中稠密，$F_v$ 可唯一连续延拓为 $H$ 上的有界线性泛函。由 Riesz 表示定理，存在唯一的 $w\in H$，使得
+\[
+\langle v,A\phi\rangle
+=
+\langle w,\phi\rangle,
+\qquad
+\forall\,\phi\in D(A).
+\]
+
+反之，若存在 $w\in H$ 满足上述关系，则由 Cauchy--Schwarz 不等式，
+\[
+|\langle v,A\phi\rangle|
+=
+|\langle w,\phi\rangle|
+\leq
+\|w\|\,\|\phi\|.
+\]
+因此 $v$ 满足原定义，可取 $C_v=\|w\|$。故两种定义等价。
+\end{proofblock}
+
+\begin{definition}[对称算符]
+设 $A:D(A)\subset H\to H$ 为稠密定义的线性算符。若
+\begin{equation}
+    \langle \phi,A\psi\rangle
+    =
+    \langle A\phi,\psi\rangle,
+    \qquad
+    \forall\,\phi,\psi\in D(A),
+\end{equation}
+则称 $A$ 为\textbf{对称算符}。
+\end{definition}
+
+对称性与伴随算符的定义立即给出如下关系。
+
+\begin{proposition}
+若 $A$ 为对称算符，则
+\begin{equation}
+    D(A)\subseteq D(A^\dagger),
+    \qquad
+    A^\dagger\phi=A\phi,
+    \quad
+    \forall\,\phi\in D(A).
+\end{equation}
+即作为算符有 $A\subseteq A^\dagger$。
+\end{proposition}
+
+\begin{proofblock}
+任取 $\phi\in D(A)$，并令 $w=A\phi$。对于任意 $\psi\in D(A)$，由 $A$ 的对称性，
+\[
+\langle \phi,A\psi\rangle
+=
+\langle A\phi,\psi\rangle
+=
+\langle w,\psi\rangle.
+\]
+根据伴随算符定义的等价刻画，$\phi\in D(A^\dagger)$，且对于
+$
+\forall\,\phi\in D(A), A\phi=w=A^\dagger\phi.
+$
+故 $D(A)\subseteq D(A^\dagger)$。
+\end{proofblock}
+
+仅有 $A\subseteq A^\dagger$ 还不足以说明两个算符相等，因为伴随算符的定义域可能严格大于原算符的定义域。
+
+\begin{definition}[自伴算符]
+设 $A:D(A)\subset H\to H$ 为稠密定义的线性算符。若
+\begin{equation}
+    D(A^\dagger)=D(A),
+    \qquad
+    A^\dagger\phi=A\phi,
+    \quad
+    \forall\,\phi\in D(A),
+\end{equation}
+则称 $A$ 为\textbf{自伴算符}。
+\end{definition}
+
+因此，对于无界算符，证明
+\[
+\langle \phi,A\psi\rangle
+=
+\langle A\phi,\psi\rangle,
+\qquad
+\forall\,\phi,\psi\in D(A),
+\]
+只能得到 $A$ 是对称算符。要证明 $A$ 自伴，还必须进一步证明
+\[
+D(A^\dagger)\subseteq D(A).
+\]
+结合由对称性得到的 $D(A)\subseteq D(A^\dagger)$，才能得到 $D(A)=D(A^\dagger)$。
+
+在有限维空间中，线性算符通常定义在整个空间 $H$ 上，因此定义域问题并不突出。量子力学中的位置、动量和 Hamilton 算符通常是无界算符，此时作用规则与定义域必须共同视为算符定义的一部分。
+
+\subsection{位置算符与动量算符}
+
+考虑 Hilbert 空间
+\[
+H=L^2(\mathbb R).
+\]
+位置算符形式上为
+\[
+(Q\phi)(x)=x\phi(x).
+\]
+
+\begin{definition}[位置算符]
+位置算符 $Q$ 定义
+\begin{equation}
+    Q\phi(x)=x\phi(x),
+    \qquad
+    D(Q)
+    =
+    \left\{
+    \phi\in L^2(\mathbb R):
+    x\phi\in L^2(\mathbb R)
+    \right\}.
+\end{equation}
+\end{definition}
+即使 $\phi\in L^2(\mathbb R)$，也不能保证 $x\phi\in L^2(\mathbb R)$，因此 $Q$ 不能定义在整个 $L^2(\mathbb R)$ 上。动量算符形式上写为
+\begin{definition}[动量算符]
+位置算符 $Q$ 定义
+\begin{equation}
+    P\phi(x)=-i\frac{d}{dx}\phi(x),
+    \qquad
+    D(P)
+    =
+    \left\{
+    \phi\in L^2(\mathbb R):
+    -i\frac{d}{dx}\phi\in L^2(\mathbb R)
+    \right\}.
+\end{equation}
+\end{definition}
+
+相比于位置算符，动量算符定义域的问题更加明显。$L^2(\mathbb R)$ 中的元素严格来说是几乎处处相等的函数构成的等价类，一般的 $L^2$ 函数既不必连续，也不必具有经典意义下的逐点导数。因此，要严格定义动量算符，首先需要把导数推广到适合 $L^2$ 空间的意义。
+
+\subsection{测试函数与分布}
+
+首先考虑一类正则性非常好的函数。这里的“正则性”可以理解为函数的平滑程度以及其导数的良好性质。例如，连续函数比一般函数具有更好的正则性，可微函数又比仅连续函数具有更好的正则性；若一个函数可以反复求导，并且各阶导数仍然连续，则称它具有很高的正则性。正则性越好，函数越适合进行微分、积分以及分部积分等操作。
+
+在这里我们选取无限次可微且具有紧支撑的函数作为测试函数，因为这类函数既具有极好的光滑性，又在某个有限区域之外恒为零，从而可以避免无穷远处的边界项。
+
+\begin{definition}[测试函数空间]
+记
+\begin{equation}
+    \mathcal D(\mathbb R)
+    :=
+    C_c^\infty(\mathbb R),
+\end{equation}
+即所有无限次可微且具有紧支撑的函数构成的空间，称为\textbf{测试函数空间}。
+\end{definition}
+
+所谓紧支撑，是指存在某个有限区间，使函数在该区间之外恒为零。因此测试函数及其各阶导数在无穷远处均为零，分部积分时不会出现无穷远处的边界项。此外，$C_c^\infty(\mathbb R)$ 在 $L^2(\mathbb R)$ 中稠密。
+
+对于任意 $\phi\in L^2(\mathbb R)$，可以通过
+\begin{equation}
+    f_\phi(u)
+    :=
+    \langle \phi,u\rangle
+    =
+    \int_{\mathbb R}
+    \overline{\phi(x)}\,u(x)\,dx,
+    \qquad
+    u\in C_c^\infty(\mathbb R),
+\end{equation}
+诱导出一个作用在测试函数空间上的线性泛函
+
+\begin{definition}[分布]
+对于任意测试函数$u\in C_c^\infty(\mathbb R)$，可以定义泛函：
+\begin{equation}
+    T_f(u)
+    :=
+    \int_{\mathbb R} f(x)u(x)\,dx.
+\end{equation}
+由此，若函数$f$ 作用在测试函数空间上所诱导出一个的泛函
+\[
+T_f:C_c^\infty(\mathbb R)\to\mathbb C.
+\]
+是连续线性得，$T_f$就被称为分布。由普通的局部可积函数通过这种积分方式诱导出的分布，称为\textbf{正则分布}。
+\end{definition}
+
+因此普通函数可以嵌入到更大的分布空间中。引入分布的一个重要原因，是在分布空间中可以把导数的概念推广到并不具有经典导数的函数。
+
+先从经典可微函数出发考察导数在分布中的表现。设 $\phi$ 是经典可微函数，$u\in C_c^\infty(\mathbb R)$。由于 $u$ 具有紧支撑，可以取 $a<b$，使得
+\[
+\operatorname{supp}u\subset(a,b).
+\]
+因此 $u$ 在 $a$ 和 $b$ 的邻域内恒为零，特别有
+\[
+u(a)=u(b)=0.
+\]
+
+考虑乘积 $\overline{\phi(x)}\,u(x)$。由乘积求导法则，
+\begin{equation}
+    \frac{d}{dx}
+    \bigl(
+        \overline{\phi(x)}\,u(x)
+    \bigr)
+    =
+    \overline{\phi'(x)}\,u(x)
+    +
+    \overline{\phi(x)}\,u'(x).
+\end{equation}
+
+在区间 $[a,b]$ 上积分，得到
+\begin{align}
+    \int_a^b
+    \frac{d}{dx}
+    \bigl(
+        \overline{\phi(x)}\,u(x)
+    \bigr)\,dx
+    &=
+    \int_a^b
+    \overline{\phi'(x)}\,u(x)\,dx
+    +
+    \int_a^b
+    \overline{\phi(x)}\,u'(x)\,dx
+    \nonumber\\
+    &=
+    \left[
+        \overline{\phi(x)}\,u(x)
+    \right]_a^b.
+\end{align}
+
+由于 $u(a)=u(b)=0$，边界项为零，因此
+\[
+\int_a^b
+\overline{\phi'(x)}\,u(x)\,dx
+=
+-
+\int_a^b
+\overline{\phi(x)}\,u'(x)\,dx.
+\]
+又因为 $u$ 及 $u'$ 在 $[a,b]$ 之外均为零，所以也可以写成
+\begin{equation}
+    \int_{\mathbb R}
+    \overline{\phi'(x)}\,u(x)\,dx
+    =
+    -
+    \int_{\mathbb R}
+    \overline{\phi(x)}\,u'(x)\,dx.
+\end{equation}
+
+前面已经说明，每个 $\phi\in L^2(\mathbb R)$ 都可以诱导一个作用在测试函数空间上的分布
+\[
+f_\phi(u)
+=
+\int_{\mathbb R}
+\overline{\phi(x)}\,u(x)\,dx.
+\]
+若 $\phi$ 还具有经典导数，则上面的分部积分关系可以写成
+\begin{equation}
+    f_{\phi'}(u)
+    =
+    -f_\phi(u'),
+    \qquad
+    \forall\,u\in C_c^\infty(\mathbb R).
+\end{equation}
+
+这个关系给出了一个重要启发：等式右端只需要分布 $f_\phi$ 作用在测试函数 $u'$ 上，并不需要预先知道 $\phi'$ 是否作为普通函数存在。因此可以反过来，把
+\[
+u\longmapsto -f(u')
+\]
+直接作为一般分布 $f$ 的导数。
+
+\begin{definition}[分布导数]
+设 $f\in\mathcal D'(\mathbb R)$。定义 $f$ 的\textbf{分布导数} $f'\in\mathcal D'(\mathbb R)$ 为
+\begin{equation}
+    f'(u)
+    :=
+    -f(u'),
+    \qquad
+    \forall\,u\in C_c^\infty(\mathbb R).
+\end{equation}
+\end{definition}
+
+由于 $u\in C_c^\infty(\mathbb R)$ 时仍有 $u'\in C_c^\infty(\mathbb R)$，所以上式对任意分布 $f$ 都有意义。因此在分布意义下，每个分布都可以求导。
+
+对于由经典可微函数 $\phi$ 所诱导的正则分布，这一定义与经典导数相容，即
+\[
+f_\phi'
+=
+f_{\phi'}.
+\]
+因此分布导数确实是经典导数的推广。
+
+对于量子力学中的动量算符，仅仅得到一个一般分布还不够。若
+\[
+P\phi=-\mathrm{i}\phi',
+\]
+则要求 $P\phi$ 仍然是 Hilbert 空间 $L^2(\mathbb R)$ 中的向量。因此需要进一步考察：$\phi$ 的分布导数是否仍然能够由某个 $L^2(\mathbb R)$ 函数表示。这就引出了弱导数。
+
+\begin{definition}[弱导数]
+设 $\phi\in L^2(\mathbb R)$，并令 $f_\phi$ 为其诱导的分布。若存在 $\xi\in L^2(\mathbb R)$，使得
+\begin{equation}
+    f_\phi'
+    =
+    f_\xi,
+\end{equation}
+即，对于任意 $u\in C_c^\infty(\mathbb R)$，有
+\begin{equation}
+    \int_{\mathbb R}
+    \overline{\xi(x)}\,u(x)\,dx
+    =
+    -
+    \int_{\mathbb R}
+    \overline{\phi(x)}\,u'(x)\,dx.
+\end{equation}
+则称 $\xi$ 为 $\phi$ 的\textbf{弱导数}，记为
+\[
+\phi'=\xi.
+\]
+\end{definition}
+
+若 $\phi$ 本身具有经典导数，并且 $\phi,\phi'\in L^2(\mathbb R)$，则前面的分部积分已经证明
+\[
+f_\phi'=f_{\phi'},
+\]
+因此经典导数同时也是弱导数。弱导数由此保留了经典导数的积分性质，但不再要求函数在每一点都具有经典意义下的导数。
+
+\begin{proposition}[弱导数的唯一性]
+若 $\xi_1,\xi_2\in L^2(\mathbb R)$ 都是 $\phi$ 的弱导数，则
+\[
+\xi_1=\xi_2
+\]
+几乎处处成立。
+\end{proposition}
+
+\begin{proofblock}
+由弱导数定义，对于任意 $u\in C_c^\infty(\mathbb R)$，
+\[
+\langle \xi_1,u\rangle
+=
+-\int_{\mathbb R}\overline{\phi}\,u'\,dx
+=
+\langle \xi_2,u\rangle.
+\]
+因此
+\[
+\langle \xi_1-\xi_2,u\rangle=0,
+\qquad
+\forall\,u\in C_c^\infty(\mathbb R).
+\]
+由于 $C_c^\infty(\mathbb R)$ 在 $L^2(\mathbb R)$ 中稠密，得到 $\xi_1-\xi_2=0$ 于 $L^2(\mathbb R)$，即二者几乎处处相等。
+\end{proofblock}
+
+由此得到动量算符自然的定义域。
+
+\begin{definition}[Sobolev 空间 $H^1(\mathbb R)$]
+定义
+\begin{equation}
+    H^1(\mathbb R)
+    :=
+    \left\{
+    \phi\in L^2(\mathbb R):
+    \phi'\ \text{的弱导数存在且}\ 
+    \phi'\in L^2(\mathbb R)
+    \right\}.
+\end{equation}
+\end{definition}
+
+一维情形下，每个 $H^1(\mathbb R)$ 中的等价类都可以选取一个局部绝对连续的代表，其经典导数几乎处处存在，并且与弱导数一致。因此在后续讨论中仍可使用熟悉的函数和导数记号，但其严格意义由弱导数给出。
+
+\subsection{动量算符的定义与自伴性}
+
+前面已经利用分布导数定义了弱导数。对于动量算符
+\[
+P=-i\frac{d}{dx},
+\]
+要使 $P\phi$ 仍然属于 Hilbert 空间 $L^2(\mathbb R)$，就必须要求 $\phi$ 的弱导数仍然是一个 $L^2$ 函数。
+
+\begin{definition}[动量算符]
+在 Hilbert 空间 $H=L^2(\mathbb R)$ 上，定义动量算符的定义域为
+\begin{equation}
+    D(P)
+    :=
+    \left\{
+    \phi\in L^2(\mathbb R):
+    \phi'\text{ 的弱导数存在且 }
+    \phi'\in L^2(\mathbb R)
+    \right\}.
+\end{equation}
+对于 $\phi\in D(P)$，定义
+\begin{equation}
+    P\phi:=-i\phi',
+\end{equation}
+其中 $\phi'$ 表示弱导数。
+\end{definition}
+
+按照 Sobolev 空间的定义，
+\begin{equation}
+    D(P)=H^1(\mathbb R).
+\end{equation}
+因此，$H^1(\mathbb R)$ 并不是额外规定出来的定义域，而正是“函数本身与其弱导数都属于 $L^2(\mathbb R)$”这一条件所确定的函数空间。
+
+下面验证这个定义域使动量算符成为自伴算符。
+
+\begin{proposition}
+定义在
+\[
+D(P)=H^1(\mathbb R)
+\]
+上的动量算符
+\[
+P=-i\frac{d}{dx}
+\]
+是 $L^2(\mathbb R)$ 上的自伴算符。
+\end{proposition}
+
+\begin{proofblock}
+任取 $\phi\in D(P)=H^1(\mathbb R)$。在一维情形，可以为 $\phi$ 选取一个局部绝对连续的代表，其经典导数几乎处处存在，并与弱导数一致。因此几乎处处有
+\begin{equation}
+    \frac{d}{dx}|\phi(x)|^2
+    =
+    \overline{\phi'(x)}\,\phi(x)
+    +
+    \overline{\phi(x)}\,\phi'(x).
+\end{equation}
+
+由于 $\phi\in L^2(\mathbb R)$，可以找到一列 $y_n\to+\infty$，使得
+\[
+\phi(y_n)\to0.
+\]
+否则，若在充分大的 $x$ 上 $|\phi(x)|$ 始终大于某个正常数，则
+$\int_{\mathbb R}|\phi(x)|^2dx$ 不可能有限。
+
+对固定的 $x$，在区间 $[x,y_n]$ 上积分，得到
+\begin{align}
+    |\phi(y_n)|^2-|\phi(x)|^2
+    &=
+    \int_x^{y_n}
+    \frac{d}{dt}|\phi(t)|^2\,dt
+    \nonumber\\
+    &=
+    \int_x^{y_n}
+    \left(
+        \overline{\phi'(t)}\,\phi(t)
+        +
+        \overline{\phi(t)}\,\phi'(t)
+    \right)dt.
+\end{align}
+
+令 $n\to\infty$。由于 $\phi(y_n)\to0$，并且
+$\phi,\phi'\in L^2(\mathbb R)$，由 Cauchy--Schwarz 不等式可得
+\begin{align}
+    |\phi(x)|^2
+    &\leq
+    2\int_x^\infty
+    |\phi(t)\phi'(t)|\,dt
+    \nonumber\\
+    &\leq
+    2
+    \left(
+        \int_x^\infty|\phi(t)|^2dt
+    \right)^{1/2}
+    \left(
+        \int_x^\infty|\phi'(t)|^2dt
+    \right)^{1/2}.
+\end{align}
+
+由于 $\phi,\phi'\in L^2(\mathbb R)$，当 $x\to+\infty$ 时，上式右端的两个尾积分都趋于零，因此
+\[
+\lim_{x\to+\infty}\phi(x)=0.
+\]
+
+完全类似地，在负半轴上可以证明
+\[
+\lim_{x\to-\infty}\phi(x)=0.
+\]
+因此
+\begin{equation}
+    \boxed{
+    \lim_{x\to\pm\infty}\phi(x)=0
+    }.
+\end{equation}
+
+现在任取 $\phi,\psi\in D(P)$。由乘积求导法则，
+\[
+\frac{d}{dx}
+\bigl(
+    \overline{\phi(x)}\,\psi(x)
+\bigr)
+=
+\overline{\phi'(x)}\,\psi(x)
++
+\overline{\phi(x)}\,\psi'(x).
+\]
+两项都属于 $L^1(\mathbb R)$，因为
+\[
+\int_{\mathbb R}
+|\overline{\phi'}\,\psi|\,dx
+\leq
+\|\phi'\|_{L^2}\|\psi\|_{L^2},
+\qquad
+\int_{\mathbb R}
+|\overline{\phi}\,\psi'|\,dx
+\leq
+\|\phi\|_{L^2}\|\psi'\|_{L^2}.
+\]
+
+因此
+\begin{align}
+    \langle\phi,P\psi\rangle
+    -
+    \langle P\phi,\psi\rangle
+    &=
+    -i\int_{\mathbb R}
+    \left(
+        \overline{\phi}\,\psi'
+        +
+        \overline{\phi'}\,\psi
+    \right)dx
+    \nonumber\\
+    &=
+    -i
+    \left[
+        \overline{\phi(x)}\,\psi(x)
+    \right]_{-\infty}^{+\infty}.
+\end{align}
+
+由于 $\phi(x),\psi(x)\to0$ 当 $x\to\pm\infty$，边界项为零，所以
+\begin{equation}
+    \langle\phi,P\psi\rangle
+    =
+    \langle P\phi,\psi\rangle,
+    \qquad
+    \forall\,\phi,\psi\in D(P).
+\end{equation}
+
+因此 $P$ 是对称算符，从而
+\begin{equation}
+    D(P)\subseteq D(P^\dagger),
+    \qquad
+    P^\dagger\phi=P\phi,
+    \quad
+    \forall\,\phi\in D(P).
+\end{equation}
+
+下面证明反向包含
+\[
+D(P^\dagger)\subseteq D(P).
+\]
+
+任取 $v\in D(P^\dagger)$。根据伴随算符的定义，存在
+\[
+w=P^\dagger v\in L^2(\mathbb R),
+\]
+使得
+\begin{equation}
+    \langle v,P\psi\rangle
+    =
+    \langle w,\psi\rangle,
+    \qquad
+    \forall\,\psi\in D(P).
+\end{equation}
+
+由于
+\[
+C_c^\infty(\mathbb R)\subseteq D(P),
+\]
+上述等式特别对任意测试函数 $u\in C_c^\infty(\mathbb R)$ 成立，因此
+\[
+-i
+\int_{\mathbb R}
+\overline{v(x)}\,u'(x)\,dx
+=
+\int_{\mathbb R}
+\overline{w(x)}\,u(x)\,dx.
+\]
+
+整理得到
+\begin{equation}
+    -
+    \int_{\mathbb R}
+    \overline{v(x)}\,u'(x)\,dx
+    =
+    \int_{\mathbb R}
+    \overline{i\,w(x)}\,u(x)\,dx.
+\end{equation}
+
+这正是弱导数的定义。因此 $v$ 的弱导数存在，并且
+\begin{equation}
+    v'=iw.
+\end{equation}
+
+由于 $w\in L^2(\mathbb R)$，有 $v'\in L^2(\mathbb R)$；同时
+$v\in L^2(\mathbb R)$。根据动量算符定义域的定义，
+\[
+v\in D(P).
+\]
+因此
+\begin{equation}
+    D(P^\dagger)\subseteq D(P).
+\end{equation}
+
+同时
+\[
+Pv
+=
+-iv'
+=
+-i(iw)
+=
+w
+=
+P^\dagger v.
+\]
+
+结合前面已经得到的
+\[
+D(P)\subseteq D(P^\dagger),
+\]
+最终有
+\begin{equation}
+    D(P^\dagger)=D(P),
+    \qquad
+    P^\dagger=P.
+\end{equation}
+
+因此 $P$ 是自伴算符。
+\end{proofblock}
+
+\subsection{位置算符的自伴性}
+
+考虑 Hilbert 空间 $H=L^2(\mathbb R)$。位置算符的作用形式为
+\[
+\phi(x)\longmapsto x\phi(x).
+\]
+由于一般的 $\phi\in L^2(\mathbb R)$ 并不能保证
+$x\phi\in L^2(\mathbb R)$，因此必须同时指定其定义域。
+
+\begin{definition}[位置算符]
+在 $H=L^2(\mathbb R)$ 上定义位置算符
+\begin{equation}
+    (Q\phi)(x):=x\phi(x),
+\end{equation}
+其定义域为
+\begin{equation}
+    D(Q)
+    :=
+    \left\{
+    \phi\in L^2(\mathbb R):
+    x\phi(x)\in L^2(\mathbb R)
+    \right\}.
+\end{equation}
+因此
+\[
+Q:D(Q)\to L^2(\mathbb R).
+\]
+\end{definition}
+
+由于
+\[
+C_c^\infty(\mathbb R)\subseteq D(Q)
+\]
+并且 $C_c^\infty(\mathbb R)$ 在 $L^2(\mathbb R)$ 中稠密，所以
+$Q$ 是稠密定义的线性算符，可以讨论其伴随算符 $Q^\dagger$。
+
+\begin{proposition}
+位置算符
+\[
+(Q\phi)(x)=x\phi(x),
+\qquad
+D(Q)
+=
+\{\phi\in L^2(\mathbb R):x\phi\in L^2(\mathbb R)\},
+\]
+是 $L^2(\mathbb R)$ 上的自伴算符。
+\end{proposition}
+
+\begin{proofblock}
+首先证明 $Q$ 是对称算符。任取
+$\phi,\psi\in D(Q)$，由于 $x$ 为实数，
+\begin{align}
+    \langle\phi,Q\psi\rangle
+    &=
+    \int_{\mathbb R}
+    \overline{\phi(x)}\,x\psi(x)\,dx
+    \nonumber\\
+    &=
+    \int_{\mathbb R}
+    \overline{x\phi(x)}\,\psi(x)\,dx
+    \nonumber\\
+    &=
+    \langle Q\phi,\psi\rangle.
+\end{align}
+因此 $Q$ 是对称算符，从而
+\begin{equation}
+    D(Q)\subseteq D(Q^\dagger),
+    \qquad
+    Q^\dagger\phi=Q\phi,
+    \quad
+    \forall\,\phi\in D(Q).
+\end{equation}
+
+下面证明反向包含
+\[
+D(Q^\dagger)\subseteq D(Q).
+\]
+
+任取 $v\in D(Q^\dagger)$。根据伴随算符的定义，存在唯一的
+$\xi=Q^\dagger v\in L^2(\mathbb R)$，使得
+\begin{equation}
+    \langle v,Q\psi\rangle
+    =
+    \langle \xi,\psi\rangle,
+    \qquad
+    \forall\,\psi\in D(Q).
+\end{equation}
+写成积分形式，
+\[
+\int_{\mathbb R}
+\overline{v(x)}\,x\psi(x)\,dx
+=
+\int_{\mathbb R}
+\overline{\xi(x)}\,\psi(x)\,dx.
+\]
+由于 $x$ 为实数，可以改写为
+\begin{equation}
+    \int_{\mathbb R}
+    \overline{xv(x)-\xi(x)}\,\psi(x)\,dx
+    =
+    0,
+    \qquad
+    \forall\,\psi\in D(Q).
+\end{equation}
+
+我们需要由此证明
+\[
+xv=\xi
+\qquad\text{a.e.}
+\]
+
+固定任意 $R>0$，定义
+\begin{equation}
+    \psi_R(x)
+    :=
+    \mathbf 1_{[-R,R]}(x)
+    \bigl(xv(x)-\xi(x)\bigr),
+\end{equation}
+其中 $\mathbf 1_{[-R,R]}$ 为区间 $[-R,R]$ 的示性函数。
+
+由于在 $[-R,R]$ 上 $|x|\leq R$，而
+$v,\xi\in L^2(\mathbb R)$，所以
+\[
+\psi_R\in L^2(\mathbb R).
+\]
+同时 $\psi_R$ 只支撑在有限区间 $[-R,R]$ 上，因此
+\[
+x\psi_R\in L^2(\mathbb R).
+\]
+故
+\[
+\psi_R\in D(Q).
+\]
+
+所以不妨将 $\psi=\psi_R$ 代入前面的等式，得到
+\begin{align}
+    0
+    &=
+    \int_{\mathbb R}
+    \overline{xv(x)-\xi(x)}\,
+    \psi_R(x)\,dx
+    \nonumber\\
+    &=
+    \int_{-R}^{R}
+    |xv(x)-\xi(x)|^2\,dx.
+\end{align}
+
+被积函数非负，而积分等于零，因此
+\[
+xv(x)=\xi(x)
+\qquad
+\text{a.e. on }[-R,R].
+\]
+由于 $R>0$ 任意，令 $R\to\infty$，得到
+\begin{equation}
+    xv=\xi
+    \qquad
+    \text{a.e. on }\mathbb R.
+\end{equation}
+
+而 $\xi\in L^2(\mathbb R)$，所以
+\[
+xv\in L^2(\mathbb R).
+\]
+根据 $D(Q)$ 的定义，
+\[
+v\in D(Q).
+\]
+因此
+\begin{equation}
+    D(Q^\dagger)\subseteq D(Q).
+\end{equation}
+
+结合前面由对称性得到的
+\[
+D(Q)\subseteq D(Q^\dagger),
+\]
+最终有
+\begin{equation}
+    D(Q^\dagger)=D(Q),
+    \qquad
+    Q^\dagger=Q.
+\end{equation}
+因此位置算符 $Q$ 是自伴算符。
+\end{proofblock}
+
+% ==========================================================
+\section{量子测量与谱的基本结构}
+% ==========================================================
+
+在经典力学中，可观测量是相空间上的实值函数
+\[
+f:\Gamma\to\mathbb R.
+\]
+若系统处于确定的相空间点 $(q_0,p_0)$，则测量结果直接由
+\[
+f(q_0,p_0)\in\mathbb R
+\]
+给出。
+
+量子力学中的情形不同。量子态由 Hilbert 空间 $H$ 中的向量 $\phi$ 描述，而可观测量由定义在 $H$ 上的自伴算符
+\[
+A:D(A)\to H
+\]
+描述。这里 $A\phi$ 本身仍然是 Hilbert 空间中的向量，并不是一次测量所得到的实数结果。要理解量子测量可能得到哪些数值，需要研究自伴算符的谱结构。
+
+% ----------------------------------------------------------
+\subsection{自伴算符的本征值与本征向量}
+
+首先考虑最简单的情况。若存在非零向量 $\phi\in D(A)$ 和复数 $\lambda\in\mathbb C$，使得
+\begin{equation}
+    A\phi=\lambda\phi,
+    \qquad
+    \phi\neq0,
+\end{equation}
+则称 $\phi$ 为 $A$ 的本征向量，$\lambda$ 为相应的本征值。
+
+自伴性立即对本征值产生很强的限制。
+
+\begin{proposition}[自伴算符的本征值为实数]
+设 $A$ 为自伴算符。若
+\[
+A\phi=\lambda\phi,
+\qquad
+\phi\neq0,
+\]
+则
+\[
+\lambda\in\mathbb R.
+\]
+\end{proposition}
+
+\begin{proofblock}
+由于 $A$ 自伴，
+\[
+\langle\phi,A\phi\rangle
+=
+\langle A\phi,\phi\rangle.
+\]
+利用 $A\phi=\lambda\phi$，并采用内积对第二个变量线性、对第一个变量共轭线性的约定，有
+\[
+\lambda\langle\phi,\phi\rangle
+=
+\overline{\lambda}\langle\phi,\phi\rangle.
+\]
+由于 $\phi\neq0$，有 $\langle\phi,\phi\rangle>0$，因此
+\[
+\lambda=\overline{\lambda}.
+\]
+故 $\lambda\in\mathbb R$。
+\end{proofblock}
+
+不同本征值所对应的本征向量之间也具有正交关系。
+
+\begin{proposition}[不同本征值的本征向量正交]
+设 $A$ 为自伴算符，并且
+\[
+A\phi=\lambda\phi,
+\qquad
+A\psi=\mu\psi,
+\qquad
+\lambda\neq\mu.
+\]
+则
+\begin{equation}
+    \langle\phi,\psi\rangle=0.
+\end{equation}
+\end{proposition}
+
+\begin{proofblock}
+由自伴性，
+\[
+\langle\phi,A\psi\rangle
+=
+\langle A\phi,\psi\rangle.
+\]
+利用本征值方程以及 $\lambda,\mu\in\mathbb R$，
+\[
+\mu\langle\phi,\psi\rangle
+=
+\lambda\langle\phi,\psi\rangle.
+\]
+因此
+\[
+(\mu-\lambda)\langle\phi,\psi\rangle=0.
+\]
+由于 $\lambda\neq\mu$，故
+\[
+\langle\phi,\psi\rangle=0.
+\]
+\end{proofblock}
+
+% ----------------------------------------------------------
+\subsection{本征空间与正交直和}
+
+对于一个本征值 $\lambda$，所有具有该本征值的本征向量连同零向量组成一个线性子空间。
+
+这里会用到线性算符的核。
+
+\begin{definition}[算符的核]
+设 $T:D(T)\to H$ 为线性算符。定义
+\begin{equation}
+    \ker T
+    :=
+    \{\phi\in D(T):T\phi=0\},
+\end{equation}
+称为算符 $T$ 的\textbf{核}。
+\end{definition}
+
+因此对于 $A$ 的本征值 $\lambda$，
+\begin{equation}
+    H_\lambda
+    :=
+    \ker(A-\lambda I)
+    =
+    \{\phi\in D(A):A\phi=\lambda\phi\}
+\end{equation}
+称为 $\lambda$ 所对应的\textbf{本征空间}。
+
+由于不同本征值对应的本征向量彼此正交，不同本征空间之间也彼此正交。
+
+在本征向量能够完备地张成整个 Hilbert 空间的离散谱情形，可以写成
+\begin{equation}
+    H
+    =
+    \bigoplus_{\lambda}H_\lambda.
+\end{equation}
+
+这里的符号 $\oplus$ 表示\textbf{直和}。它不是普通的集合并集，而表示每个向量都能够唯一地分解为各个子空间中的分量。由于这里不同的本征空间彼此正交，所以更准确地说是\textbf{正交直和}。
+
+若选取一组完备的正交归一本征向量
+\[
+e_1,e_2,\ldots,
+\qquad
+Ae_k=a_ke_k,
+\]
+满足
+\begin{equation}
+    \langle e_k,e_\ell\rangle
+    =
+    \delta_{k\ell},
+\end{equation}
+则任意 $\phi\in H$ 都可以展开为
+\begin{equation}
+    \phi
+    =
+    \sum_{k=1}^{\infty}
+    \langle e_k,\phi\rangle e_k.
+\end{equation}
+
+记
+\[
+c_k:=\langle e_k,\phi\rangle,
+\]
+则
+\[
+\phi
+=
+\sum_{k=1}^{\infty}c_ke_k.
+\]
+由正交归一性，
+\begin{equation}
+    \|\phi\|^2
+    =
+    \sum_{k=1}^{\infty}|c_k|^2.
+\end{equation}
+
+对于归一化量子态 $\|\phi\|=1$，因此
+\begin{equation}
+    \sum_{k=1}^{\infty}|c_k|^2=1.
+\end{equation}
+
+% ----------------------------------------------------------
+\subsection{离散谱情形下的量子测量}
+
+\begin{definition}[量子力学公设三：测量]
+在上述离散谱情形中，对可观测量 $A$ 进行测量时，可能得到的测量结果为 $A$ 的本征值。
+
+若本征值 $a$ 存在简并，即存在多个线性无关的本征向量具有同一个本征值 $a$，则对于量子态
+\[
+\phi=\sum_k c_ke_k,
+\]
+所有属于本征值 $a$ 的分量共同决定测得 $a$ 的概率。对于归一化态 $\phi$，
+\begin{equation}
+    P_\phi(A=a)
+    =
+    \sum_{k:\,a_k=a}|c_k|^2.
+\end{equation}
+
+若本征值 $a$ 非简并，则只有一个对应的本征向量，上式退化为相应展开系数的模平方。
+\end{definition}
+
+到这里，看起来似乎只要找到自伴算符的全部本征值和本征向量，就可以描述量子测量。然而对于无限维 Hilbert 空间，这种情况并不总是成立。
+
+% ----------------------------------------------------------
+\subsection{没有本征向量的自伴算符}
+
+考虑位置算符
+\[
+(Q\phi)(x)=x\phi(x),
+\]
+其定义域为
+\[
+D(Q)
+=
+\{\phi\in L^2(\mathbb R):x\phi\in L^2(\mathbb R)\}.
+\]
+
+假设 $a\in\mathbb R$ 是 $Q$ 的本征值，则应存在非零
+$\phi\in D(Q)$ 满足
+\[
+Q\phi=a\phi.
+\]
+这等价于
+\begin{equation}
+    (x-a)\phi(x)=0
+    \qquad
+    \text{a.e.}
+\end{equation}
+
+当 $x\neq a$ 时必须有 $\phi(x)=0$。因此 $\phi$ 最多只能在单点
+$x=a$ 上非零。但单点集合的 Lebesgue 测度为零，所以在
+$L^2(\mathbb R)$ 中这样的函数与零函数属于同一个等价类，即
+\[
+\phi=0
+\qquad
+\text{a.e.}
+\]
+这与本征向量必须非零矛盾。因此位置算符 $Q$ 在
+$L^2(\mathbb R)$ 中没有本征向量。
+
+类似地，考虑动量算符
+\[
+P=-i\frac{d}{dx}.
+\]
+若存在本征值 $a$ 和非零本征向量 $\phi$，则
+\[
+P\phi=a\phi,
+\]
+即
+\begin{equation}
+    -i\phi'(x)=a\phi(x).
+\end{equation}
+解这个微分方程得到
+\[
+\phi(x)=Ce^{iax}.
+\]
+但
+\[
+|\phi(x)|^2=|C|^2,
+\]
+因此
+\[
+\int_{\mathbb R}|\phi(x)|^2\,dx
+=
+|C|^2\int_{\mathbb R}dx.
+\]
+若 $C\neq0$，积分发散，所以 $\phi\notin L^2(\mathbb R)$；若
+$C=0$，又不是本征向量。因此动量算符 $P$ 在
+$L^2(\mathbb R)$ 中同样没有本征向量。
+
+位置和动量都是重要的自伴算符，却没有 $L^2(\mathbb R)$ 中的本征向量。因此仅仅研究本征值和本征向量还不足以描述一般自伴算符，需要引入比本征值更广泛的\textbf{谱}的概念。
+
+% ----------------------------------------------------------
+\subsection{预解集与谱}
+
+设
+\[
+A:D(A)\to H
+\]
+为稠密定义的线性算符。对于任意 $z\in\mathbb C$，定义
+\begin{equation}
+    R(z)
+    :=
+    A-zI,
+\end{equation}
+这里明显
+\[
+R(z):D(A)\to H.
+\]
+
+我们通过考察 $R(z)$ 的可逆性来定义算符 $A$ 的谱。
+
+\begin{definition}[预解集]
+若 $R(z)=A-zI$ 是双射，并且其逆算符
+\begin{equation}
+    R(z)^{-1}:H\to D(A)
+\end{equation}
+是有界的，则称 $z$ 属于 $A$ 的\textbf{预解集}，记为
+\[
+z\in\rho(A).
+\]
+\end{definition}
+
+\begin{definition}[谱]
+不属于预解集的复数构成 $A$ 的\textbf{谱}：
+\begin{equation}
+    \sigma(A)
+    :=
+    \mathbb C\setminus\rho(A).
+\end{equation}
+\end{definition}
+
+从本征值的观点出发，若存在非零 $\phi\in D(A)$ 使
+\[
+R(z)\phi=(A-zI)\phi=0,
+\]
+则 $z$ 是 $A$ 的本征值。此时 $R(z)$ 不可能存在逆算符：因为
+\[
+R(z)\phi=R(z)0=0,
+\qquad \phi\neq0,
+\]
+即两个不同的输入得到同一个输出，$R(z)$ 不是单射。因此它更不可能具有有界逆算符，所以每一个本征值都必然属于谱 $\sigma(A)$。
+
+然而，反过来即使
+\[
+\ker R(z)=\{0\},
+\]
+即方程 $(A-zI)\phi=0$ 没有非零解，$z$ 仍然可能属于谱。原因是“没有非零零解”只保证 $R(z)$ 是单射，并不能保证它可以在整个 Hilbert 空间上良好求逆。例如对于位置算符
+\[
+(Q\phi)(x)=x\phi(x),
+\]
+任取 $a\in\mathbb R$，方程
+\[
+(Q-aI)\phi=0
+\]
+在 $L^2(\mathbb R)$ 中只有零解；但若要求解
+\[
+(Q-aI)\phi=\psi,
+\]
+形式上必须有
+\[
+\phi(x)=\frac{\psi(x)}{x-a}.
+\]
+由于 $1/(x-a)$ 在 $x=a$ 附近发散，并非任意 $\psi\in L^2(\mathbb R)$ 都能得到一个仍属于 $L^2(\mathbb R)$ 的解。因此 $Q-aI$ 仍不能在整个 Hilbert 空间上良好求逆，故 $a$ 仍属于谱。
+
+这说明谱的概念比本征值更广：本征值对应于 $R(z)$ 已经因为存在非零零解而失去可逆性，而即使非零零解不存在，$R(z)$ 仍可能因为不能覆盖整个 $H$ 或逆算符不有界而失去良好的可逆性。正因为如此，谱才能同时包含离散的本征值和后面将出现的连续谱。
+
+% ----------------------------------------------------------
+\subsection{点谱、连续谱与剩余谱}
+
+为了进一步区分 $A-zI$ 失去可逆性的不同方式，需要考察它的核和像。
+
+算符 $A-zI$ 的像定义为
+\[
+\operatorname{Im}(A-zI)
+=
+\{(A-zI)\phi:\phi\in D(A)\},
+\]
+即所有能够由 $A-zI$ 得到的输出向量组成的集合。
+
+对于 $z\in\sigma(A)$，可以出现以下三种情形。
+
+\begin{definition}[点谱]
+若
+\begin{equation}
+    \ker(A-zI)\neq\{0\},
+\end{equation}
+则存在非零 $\phi\in D(A)$ 满足
+\[
+A\phi=z\phi.
+\]
+因此 $z$ 是 $A$ 的本征值。所有这样的 $z$ 组成 $A$ 的\textbf{点谱}，记为
+\[
+\sigma_p(A).
+\]
+\end{definition}
+
+点谱就是通常意义下由本征值组成的谱。
+
+\begin{definition}[连续谱]
+若
+\[
+\ker(A-zI)=\{0\},
+\]
+即 $A-zI$ 是单射，同时
+\begin{equation}
+    \overline{\operatorname{Im}(A-zI)}=H,
+    \qquad
+    \operatorname{Im}(A-zI)\neq H,
+\end{equation}
+则称 $z$ 属于 $A$ 的\textbf{连续谱}，记为
+\[
+\sigma_c(A).
+\]
+\end{definition}
+
+这里
+\[
+\overline{\operatorname{Im}(A-zI)}=H
+\]
+表示 $\operatorname{Im}(A-zI)$ 在 $H$ 中稠密：虽然并不是每个向量都恰好等于 $(A-zI)\phi$，但任意向量都可以由这类向量任意精确地逼近。
+
+\begin{definition}[剩余谱]
+若
+\[
+\ker(A-zI)=\{0\},
+\]
+但
+\begin{equation}
+    \overline{\operatorname{Im}(A-zI)}
+    \neq H,
+\end{equation}
+则称 $z$ 属于 $A$ 的\textbf{剩余谱}。
+\end{definition}
+
+对于一般算符，谱可能包含点谱、连续谱和剩余谱。对于自伴算符，剩余谱为空，因此其谱由点谱与连续谱组成：
+\begin{equation}
+    \sigma(A)
+    =
+    \sigma_p(A)\cup\sigma_c(A).
+\end{equation}
+
+\subsection{有限维情形：投影算符与谱分解}
+
+先考虑有限维 Hilbert 空间
+\[
+H=\mathbb C^n.
+\]
+设 $A$ 为 $H$ 上的 Hermitian 算符，$a_1,\ldots,a_m$ 为 $A$ 的互不相同的本征值，并记相应的本征空间为
+\[
+H_k=\ker(A-a_kI),
+\qquad k=1,\ldots,m.
+\]
+由 Hermitian 算符不同本征值对应的本征空间彼此正交，并且其本征向量构成 $H$ 的一组完备基，因此
+\begin{equation}
+    H=H_1\oplus\cdots\oplus H_m.
+\end{equation}
+
+于是任意 $v\in H$ 都可以唯一写成
+\begin{equation}
+    v=v_1+\cdots+v_m,
+    \qquad
+    v_k\in H_k.
+\end{equation}
+
+\begin{definition}[正交投影算符]
+对于每个本征空间 $H_k$，定义算符
+\[
+P_k:H\to H_k,
+\qquad
+v\mapsto v_k,
+\]
+即 $P_k$ 从向量 $v$ 中取出属于本征空间 $H_k$ 的分量。称 $P_k$ 为投影到 $H_k$ 上的正交投影算符。
+\end{definition}
+
+这些投影算符满足
+\begin{align}
+    P_k^2 &= P_k,\\
+    P_kP_l &= \delta_{kl}P_k,\\
+    P_1+\cdots+P_m &= I.
+\end{align}
+
+第一式表示投影一次以后，再投影一次不会发生变化；第二式表示不同本征空间彼此正交；第三式表示所有本征空间共同构成整个 Hilbert 空间。
+
+由于 $Av_k=a_kv_k$，对任意
+\[
+v=v_1+\cdots+v_m
+\]
+都有
+\begin{align}
+    Av
+    &=
+    Av_1+\cdots+Av_m
+    \nonumber\\
+    &=
+    a_1v_1+\cdots+a_mv_m
+    \nonumber\\
+    &=
+    (a_1P_1+\cdots+a_mP_m)v.
+\end{align}
+因此
+\begin{equation}
+    A
+    =
+    a_1P_1+\cdots+a_mP_m.
+\end{equation}
+
+这就是有限维 Hermitian 算符的谱分解：算符 $A$ 可以由其本征值以及投影到相应本征空间上的投影算符完全表示。
+
+% ----------------------------------------------------------
+\subsection{Borel 集合上的谱投影}
+
+前面每个 $P_k$ 只对应一个本征值 $a_k$。现在对于任意 Borel 集合
+\[
+B\in\mathcal B(\mathbb R),
+\]
+把所有本征值落在 $B$ 中的本征空间投影加在一起，定义
+\begin{equation}
+    E_A(B)
+    :=
+    \sum_{a_k\in B}P_k.
+\end{equation}
+
+因此，$E_A(B)$ 就是投影到
+\[
+\bigoplus_{a_k\in B}H_k
+\]
+上的正交投影。也就是说，它从一个量子态中取出所有对应于测量值落在 $B$ 中的分量。
+
+由 $P_k$ 的性质可以直接得到：
+
+\begin{align}
+    E_A(\mathbb R)&=I,\\
+    E_A(\varnothing)&=0,
+\end{align}
+并且对于任意 Borel 集合 $B_1,B_2$，
+\begin{equation}
+    E_A(B_1)E_A(B_2)
+    =
+    E_A(B_1\cap B_2).
+\end{equation}
+
+事实上，
+\begin{align}
+    E_A(B_1)E_A(B_2)
+    &=
+    \sum_{a_k\in B_1}
+    \sum_{a_l\in B_2}
+    P_kP_l
+    \nonumber\\
+    &=
+    \sum_{a_k\in B_1\cap B_2}P_k
+    \nonumber\\
+    &=
+    E_A(B_1\cap B_2).
+\end{align}
+
+若 $B_1,B_2,\ldots$ 两两不交，即
+\[
+B_k\cap B_l=\varnothing,
+\qquad k\neq l,
+\]
+则
+\begin{equation}
+    E_A\!\left(\bigcup_{k=1}^{\infty}B_k\right)
+    =
+    \sum_{k=1}^{\infty}E_A(B_k).
+\end{equation}
+
+在有限维情形中，实际上只有有限个本征值，因此上式最终只有有限项非零。
+
+% ----------------------------------------------------------
+\subsection{无限维情形：投影值测度}
+
+有限维情形提示我们：与其只给每一个本征值指定一个投影，不如直接给实数轴上的每个 Borel 集合 $B$ 指定一个投影算符 $E(B)$。这一结构在无限维 Hilbert 空间中仍然成立，并形成投影值测度。
+
+\begin{definition}[投影值测度]
+设 $(X,\Sigma)$ 为可测空间，例如
+\[
+(X,\Sigma)=(\mathbb R,\mathcal B(\mathbb R)).
+\]
+若有映射$E$
+\[
+E:\Sigma\to\hat{\textbf{B}}(H),
+\]
+其中 $\hat{\textbf{B}}(H)$ 表示 $H$ 上的有界线性算符，满足以下性质:
+
+\begin{enumerate}
+    \item 对任意 $B\in\Sigma$，
+    \begin{equation}
+        E(B)^\dagger=E(B),
+        \qquad
+        E(B)^2=E(B),
+    \end{equation}
+    即 $E(B)$ 是 $H$ 上的正交投影算符。
+
+    \item
+    \begin{equation}
+        E(X)=I,
+        \qquad
+        E(\varnothing)=0.
+    \end{equation}
+
+    \item 对任意 $B_1,B_2\in\Sigma$，
+    \begin{equation}
+        E(B_1)E(B_2)
+        =
+        E(B_1\cap B_2).
+    \end{equation}
+
+    \item 若 $B_1,B_2,\ldots$ 两两不交，则
+    \begin{equation}
+        E\!\left(\bigcup_{k=1}^{\infty}B_k\right)
+        =
+        \sum_{k=1}^{\infty}E(B_k),
+    \end{equation}
+    其中右端按照强算符意义收敛，即对于任意 $v\in H$，
+    \begin{equation}
+        \lim_{N\to\infty}
+        \left\|
+        E\!\left(\bigcup_{k=1}^{\infty}B_k\right)v
+        -
+        \sum_{k=1}^{N}E(B_k)v
+        \right\|
+        =0.
+    \end{equation}
+\end{enumerate}
+
+则 $E$ 被称为一个\textbf{谱测度}，也称为\textbf{投影值测度}。
+\end{definition}
+
+第4点的无穷和按照\textbf{强算子意义}收敛，即对于任意固定的
+$v\in H$，
+\begin{equation}
+    \lim_{N\to\infty}
+    \left\|
+    E\!\left(\bigcup_{k=1}^{\infty}B_k\right)v
+    -
+    \sum_{k=1}^{N}E(B_k)v
+    \right\|
+    =0.
+\end{equation}
+
+这里的含义是：先固定一个向量 $v$，随着 $N$ 增大，前 $N$ 个谱投影
+$E(B_k)v$ 的和，会在 Hilbert 空间的范数意义下逐渐逼近
+\[
+E\!\left(\bigcup_{k=1}^{\infty}B_k\right)v.
+\]
+对每一个 $v\in H$ 都要求成立，但不同的 $v$ 达到同样精度时所需要的
+$N$ 可以不同，因此这是一种“逐向量收敛”。
+
+这与算符范数收敛不同。算符范数收敛要求
+\[
+\left\|
+E\!\left(\bigcup_{k=1}^{\infty}B_k\right)
+-
+\sum_{k=1}^{N}E(B_k)
+\right\|
+\to0,
+\]
+也就是要求存在一个统一的 $N$，使所有单位向量 $v$ 上的误差都同时足够小。
+因此算符范数收敛比强算子收敛更强。
+
+\paragraph{投影值测度诱导的概率测度}
+
+给定一个投影值（谱）测度 $E$ 和量子态 $\phi\in H$，定义
+\begin{equation}
+    \mu_\phi^E(B)
+    :=
+    \langle\phi,E(B)\phi\rangle.
+\end{equation}
+
+由于 $E(B)$ 是自伴投影算符，$\mu_\phi^E(B)$有正定性：
+\begin{align}
+    \mu_\phi^E(B)
+    &=
+    \langle\phi,E(B)\phi\rangle
+    \nonumber\\
+    &=
+    \langle\phi,E(B)^2\phi\rangle
+    \nonumber\\
+    &=
+    \langle E(B)\phi,E(B)\phi\rangle
+    \nonumber\\
+    &=
+    \|E(B)\phi\|^2
+    \geq0.
+\end{align}
+
+如果 $\phi$ 已归一化，即 $\|\phi\|=1$，则
+\begin{equation}
+    \mu_\phi^E(\mathbb R)
+    =
+    \langle\phi,E(\mathbb R)\phi\rangle
+    =
+    \langle\phi,\phi\rangle
+    =
+    1.
+\end{equation}
+因此 $\mu_\phi^E$ 也是归一的，可以看作 $\mathbb R$ 上的概率测度。
+
+在\textbf{有限维离散谱}情形中，
+\[
+E_A(B)=\sum_{a_k\in B}P_k,
+\]
+于是
+\begin{equation}
+    \mu_\phi^{E_A}(B)
+    =
+    \langle\phi,E_A(B)\phi\rangle
+   = \left\langle\phi,\sum_{a_k\in B}P_k\phi \right\rangle
+\end{equation}
+正表示对可观测量 $A$ 进行测量时，测量结果落在集合 $B$ 中的概率。
+
+\subsection{谱定理}
+
+前面已经定义了实数轴上的谱测度。它是一个映射
+\[
+E:
+\{\mathbb R\text{ 上的 Borel 集合}\}
+\longrightarrow
+\{H\text{ 上的有界线性算符}\},
+\]
+并且对于每一个 Borel 集合 $B\subseteq\mathbb R$，$E(B)$ 都是 Hilbert 空间 $H$ 上的正交投影算符。
+
+给定谱测度 $E$ 和任意 $\phi\in H$，定义
+\begin{equation}
+    \mu_\phi^E(B)
+    :=
+    \langle \phi,E(B)\phi\rangle .
+\end{equation}
+若 $\|\phi\|=1$，则 $\mu_\phi^E$ 是 $\mathbb R$ 上的概率测度。
+
+在有限维情形中，Hermitian 算符可以写成
+\[
+A=\sum_k a_kP_k,
+\]
+其中 $a_k$ 为本征值，$P_k$ 为投影到相应本征空间上的正交投影。谱定理将这一离散的谱分解推广到一般自伴算符：离散的投影 $P_k$ 被谱测度 $E_A$ 所取代，而求和被谱积分所取代。
+
+\begin{proposition}[谱定理]
+设 $A$ 是 Hilbert 空间 $H$ 上的自伴算符，则存在唯一的谱测度
+\[
+E_A:
+\{\mathbb R\text{ 上的 Borel 集合}\}
+\longrightarrow
+\{H\text{ 上的有界线性算符}\},
+\]
+满足以下性质：
+
+\begin{enumerate}
+    \item 算符 $A$ 可以表示为
+    \begin{equation}
+        A
+        =
+        \int_{\mathbb R}
+        \lambda\,E_A(d\lambda),
+    \end{equation}
+    其定义域为
+    \begin{equation}
+        D(A)
+        =
+        \left\{
+        \phi\in H:
+        \int_{\mathbb R}
+        \lambda^2\,d\mu_\phi^{E_A}(\lambda)
+        <\infty
+        \right\}.
+    \end{equation}
+
+    \item 对任意 $\phi\in D(A)$，
+    \begin{equation}
+        \|A\phi\|^2
+        =
+        \int_{\mathbb R}
+        \lambda^2\,d\mu_\phi^{E_A}(\lambda).
+    \end{equation}
+
+    \item 谱测度只集中在 $A$ 的谱 $\sigma(A)$ 上，即
+    \begin{equation}
+        E_A\!\left(
+        \mathbb R\setminus\sigma(A)
+        \right)
+        =
+        0.
+    \end{equation}
+
+    \item 对任意 $a\in\mathbb R$，
+    \begin{equation}
+        E_A(\{a\})
+    \end{equation}
+    是投影到本征空间
+    \begin{equation}
+        \ker(A-aI)
+    \end{equation}
+    上的正交投影算符。
+\end{enumerate}
+\end{proposition}
+
+谱定理在本课程中不作证明。其完整证明需要较长的泛函分析准备，后面主要把它作为工具使用。
+
+\textbf{谱定理性质一}
+\[
+A=\int_{\mathbb R}\lambda\,E_A(d\lambda)
+\]
+可以直接理解为有限维谱分解
+\[
+A=\sum_j a_jP_j
+\]
+向一般谱情形的推广。先将实数轴划分为一系列互不相交的小区间
+$B_k=[\lambda_k,\lambda_k+\Delta\lambda_k)$。在纯离散谱情形中，落在同一个区间 $B_k$ 内的谱值所对应的投影算符之和为
+\[
+E_A(B_k)
+=
+\sum_{a_j\in B_k}P_j.
+\]
+当区间足够小时，其中的谱值都可以近似用一个代表值
+$\lambda_k$ 表示，因此
+\begin{align}
+    A
+    &=\sum_j a_jP_j
+    \nonumber\\
+    &=\sum_{k=1}^{N}\sum_{a_j\in B_k}a_jP_j
+    \nonumber\\
+    &\approx
+    \sum_{k=1}^{N}\lambda_k\sum_{a_j\in B_k}P_j
+    \nonumber\\
+    &=\sum_{k=1}^{N}\lambda_k E_A(B_k)
+    \nonumber\\
+    &\xrightarrow[\max_k\Delta\lambda_k\to0]{N\to\infty}
+    \int_{\mathbb R}\lambda\,E_A(d\lambda).
+\end{align}
+
+其中，$E_A(B_k)$ 表示投影到“谱值落在区间 $B_k$ 内”这一部分 Hilbert 空间上的正交投影。当区间逐渐缩小时，形式上就变为
+\[
+E_A(d\lambda)
+\]
+这里需要注意，$E_A(d\lambda)$ 不是普通函数的微分，也不能简单理解为$E_A(\{\lambda\})$。对于离散谱中的本征值 $a_j$，$E_A(\{a_j\})=P_j$；但对于连续谱中的单个谱值 $\lambda$，完全可能有$E_A(\{\lambda\})=0$，而包含它的任意小区间 $B$ 却仍有$E_A(B)\neq0$。因此，$E_A(d\lambda)$ 更合适的理解就是：$A$ 的谱在$\lambda$ 附近一个无穷小区间所对应的投影值测度。
+
+\textbf{谱定理性质二：}
+
+对于任意 $\phi\in D(A)$，由谱测度诱导的测度满足
+\[
+\mu_\phi^{E_A}(B)
+=
+\langle\phi,E_A(B)\phi\rangle
+=
+\|E_A(B)\phi\|^2.
+\]
+对于任意 $\phi\in D(A)$，将谱轴划分为两两不交的小区间 $B_k$，并在每个区间内取代表值 $\lambda_k$。由谱积分的离散近似，
+\begin{align}
+    A\phi
+    &=
+    \lim_{\substack{N\to\infty\\
+    \max_k\Delta\lambda_k\to0}}
+    \sum_{k=1}^{N}
+    \lambda_k E_A(B_k)\phi .
+\end{align}
+以及不同区间 $B_k$ 两两不交，
+\begin{equation}
+    E_A(B_k)E_A(B_l)=0,
+    \qquad k\neq l,
+\end{equation}
+因此不同的谱分量 $E_A(B_k)\phi$ 彼此正交。于是
+\begin{align}
+    \|A\phi\|^2
+    &=
+    \lim_{\substack{N\to\infty\\
+    \max_k\Delta\lambda_k\to0}}
+    \left\|
+    \sum_{k=1}^{N}
+    \lambda_k E_A(B_k)\phi
+    \right\|^2
+    \nonumber\\
+    &=
+    \lim_{\substack{N\to\infty\\
+    \max_k\Delta\lambda_k\to0}}
+    \sum_{k=1}^{N}
+    \lambda_k^2
+    \|E_A(B_k)\phi\|^2
+    \nonumber\\
+    &=
+    \lim_{\substack{N\to\infty\\
+    \max_k\Delta\lambda_k\to0}}
+    \sum_{k=1}^{N}
+    \lambda_k^2
+    \langle\phi,E_A(B_k)\phi\rangle
+    \nonumber\\
+    &=
+    \lim_{\substack{N\to\infty\\
+    \max_k\Delta\lambda_k\to0}}
+    \sum_{k=1}^{N}
+    \lambda_k^2
+    \mu_\phi^{E_A}(B_k)
+    \nonumber\\
+    &=
+    \int_{\mathbb R}
+    \lambda^2\,d\mu_\phi^{E_A}(\lambda).
+\end{align}
+其中形式记号
+\[
+d\mu_\phi^{E_A}(\lambda)
+\]
+可以理解为量子态 $\phi$ 在 $\lambda$ 附近一个无穷小谱区间中的谱权重。对于一个很小的区间$B_\lambda=[\lambda,\lambda+\Delta\lambda)$，有
+\begin{equation}
+    \mu_\phi^{E_A}(B_\lambda)
+    =
+    \langle\phi,E_A(B_\lambda)\phi\rangle.
+\end{equation}
+因此，当 $\Delta\lambda\to0$ 时，可以形式地理解为
+\begin{equation}
+    d\mu_\phi^{E_A}(\lambda)
+    \sim
+    \langle
+    \phi,
+    E_A([\lambda,\lambda+d\lambda))
+    \phi
+    \rangle.
+\end{equation}
+
+\textbf{谱定理还有一个反向的表述}：若给定一个谱测度 $E$，则可以定义
+\[
+A
+=
+\int_{\mathbb R}
+\lambda\,E(d\lambda),
+\]
+并取
+\[
+D(A)
+=
+\left\{
+\phi\in H:
+\int_{\mathbb R}
+\lambda^2\,d\mu_\phi^E(\lambda)<\infty
+\right\}.
+\]
+这样得到的算符 $A$ 是自伴算符。因此，自伴算符与相应的谱测度之间可以相互对应。
+
+\subsection{谱定理与函数演算}
+
+先考虑简单函数
+\begin{equation}
+    s(\lambda)
+    =
+    \sum_{k=1}^{m}
+    \alpha_k\,\mathbf 1_{B_k}(\lambda),
+\end{equation}
+其中 $B_k$ 为有限个两两不交的 Borel 集合，$\alpha_k$ 为任意常数，表示简单函数在 $B_k$ 上的取值。
+
+为了理解如何由普通函数 $s(\lambda)$ 得到算符 $s(A)$，先考虑纯离散谱情形
+\[
+A=\sum_j a_jP_j.
+\]
+对于示性函数 $\mathbf 1_B$，其作用只是判断正交的子空间的谱值 $a_j$ 是否属于集合 $B$，因此
+\begin{align}
+    \mathbf 1_B(A)
+    &=
+    \sum_j \mathbf 1_B(a_j)P_j
+    \nonumber\\
+    &=
+    \sum_{a_j\in B}P_j
+    \nonumber\\
+    &=
+    E_A(B).
+\end{align}
+因此，示性函数 $\mathbf 1_B(\lambda)$ 在算符上的对应物正是谱投影 $E_A(B)$：它保留谱值落在 $B$ 中的分量，而去掉其余谱分量。于是对于简单函数 $s(\lambda)$，
+\begin{align}
+    s(A)
+    &=
+    \sum_{k=1}^{m}
+    \alpha_k\,\mathbf 1_{B_k}(A)
+    \nonumber\\
+    &=
+    \sum_{k=1}^{m}
+    \alpha_k\,E_A(B_k).
+\end{align}
+
+对于谱的一般情况，可以推广：
+\begin{align}
+    s(A)
+    &=
+    s(\int_{\mathbb R}
+\lambda\,E_A(d\lambda))\\
+    &=
+    \int_{\mathbb R}
+    s(\lambda)\,E_A(d\lambda).
+\end{align}
+
+这一结构可以进一步推广到一般函数。将谱轴划分为越来越细的区间
+$B_k^{(N)}$，并在每个区间中选择一个代表谱值
+$\xi_k^{(N)}\in B_k^{(N)}$。对于一般函数 $f(\lambda)$，构造简单函数
+\begin{equation}
+    s_N(\lambda)
+    =
+    \sum_{k=1}^{N}
+    f\!\left(\xi_k^{(N)}\right)
+    \mathbf 1_{B_k^{(N)}}(\lambda).
+\end{equation}
+此时$s_N$的算符函数为：
+\begin{align}
+    s_N(A)
+    &=
+    \sum_{k=1}^{N}
+    f\!\left(\xi_k^{(N)}\right)
+    \mathbf 1_{B_k^{(N)}}(A)
+    \nonumber\\
+    &=
+    \sum_{k=1}^{N}
+    f\!\left(\xi_k^{(N)}\right)
+    E_A\!\left(B_k^{(N)}\right)
+    \nonumber\\
+    &\xrightarrow[\max_k|B_k^{(N)}|\to0]{N\to\infty}
+    \int_{\mathbb R}
+    f(\lambda)\,E_A(d\lambda).
+\end{align}
+
+当 $N\to\infty$ 且各区间宽度趋于零，即
+\[
+\max_k |B_k^{(N)}|\to0,
+\]
+简单函数 $s_N(\lambda)$ 逐渐逼近 $f(\lambda)$，形式上有
+\begin{equation}
+    s_N(\lambda)\longrightarrow f(\lambda).
+\end{equation}
+由此可以将 $s_N(A)$ 的极限作为定义一般算符函数 $f(A)$ 的依据：
+\begin{align}
+    f(A)
+    &:=
+    \lim_{N\to\infty}s_N(A)
+    \nonumber\\
+    &=
+    \lim_{N\to\infty}
+    \sum_{k=1}^{N}
+    f\!\left(\xi_k^{(N)}\right)
+    E_A\!\left(B_k^{(N)}\right)
+    \nonumber\\
+    &=
+    \int_{\mathbb R}
+    f(\lambda)\,E_A(d\lambda).
+\end{align}
+这种利用谱定理从普通函数 $f$ 构造算符 $f(A)$ 的方法称为\textbf{函数演算}。
+
+% ==========================================================
+\section{量子测量：测量后的状态}
+% ==========================================================
+
+前面已经由谱定理得到：对于一个自伴算符 $A$，存在唯一的谱测度 $E_A$。因此，对处于状态 $\phi\in H$ 的量子系统测量可观测量 $A$ 时，测量结果不再只限于离散本征值，而可以统一地用谱测度描述。
+
+\begin{definition}[量子力学公设三：测量概率]
+设 $A$ 为可观测量对应的自伴算符，$E_A$ 为其谱测度。对于任意 Borel 集合 $B\subseteq\mathbb R$，测量结果落在 $B$ 中的概率为
+\begin{equation}
+    P_\phi(A\in B)
+    =
+    \frac{\langle\phi,E_A(B)\phi\rangle}
+    {\langle\phi,\phi\rangle}.
+\end{equation}
+若 $\|\phi\|=1$，则
+\begin{equation}
+    P_\phi(A\in B)
+    =
+    \langle\phi,E_A(B)\phi\rangle
+    =
+    \mu_\phi^{E_A}(B).
+\end{equation}
+\end{definition}
+
+可以看出量子态 $\phi$ 与任意非零复数倍 $\lambda\phi$ 给出完全相同的测量概率。事实上，
+\begin{align}
+    P_{\lambda\phi}(A\in B)
+    &=
+    \frac{
+    \langle\lambda\phi,E_A(B)\lambda\phi\rangle
+    }{
+    \langle\lambda\phi,\lambda\phi\rangle
+    }
+    \nonumber\\
+    &=
+    \frac{
+    |\lambda|^2\langle\phi,E_A(B)\phi\rangle
+    }{
+    |\lambda|^2\langle\phi,\phi\rangle
+    }
+    \nonumber\\
+    &=
+    P_\phi(A\in B).
+\end{align}
+
+\begin{proposition}[纯态的三种观点]
+由于任意非零复数倍 $\lambda\phi$ 与 $\phi$ 给出完全相同的测量概率，因此对于纯态可以从以下三个相互联系的观点理解：
+
+\begin{enumerate}
+    \item \textbf{射线观点：}物理上的纯态不是某一个具体向量 $\phi$，而是由其所有非零复数倍组成的射线
+    \begin{equation}
+        [\phi]
+        =
+        \{\lambda\phi:\lambda\in\mathbb C^\ast\}.
+    \end{equation}
+    定义等价关系
+    \[
+        \phi\sim\psi
+        \quad\Longleftrightarrow\quad
+        \psi=\lambda\phi,
+        \qquad \lambda\in\mathbb C^\ast,
+    \]
+    则纯态空间为
+    \begin{equation}
+        \mathbb P(H)
+        =
+        \bigl(H\setminus\{0\}\bigr)/\sim.
+    \end{equation}
+
+    \item \textbf{归一化向量观点：}通常从每条射线中选取一个满足
+    \[
+        \|\phi\|=1
+    \]
+    的代表元。归一化消除了复数倍 $\lambda$ 的模长自由度，但仍留下整体相位，因此
+    \begin{equation}
+        \phi\sim\psi
+        \quad\Longleftrightarrow\quad
+        \psi=e^{i\theta}\phi,
+        \qquad \theta\in\mathbb R.
+    \end{equation}
+    因而单位球面上相差整体相位的向量仍表示同一个物理态。
+
+    \item \textbf{Hilbert 空间向量观点：}在实际计算中，通常仍直接用一个向量
+    $\phi\in H$ 表示量子态，而不在每一步显式写出上述等价类。整体非零复数倍
+    $\lambda\phi$ 无法通过测量加以区分，这是人类认识缺陷不是自然性质问题。这个观点下，使量子叠加原理可以直接写成
+    \begin{equation}
+        \alpha\phi+\beta\psi\in H.
+    \end{equation}
+\end{enumerate}
+\end{proposition}
+
+\subsection{位置测量}
+
+以
+\[
+H=L^2(\mathbb R)
+\]
+为例，位置算符为
+\[
+(Q\phi)(x)=x\phi(x).
+\]
+对于 Borel 集合 $B\subseteq\mathbb R$，其谱投影作用为
+\begin{equation}
+    \bigl(E_Q(B)\phi\bigr)(x)
+    =
+    \mathbf 1_B(x)\phi(x).
+\end{equation}
+
+也就是说，$E_Q(B)$ 保留波函数在位置区间 $B$ 中的部分，而将区间外的部分置零。因此对于归一化态 $\|\phi\|=1$，
+\begin{align}
+    P_\phi(Q\in B)
+    &=
+    \langle\phi,E_Q(B)\phi\rangle
+    \nonumber\\
+    &=
+    \int_{\mathbb R}
+    \overline{\phi(x)}
+    \mathbf 1_B(x)\phi(x)\,dx
+    \nonumber\\
+    &=
+    \int_B|\phi(x)|^2\,dx.
+\end{align}
+
+因此 $|\phi(x)|^2$ 就是位置测量的概率密度。
+
+位置的期望值和方差分别为
+\begin{align}
+    \mathbb E_\phi[Q]
+    &=
+    \int_{\mathbb R}
+    x|\phi(x)|^2\,dx,\\
+    \operatorname{Var}_\phi(Q)
+    &=
+    \int_{\mathbb R}
+    \bigl(x-\mathbb E_\phi[Q]\bigr)^2
+    |\phi(x)|^2\,dx.
+\end{align}
+
+这里 $D(Q)$ 的条件
+\[
+x\phi(x)\in L^2(\mathbb R)
+\]
+正保证
+\[
+\int_{\mathbb R}x^2|\phi(x)|^2\,dx<\infty,
+\]
+从而位置的二阶矩以及方差有限。
+
+\subsection{测量后的状态}
+
+测量不仅给出随机的测量结果，还会改变系统的量子态。根据谱的类型，可以分为以下两种情形：
+
+\begin{itemize}
+    \item \textbf{离散谱情形：}设 $A=\sum_k a_kP_k$，其中 $P_k$ 是投影到本征空间 $H_{a_k}=\ker(A-a_kI)$ 上的正交投影。若一次测量得到结果 $a_k$，则测量后状态与 $P_k\phi$ 表示同一个射线；若取归一化代表元，则
+    \begin{equation}
+        \phi'=\frac{P_k\phi}{\|P_k\phi\|}.
+    \end{equation}
+    由于 $P_k^2\phi\in H_{a_k}$，故在该子空间上 $A=a_kI$。因此第一次测量得到 $a_k$ 后，立即再次测量同一个可观测量 $A$，仍然得到 $a_k$。这就是测量后的态投影，也称波函数坍缩。
+
+    \item \textbf{一般谱情形：}若测量结果只能确定落在某个 Borel 集合 $B$ 中，则测量后状态与 $E_A(B)\phi$ 表示同一个射线；归一化后为
+    \begin{equation}
+        \phi'=\frac{E_A(B)\phi}{\|E_A(B)\phi\|}.
+    \end{equation}
+    对于连续谱，单个谱点通常满足 $P_\phi(A=a)=0$，因此实际测量更自然地理解为测量结果落在某个有限分辨率的区间 $B$ 中。
+\end{itemize}
+
+\subsection{同一可观测量的重复测量}
+
+设初态为 $\phi_0$。第一次测量 $A$ 得到结果落在 $B_1$ 中，忽略归一化因子，可以写成
+\[
+\phi_1=E_A(B_1)\phi_0.
+\]
+第二次测量结果落在 $B_2$ 中，则
+\begin{align}
+    \phi_2
+    &=
+    E_A(B_2)\phi_1
+    \nonumber\\
+    &=
+    E_A(B_2)E_A(B_1)\phi_0
+    \nonumber\\
+    &=
+    E_A(B_1\cap B_2)\phi_0.
+\end{align}
+
+继续进行 $n$ 次测量，有
+\begin{align}
+    \phi_n
+    &=
+    E_A(B_n)\cdots E_A(B_2)E_A(B_1)\phi_0
+    \nonumber\\
+    &=
+    E_A(B_1\cap B_2\cap\cdots\cap B_n)\phi_0.
+\end{align}
+
+对同一个可观测量进行多轮连续的测量后，态的结果其实是一样的，不受观测结果的顺序的影响。
+
+\subsection{不同可观测量的连续测量}
+
+现在考虑两个可观测量 $P$ 和 $Q$。若先测量 $P$，得到结果位于 $B_P$，再测量 $Q$，得到结果位于 $B_Q$，则忽略归一化因子，
+\begin{align}
+    \phi_1
+    &=
+    E_P(B_P)\phi_0,
+    \nonumber\\
+    \phi_2
+    &=
+    E_Q(B_Q)E_P(B_P)\phi_0.
+\end{align}
+
+若交换测量次序，先测量 $Q$，再测量 $P$，则
+\begin{align}
+    \phi_1'
+    &=
+    E_Q(B_Q)\phi_0,
+    \nonumber\\
+    \phi_2'
+    &=
+    E_P(B_P)E_Q(B_Q)\phi_0.
+\end{align}
+
+因此，如果
+\begin{equation}
+    E_Q(B_Q)E_P(B_P)
+    \neq
+    E_P(B_P)E_Q(B_Q),
+\end{equation}
+则两种测量顺序一般会得到不同的最终状态。也就是说，对于不对易的可观测量，测量的先后顺序具有物理意义。
+
+以位置和动量为例，
+\[
+(Q\phi)(x)=x\phi(x),
+\qquad
+(P\phi)(x)=-i\hbar\phi'(x),
+\]
+形式上满足
+\begin{equation}
+    [Q,P]
+    =
+    QP-PQ
+    =
+    i\hbar I.
+\end{equation}
+
+\begin{definition}[对易子]
+对于两个算符 $A$ 和 $B$，若复合算符均有定义，则定义其对易子为
+\begin{equation}
+    [A,B]:=AB-BA.
+\end{equation}
+若 $[A,B]=0$，称 $A$ 与 $B$ 对易；否则称它们不对易。
+\end{definition}
+
+对于无界算符，直接写 $PQ$ 或 $QP$ 时必须注意定义域。例如
+\[
+PQ\phi
+\]
+不仅要求 $\phi\in D(Q)$，还要求
+\[
+Q\phi\in D(P).
+\]
+同理，$QP\phi$ 也有相应的定义域要求。因此，对于一般无界算符，$[P,Q]$ 的定义域需要额外讨论，不能仅把它看成普通矩阵的乘法。相比之下，谱投影$E_P(B_P),\qquad E_Q(B_Q)$都是定义在整个 $H$ 上的有界算符，所以
+\begin{equation}
+    [E_Q(B_Q),E_P(B_P)]
+\end{equation}
+始终可以作为 $H$ 上的有界算符来讨论。这也是用谱投影描述测量顺序时在数学上的一个重要优势。
+
+
+% ==========================================================
+\newpage
+\chapter{态与可观测量的演化}
+
+\section{时间演化算符的基本性质}
+
+在经典力学中，系统的状态由相空间中的一点
+$z=(q^1,\ldots,q^N,p_1,\ldots,p_N)\in\mathcal U\subseteq\mathbb R^{2N}$
+描述，其时间演化由 Hamilton 方程
+\begin{equation}
+    \dot q^l=\frac{\partial H}{\partial p_l},
+    \qquad
+    \dot p_l=-\frac{\partial H}{\partial q^l}
+\end{equation}
+决定。对于经典可观测量 $f\in C^\infty(\mathcal U)$，有
+\begin{equation}
+    \dot f=\{f,H\}.
+\end{equation}
+
+量子力学中，状态由 Hilbert 空间 $H$ 中的向量 $\phi$ 描述。若系统在时刻 $t_0$ 处于状态 $\phi(t_0)$，则记其在时刻 $t$ 的状态为
+\begin{equation}
+    \phi(t)=U(t,t_0)\phi(t_0),
+\end{equation}
+其中 $U(t,t_0):H\to H$ 称为时间演化算符。量子态的时间演化具有以下基本性质。
+
+\begin{enumerate}
+    \item \textbf{线性性。} 量子叠加原理要求时间演化保持态的线性叠加。若
+    $\phi=\lambda_1\phi_1+\lambda_2\phi_2$，则
+    \begin{align}
+        U(t,t_0)\phi
+        &=U(t,t_0)(\lambda_1\phi_1+\lambda_2\phi_2)
+        \nonumber\\
+        &=\lambda_1U(t,t_0)\phi_1
+        +\lambda_2U(t,t_0)\phi_2.
+    \end{align}
+    因此 $U(t,t_0)$ 是线性算符。这里的线性性来自量子叠加原理本身，并不要求系统是封闭的。
+
+    \item \textbf{封闭系统的概率守恒。} 若系统是封闭的，则时间演化过程中总概率保持不变，因此
+    \begin{equation}
+        \|U(t,t_0)\phi\|=\|\phi\|,
+        \qquad \forall\,\phi\in H.
+    \end{equation}
+
+    为了由范数守恒进一步得到内积守恒，首先利用极化恒等式。按照本文内积对第一个变量共轭线性、对第二个变量线性的约定，有
+    \begin{align}
+        \|\phi+\psi\|^2
+        &=
+        \|\phi\|^2+\|\psi\|^2
+        +\langle\phi,\psi\rangle
+        +\langle\psi,\phi\rangle,
+        \nonumber\\
+        \|\phi-\psi\|^2
+        &=
+        \|\phi\|^2+\|\psi\|^2
+        -\langle\phi,\psi\rangle
+        -\langle\psi,\phi\rangle,
+    \end{align}
+    从而
+    \begin{equation}
+        \|\phi+\psi\|^2-\|\phi-\psi\|^2
+        =
+        4\,\operatorname{Re}\langle\phi,\psi\rangle.
+    \end{equation}
+    同理，
+    \begin{align}
+        \|\phi+i\psi\|^2
+        &=
+        \|\phi\|^2+\|\psi\|^2
+        -2\,\operatorname{Im}\langle\phi,\psi\rangle,
+        \nonumber\\
+        \|\phi-i\psi\|^2
+        &=
+        \|\phi\|^2+\|\psi\|^2
+        +2\,\operatorname{Im}\langle\phi,\psi\rangle,
+    \end{align}
+    因而
+    \begin{equation}
+        \|\phi+i\psi\|^2-\|\phi-i\psi\|^2
+        =
+        -4\,\operatorname{Im}\langle\phi,\psi\rangle.
+    \end{equation}
+    合并实部与虚部得到极化恒等式
+    \begin{equation}
+        \langle\phi,\psi\rangle
+        =
+        \frac14
+        \left(
+            \|\phi+\psi\|^2-\|\phi-\psi\|^2
+            -i\|\phi+i\psi\|^2+i\|\phi-i\psi\|^2
+        \right).
+    \end{equation}
+
+    由于 $U(t,t_0)$ 线性且保持范数，
+    \begin{align}
+        \langle U\phi,U\psi\rangle
+        &=
+        \frac14
+        \Bigl(
+            \|U\phi+U\psi\|^2-\|U\phi-U\psi\|^2
+            \nonumber\\
+        &\qquad
+            -i\|U\phi+iU\psi\|^2
+            +i\|U\phi-iU\psi\|^2
+        \Bigr)
+        \nonumber\\
+        &=
+        \frac14
+        \Bigl(
+            \|U(\phi+\psi)\|^2-\|U(\phi-\psi)\|^2
+            \nonumber\\
+        &\qquad
+            -i\|U(\phi+i\psi)\|^2
+            +i\|U(\phi-i\psi)\|^2
+        \Bigr)
+        \nonumber\\
+        &=
+        \frac14
+        \Bigl(
+            \|\phi+\psi\|^2-\|\phi-\psi\|^2
+            -i\|\phi+i\psi\|^2+i\|\phi-i\psi\|^2
+        \Bigr)
+        \nonumber\\
+        &=
+        \langle\phi,\psi\rangle.
+    \end{align}
+    因此
+    \begin{equation}
+        U(t,t_0)^\dagger U(t,t_0)=I.
+    \end{equation}
+
+    这一步只说明时间演化保持 Hilbert 空间的内积和距离。严格地说，它本身还没有说明
+    $U(t,t_0)$ 的逆就是物理上的反向时间演化 $U(t_0,t)$；时间上的可逆性要结合下面的群结构才能得到。
+
+    \item \textbf{时间组合律与平稳系统。} 对任意 $t_0<t_1<t_2$，先从 $t_0$ 演化到 $t_1$，再从 $t_1$ 演化到 $t_2$，应与直接从 $t_0$ 演化到 $t_2$ 得到相同结果，因此
+    \begin{align}
+        \phi(t_2)
+        &=
+        U(t_2,t_1)U(t_1,t_0)\phi(t_0)
+        \nonumber\\
+        &=
+        U(t_2,t_0)\phi(t_0),
+    \end{align}
+    从而有组合率：
+    \begin{equation}
+        U(t_2,t_0)
+        =
+        U(t_2,t_1)U(t_1,t_0).
+    \end{equation}
+
+    时间平移不变性是进一步的独立条件。若系统是平稳的，即动力学规律不依赖绝对时刻，则
+    \begin{equation}
+        U(t_2,t_1)
+        =
+        U(t_2+s,t_1+s),
+        \qquad
+        \forall\,s\in\mathbb R.
+    \end{equation}
+    取 $s=-t_1$，得到
+    \begin{equation}
+        U(t_2,t_1)
+        =
+        U(t_2-t_1,0).
+    \end{equation}
+    定义
+    \begin{equation}
+        V(t):=U(t,0),
+    \end{equation}
+    则时间组合律化为
+    \begin{equation}
+        V(s+t)=V(s)V(t),
+        \qquad
+        V(0)=I.
+    \end{equation}
+
+    若 $V$ 对所有 $t\in\mathbb R$ 都有定义，则
+    \begin{align}
+        V(-t)V(t)
+        &=V(0)=I,
+        \nonumber\\
+        V(t)V(-t)
+        &=V(0)=I.
+    \end{align}
+    因而
+    \begin{equation}
+        V(-t)=V(t)^{-1}.
+    \end{equation}
+
+    这里才真正出现时间演化的可逆性：正向演化 $V(t)$ 之后再施加 $V(-t)$，可以恢复演化前的完整量子态。因此群结构表达了封闭平稳系统的时间演化不丢失量子信息。结合前面的内积保持性，此时
+    \begin{equation}
+        V(-t)=V(t)^{-1}=V(t)^\dagger,
+    \end{equation}
+    所以 $V(t)$ 是幺正算符。
+
+    \item \textbf{强连续性。} 最后要求时间演化随时间连续变化，即对于任意 $\phi\in H$，
+    \begin{equation}
+        \lim_{t\to0}
+        \|V(t)\phi-\phi\|
+        =
+        0.
+    \end{equation}
+    因而 $V:\mathbb R\to\mathcal U(H)$ 是一个强连续的'一参数'幺正群。这里
+    \[
+    V:\mathbb R\to\mathcal U(H),
+    \qquad
+    t\mapsto V(t),
+    \]
+    表示每一个时间参数 $t$ 都对应一个 Hilbert 空间 $H$ 上的幺正算符其中每一个元素$V(t):H\to H$都是一个作用在Hilbert空间上的算符。因此 $V$ 是一个以时间为参数的算符族，而 $V(t)$ 才是实际作用在量子态上的时间演化算符。
+\end{enumerate}
+
+
+\section{Stone 定理与时间演化的生成元}
+
+上一节得到，对于封闭、平稳的量子系统，时间演化由一个强连续的一参数幺正群
+\[
+V:\mathbb R\to\mathcal U(H)
+\]
+描述，即 $V(0)=I$、$V(t+s)=V(t)V(s)$，每个 $V(t)$ 都是幺正算符，并且当 $t\to0$，对任意 $\phi\in H$ 有 $\|V(t)\phi-\phi\|\to0$ 。
+
+\begin{proposition}[Stone 定理：简化表述]
+设
+\[
+V:\mathbb R\to\mathcal U(H)
+\]
+为强连续的一参数幺正群，则存在自伴算符 $A$，使得
+\begin{equation}
+    V(t)=e^{itA}.
+\end{equation}
+\end{proposition}
+
+这里暂不证明 Stone 定理。一般情况下 $A$ 可以是无界算符，其定义域、自伴性以及指数算符的严格构造都涉及较长的泛函分析论证。先通过有限维情形理解这一结论。
+
+\subsection{有限维情形的直观说明}
+
+令 $H=\mathbb C^n$。由于
+\begin{align}
+    V(t)V(s)
+    &=V(t+s)
+    \nonumber\\
+    &=V(s+t)
+    \nonumber\\
+    &=V(s)V(t),
+\end{align}
+所有 $V(t)$ 两两对易。又因为每个 $V(t)$ 都是幺正矩阵，因此它们可以被同一个幺正矩阵 $P$ 同时对角化：
+\begin{equation}
+    V(t)
+    =
+    P^\dagger
+    \begin{pmatrix}
+        \lambda_1(t) & 0 & \cdots & 0\\
+        0 & \lambda_2(t) & \cdots & 0\\
+        \vdots & \vdots & \ddots & \vdots\\
+        0 & 0 & \cdots & \lambda_n(t)
+    \end{pmatrix}
+    P.
+\end{equation}
+
+由幺正性 $V(t)^\dagger V(t)=I$，可知$|\lambda_k(t)|=1$, 以及$\lambda_k(t)=e^{i\theta_k(t)}.$将此关系带入$V(t)V(s)=V(t+s)$,得到：
+\begin{align}
+    \lambda_k(t+s)
+    &=\lambda_k(t)\lambda_k(s)
+    \nonumber\\
+    e^{i\theta_k(t+s)}
+    &=
+    e^{i[\theta_k(t)+\theta_k(s)]}.
+\end{align}
+结合连续性，可取连续相位使$\theta_k(t+s)=\theta_k(t)+\theta_k(s)$, 由此$\theta_k(t)$是Cauchy方程的解为：$\theta_k(t)=c_k t,~ c_k\in\mathbb R.$
+
+因此
+\begin{align}
+    V(t)
+    &=
+    P^\dagger
+    \begin{pmatrix}
+        e^{ic_1t} & 0 & \cdots & 0\\
+        0 & e^{ic_2t} & \cdots & 0\\
+        \vdots & \vdots & \ddots & \vdots\\
+        0 & 0 & \cdots & e^{ic_nt}
+    \end{pmatrix}
+    P
+    \nonumber\\
+    &=
+    P^\dagger
+    \exp\left[
+        it
+        \begin{pmatrix}
+            c_1 & 0 & \cdots & 0\\
+            0 & c_2 & \cdots & 0\\
+            \vdots & \vdots & \ddots & \vdots\\
+            0 & 0 & \cdots & c_n
+        \end{pmatrix}
+    \right]
+    P
+    \nonumber\\
+    &=
+    \exp\left[
+        it\,
+        P^\dagger
+        \begin{pmatrix}
+            c_1 & 0 & \cdots & 0\\
+            0 & c_2 & \cdots & 0\\
+            \vdots & \vdots & \ddots & \vdots\\
+            0 & 0 & \cdots & c_n
+        \end{pmatrix}
+        P
+    \right].
+\end{align}
+
+定义
+\begin{equation}
+    A
+    :=
+    P^\dagger
+    \begin{pmatrix}
+        c_1 & 0 & \cdots & 0\\
+        0 & c_2 & \cdots & 0\\
+        \vdots & \vdots & \ddots & \vdots\\
+        0 & 0 & \cdots & c_n
+    \end{pmatrix}
+    P.
+\end{equation}
+由于 $c_k\in\mathbb R$，$A$ 为 Hermitian 算符，因此
+\begin{equation}
+    V(t)=e^{itA}.
+\end{equation}
+
+\begin{tcolorbox}[
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=black!45,
+    boxrule=0.7pt,
+    arc=1mm,
+    left=2mm,
+    right=2mm,
+    top=1.5mm,
+    bottom=1.5mm,
+    title={Marshall Harvey Stone},
+    fonttitle=\bfseries
+]
+Marshall Harvey Stone（1903--1989）是美国数学家，其工作横跨泛函分析、算子理论、拓扑学和数理逻辑。以其名字命名的重要结果包括 Stone 定理、Stone--von Neumann 定理、Stone--Weierstrass 定理、Stone--Čech 紧化以及 Boolean 代数的 Stone 表示定理。Stone 的许多工作体现了代数结构、拓扑结构与算子理论之间的深刻联系。
+\end{tcolorbox}
+
+\begin{proposition}[Stone 定理]
+设
+\[
+V:\mathbb R\to\mathcal U(H)
+\]
+是强连续的一参数幺正群。则存在唯一的自伴算符
+\[
+A:D(A)\to H
+\]
+使得
+\begin{equation}
+    V(t)=e^{itA}.
+\end{equation}
+
+其定义域恰好为
+\begin{equation}
+    D(A)
+    =
+    \left\{
+    \phi\in H:
+    \lim_{t\to0}
+    \frac{V(t)\phi-\phi}{t}
+    \text{ 在 }H\text{ 中存在}
+    \right\},
+\end{equation}
+并且对于 $\phi\in D(A)$，
+\begin{equation}
+    A\phi
+    =
+    \frac{1}{i}
+    \lim_{t\to0}
+    \frac{V(t)\phi-\phi}{t}.
+\end{equation}
+
+反过来，任意自伴算符 $A$ 都通过
+\[
+V(t)=e^{itA}
+\]
+生成一个强连续的一参数幺正群。
+\end{proposition}
+
+需要注意的是，式
+\[
+V(t)=e^{itA}
+\]
+中的指数算符可以利用前面的谱函数演算严格定义：对于自伴算符 $A$，
+\[
+e^{itA}
+=
+\int_{\mathbb R}e^{it\lambda}\,E_A(d\lambda).
+\]
+由于 $|e^{it\lambda}|=1$，由函数演算可知 $e^{itA}$ 是幺正算符。
+
+但这只说明了“由自伴算符 $A$ 可以构造幺正演化 $e^{itA}$”。Stone 定理更重要的内容是反方向：任意强连续的一参数幺正群都存在唯一的自伴生成元 $A$。这一方向的证明涉及较多泛函分析，本课程不作展开。
+
+\subsection{Stone 定理的物理形式}
+\begin{proposition}[公设四：Stone 定理的物理形式]
+对于封闭、平稳的量子系统，时间演化由强连续的一参数幺正群 $V(t)$ 描述。由 Stone 定理，存在唯一的自伴算符 $\hat H$，使得
+\begin{equation}
+    V(t)=e^{-\frac{i}{\hbar}t\hat H}.
+\end{equation}
+这个自伴算符 $\hat H$ 称为系统的 \textbf{Hamiltonian}。
+
+若系统在时刻 $t_0$ 处于状态 $\phi(t_0)$，则
+\begin{equation}
+    \phi(t)
+    =
+    e^{-\frac{i}{\hbar}(t-t_0)\hat H}\phi(t_0).
+\end{equation}
+若 $\phi(t)$ 关于时间可微并且 $\phi(t)\in D(\hat H)$，则
+\begin{equation}
+    i\hbar\frac{\partial\phi(t)}{\partial t}
+    =
+    \hat H\phi(t),
+\end{equation}
+即满足 Schrödinger 方程。
+\end{proposition}
+
+\textbf{Q：既然 Hamiltonian $\hat H$ 一般是无界算符，只定义在稠密子空间
+$D(\hat H)\subset H$ 上，那么量子态的时间演化是否也要求
+$\phi(t_0)\in D(\hat H)$？}
+
+\textbf{A：不需要。} 虽然 $\hat H$ 本身只定义在 $D(\hat H)$ 上，但
+\[
+e^{-\frac{i}{\hbar}t\hat H}
+\]
+是定义在整个 Hilbert 空间 $H$ 上的幺正算符。因此对于任意
+$\phi(t_0)\in H$，时间演化
+\[
+\phi(t)
+=
+e^{-\frac{i}{\hbar}(t-t_0)\hat H}\phi(t_0)
+\]
+都有意义。
+
+需要区分的是：若只讨论幺正时间演化，不要求
+$\phi(t_0)\in D(\hat H)$；但若要把演化写成强微分形式
+$i\hbar\,\partial_t\phi=\hat H\phi$，则需要相应的定义域条件。
+
+\textbf{Q：为什么一个无界自伴算符只定义在稠密子空间上，而它的指数算符却可以作用在整个 Hilbert 空间？}
+
+\textbf{A：可以从位置算符和动量算符两个例子直接看出。}
+
+\begin{itemize}
+    \item \textbf{位置算符 $Q$：}在 $H=L^2(\mathbb R)$ 上，
+    $(Q\phi)(x)=x\phi(x)$，其中
+    $D(Q)=\{\phi\in L^2:x\phi\in L^2\}$。虽然 $Q$ 不能作用于所有
+    $L^2$ 函数，但
+    \begin{align}
+        \bigl(e^{itQ}\phi\bigr)(x)
+        &=e^{itx}\phi(x),
+        \nonumber\\
+        \|e^{itQ}\phi\|_2^2
+        &=
+        \int_{\mathbb R}|e^{itx}\phi(x)|^2dx
+        =
+        \|\phi\|_2^2.
+    \end{align}
+    因此 $e^{itQ}$ 可以作用于整个 $L^2(\mathbb R)$，并且是幺正算符。
+
+    \item \textbf{动量算符 $P$：}取
+    $P=-i\,d/dx$，其定义域为 $D(P)=H^1(\mathbb R)$。对于足够光滑的
+    $\phi$，
+    \begin{align}
+        e^{itP}\phi(x)
+        &=
+        e^{\,t\frac{d}{dx}}\phi(x)
+        \nonumber\\
+        &=
+        \sum_{n=0}^{\infty}
+        \frac{t^n}{n!}\phi^{(n)}(x)
+        \nonumber\\
+        &=
+        \phi(x+t).
+    \end{align}
+    因而 $e^{itP}$ 实际上是空间平移算符。平移本身并不要求
+    $\phi$ 可微，所以这一作用可以自然延拓到整个 $L^2(\mathbb R)$。
+\end{itemize}
+
+\textbf{Q：如果 Hamiltonian 具有离散谱，Schrödinger 方程如何求解？}
+
+\textbf{A：}设
+\[
+\hat H\psi_n=E_n\psi_n,
+\]
+且 $\{\psi_n\}$ 构成一组完备正交归一基。将初态展开为
+$\phi(0)=\sum_n c_n\psi_n$，其中
+$c_n=\langle\psi_n,\phi(0)\rangle$，则
+\begin{align}
+    \phi(t)
+    &=
+    e^{-\frac{i}{\hbar}t\hat H}\phi(0)
+    \nonumber\\
+    &=
+    \sum_n
+    c_n
+    e^{-\frac{i}{\hbar}E_nt}
+    \psi_n.
+\end{align}
+
+特别地，若初态本身就是某个能量本征态 $\psi_n$，则
+\begin{equation}
+    \phi_n(t)
+    =
+    e^{-\frac{i}{\hbar}E_nt}\psi_n.
+\end{equation}
+时间演化只产生整体相位，对应的物理纯态不随时间改变。这类解称为\textbf{定态}，而
+\begin{equation}
+    \hat H\psi_n=E_n\psi_n
+\end{equation}
+称为\textbf{定态 Schrödinger 方程}。
+
+\subsection{Hamiltonian 的确定与量子化问题}
+
+由 Stone 定理可知，一旦给定量子系统的自伴 Hamiltonian $\hat H$，时间演化便由
+\[
+U(t,t_0)=e^{-\frac{i}{\hbar}(t-t_0)\hat H}
+\]
+确定。因此接下来的自然问题是：
+
+\textbf{Q：对于一个具体物理系统，Hamiltonian $\hat H$ 应当如何确定？}
+
+经典力学中 Hamiltonian 是相空间上的函数 $H(p,q)$。一种自然的想法是从经典 Hamiltonian 出发，将广义坐标和动量替换为对应的量子算符
+\[
+q\longmapsto Q,\qquad p\longmapsto P,
+\]
+其中 $[Q,P]=i\hbar I$。
+
+例如对于经典单粒子 Hamiltonian
+\[
+H(p,q)=\frac{p^2}{2m}+V(q),
+\]
+直接替换得到
+\begin{align}
+    \hat H
+    &=
+    \frac{1}{2m}P^2+V(Q)
+    \nonumber\\
+    &=
+    -\frac{\hbar^2}{2m}\frac{d^2}{dx^2}+V(x).
+\end{align}
+在这个例子中，动量和位置分别出现，因此没有明显的算符排序问题。
+
+然而，一般情况下 $P$ 与 $Q$ 不对易，经典函数中的乘法在量子化后便不再唯一。例如经典可观测量
+\[
+H(p,q)=pq
+\]
+至少可以产生
+\[
+PQ,\qquad QP,
+\]
+但由于 $PQ\neq QP$，二者并不相同。为了保证自伴性，可以采用对称化
+\begin{equation}
+    \hat H=\frac12(PQ+QP),
+\end{equation}
+但这种对称化只是一个可能的选择，并没有从经典表达式本身得到唯一性。
+
+对于更高次的经典函数，这种歧义更加明显。例如
+\[
+H(p,q)=p^2q^2
+\]
+可以构造出不同的自伴算符，例如
+\begin{equation}
+    \hat H_1=\frac12(P^2Q^2+Q^2P^2),\qquad
+    \hat H_2=QP^2Q,\qquad
+    \hat H_3=PQ^2P.
+\end{equation}
+由于 $[Q,P]=i\hbar I$，这些不同排序一般并不等价(上面只有$\hat H_2 \sim \hat H_3$)。因此，仅仅把经典变量替换成算符，并不能唯一确定量子 Hamiltonian。
+
+\textbf{Q：能否要求量子化映射完整保留经典 Poisson 括号，从而消除这种不唯一性？}
+
+经典力学中有
+\[
+\{q,p\}=1,
+\]
+量子力学中相应的正则对易关系为
+\[
+[Q,P]=i\hbar I.
+\]
+这启发人们希望存在一个量子化映射
+\[
+\mathcal Q:C^\infty(\mathcal U)\longrightarrow
+\{\text{Hilbert 空间上的自伴算符}\},
+\]
+使得对任意经典可观测量 $f,g$ 都有
+\begin{equation}
+    [\mathcal Q(f),\mathcal Q(g)]
+    =
+    i\hbar\,\mathcal Q(\{f,g\}).
+\end{equation}
+
+然而，这种要求对于一般经典可观测量不能同时完整满足。也就是说，经典 Poisson 代数不能通过简单的算符替换，唯一、无矛盾地整体复制为量子算符的对易代数。
+
+因此，不能认为每一个量子系统的 Hamiltonian 都可以由经典 Hamiltonian 通过某个唯一的普适量子化规则得到。量子 Hamiltonian 本身是量子理论的一部分，其具体形式最终需要由物理原理、对称性以及实验确定；经典 Hamiltonian 可以提供重要指导，但并不能在一般情况下唯一决定 $\hat H$。
+
+\begin{tcolorbox}[
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=black!45,
+    boxrule=0.7pt,
+    arc=1mm,
+    left=2mm,
+    right=2mm,
+    top=1.5mm,
+    bottom=1.5mm,
+    title={数学补充：形变量子化},
+    fonttitle=\bfseries
+]
+另一条数学路线是不再试图把每个经典函数直接替换成一个算符，而是在经典函数空间本身修改乘法。定义非交换的星乘积
+\[
+\star:
+C^\infty(M)\times C^\infty(M)
+\longrightarrow C^\infty(M),
+\]
+形式上展开为
+\begin{equation}
+    f\star g
+    =
+    fg+\hbar\,C_1(f,g)+\hbar^2C_2(f,g)+\cdots,
+\end{equation}
+并要求其为结合乘法，而最低阶的反对称部分恢复 Poisson 括号。
+
+Kontsevich 的形变量子化工作建立了 Poisson 结构与这种结合星乘积之间的深刻联系。这是现代数学中关于“经典 Poisson 几何如何形变为非交换代数”的重要结果，但它并不是通常量子力学中确定具体 Hamiltonian 的直接处方。
+\end{tcolorbox}
+
+\subsection{Schrödinger 绘景与 Heisenberg 绘景}
+
+量子时间演化可以用两种等价方式描述。
+
+在 Schrödinger 绘景中，态随时间变化而可观测量保持不变：
+\[
+\phi(t)=U(t,t_0)\phi(t_0),
+\]
+而自伴算符 $A$ 不显含时间。对于 Borel 集合 $B$，测量概率为
+\begin{equation}
+    \mu_{\phi(t)}^{E_A}(B)
+    =
+    \langle\phi(t),E_A(B)\phi(t)\rangle.
+\end{equation}
+
+利用 $\phi(t)=U(t,t_0)\phi_0$，有
+\begin{align}
+    \mu_{\phi(t)}^{E_A}(B)
+    &=
+    \langle
+        U(t,t_0)\phi_0,
+        E_A(B)U(t,t_0)\phi_0
+    \rangle
+    \nonumber\\
+    &=
+    \langle
+        \phi_0,
+        U(t,t_0)^\dagger
+        E_A(B)
+        U(t,t_0)\phi_0
+    \rangle.
+\end{align}
+
+因此可以固定量子态 $\phi_0$，把时间依赖转移到可观测量上。定义
+\begin{equation}
+    A_H(t)
+    :=
+    U(t,t_0)^\dagger A\,U(t,t_0),
+\end{equation}
+相应的谱投影满足
+\begin{equation}
+    E_{A_H(t)}(B)
+    =
+    U(t,t_0)^\dagger E_A(B)U(t,t_0).
+\end{equation}
+于是
+\begin{equation}
+    \mu_{\phi(t)}^{E_A}(B)
+    =
+    \mu_{\phi_0}^{E_{A_H(t)}}(B).
+\end{equation}
+
+这就是 Heisenberg 绘景：状态保持不变，而可观测量随时间演化。两种绘景给出完全相同的测量概率，因此描述的是同一个物理过程。
+
+对于平稳系统，
+\[
+U(t,t_0)
+=
+e^{-\frac{i}{\hbar}(t-t_0)H},
+\]
+所以
+\begin{equation}
+    A_H(t)
+    =
+    e^{\frac{i}{\hbar}(t-t_0)H}
+    A
+    e^{-\frac{i}{\hbar}(t-t_0)H}.
+\end{equation}
+若算符之间的定义域允许进行以下运算，则
+\begin{align}
+    \frac{dA_H(t)}{dt}
+    &=
+    \frac{i}{\hbar}HA_H(t)
+    -
+    \frac{i}{\hbar}A_H(t)H
+    \nonumber\\
+    &=
+    \frac{i}{\hbar}[H,A_H(t)].
+\end{align}
+因此
+\begin{equation}
+    i\hbar\frac{dA_H(t)}{dt}
+    =
+    [A_H(t),H],
+    \qquad
+    A_H(t_0)=A.
+\end{equation}
+这就是 Heisenberg 运动方程。
+
+\subsection{含时 Hamiltonian 的 Dyson 展开与 Magnus 展开}
+
+下面仍考虑封闭量子系统，但允许 Hamiltonian 显含时间
+$H=H(t)$。此时系统虽然仍保持幺正演化，但一般不再具有时间平移不变性，因此不能再写成一参数群
+$V(t+s)=V(t)V(s)$，而需要使用两参数演化算符
+$U(t,t_0)$。
+
+量子态满足含时 Schrödinger 方程
+\begin{equation}
+    i\hbar\frac{\partial\phi(t)}{\partial t}
+    =
+    H(t)\phi(t),
+    \qquad
+    \phi(t_0)=\phi_0.
+\end{equation}
+令
+$\phi(t)=U(t,t_0)\phi_0$，则演化算符满足
+\begin{equation}
+    i\hbar\frac{\partial U(t,t_0)}{\partial t}
+    =
+    H(t)U(t,t_0),
+    \qquad
+    U(t_0,t_0)=I.
+\end{equation}
+
+将上式从 $t_0$ 积分到 $t$，得到
+\begin{align}
+    U(t,t_0)-I
+    &=
+    \int_{t_0}^{t}
+    \frac{\partial U(s,t_0)}{\partial s}\,ds
+    \nonumber\\
+    &=
+    -\frac{i}{\hbar}
+    \int_{t_0}^{t}
+    H(s)U(s,t_0)\,ds,
+\end{align}
+即
+\begin{equation}
+    U(t,t_0)
+    =
+    I-\frac{i}{\hbar}
+    \int_{t_0}^{t}
+    H(s)U(s,t_0)\,ds.
+\end{equation}
+
+这里积分中的 $H(s)U(s,t_0)$ 本身是算符，因此出现的是算子值函数的积分。下面简单讨论下算子值函数的理解：
+\paragraph{算子值积分与 Bochner 积分}
+
+在含时演化方程中，
+\[
+\int_{t_0}^{t}H(s)U(s,t_0)\,ds
+\]
+的被积对象本身是一个算符，因此这里涉及的是算子值函数的积分。若
+\[
+A:[a,b]\to\mathcal B(H),
+\]
+其中 $\mathcal B(H)$ 表示 Hilbert 空间 $H$ 上所有有界线性算符组成的空间，并赋予算符范数
+\begin{equation}
+    \|A\|
+    :=
+    \sup_{\|\phi\|=1}\|A\phi\|,
+\end{equation}
+则 $\mathcal B(H)$ 在该范数下是一个 Banach 空间。因而可以像普通函数积分一样考虑算符和
+\[
+\sum_k A(s_k)\Delta s_k.
+\]
+若随着区间划分不断细化，这些算符和在算符范数意义下收敛，即存在某个
+$T\in\mathcal B(H)$ 使
+\[
+\left\|
+\sum_k A(s_k)\Delta s_k-T
+\right\|
+\to0,
+\]
+则可以把极限算符 $T$ 记为
+\[
+T=\int_a^bA(s)\,ds.
+\]
+这种 Banach 空间值函数的积分称为 \textbf{Bochner 积分}。在适当条件下，对任意
+$\phi\in H$ 还有
+\[
+\left(\int_a^bA(s)\,ds\right)\phi
+=
+\int_a^bA(s)\phi\,ds.
+\]
+因此，可以把算子值积分直观地理解为：先把每个时刻的算符按照时间做线性累加，再在算符范数下取极限。对于一般无界 Hamiltonian，严格定义还需要额外处理共同定义域等问题，这里暂不展开。
+
+\subsubsection*{Dyson 迭代}
+
+由积分方程递归定义
+\[
+U^{[N+1]}(t,t_0)
+=
+I-\frac{i}{\hbar}
+\int_{t_0}^{t}
+H(s)U^{[N]}(s,t_0)\,ds.
+\]
+设
+\[
+U^{[N]}(t,t_0)
+=
+\sum_{n=0}^{N}U_n(t,t_0),
+\qquad
+U_0(t,t_0)=I.
+\]
+将其代入递推式，有
+\begin{align}
+    U^{[N+1]}(t,t_0)
+    &=
+    I-\frac{i}{\hbar}
+    \int_{t_0}^{t}
+    H(s)
+    \sum_{n=0}^{N}U_n(s,t_0)\,ds
+    \nonumber\\
+    &=
+    I+
+    \sum_{n=0}^{N}
+    \left[
+    -\frac{i}{\hbar}
+    \int_{t_0}^{t}
+    H(s)U_n(s,t_0)\,ds
+    \right]. \nonumber\\
+    &= I+\sum_{n=0}^{N}U_{n+1}(t,t_0).
+\end{align}
+比较两式中各阶项，得到
+\begin{equation}
+    U_{n+1}(t,t_0)
+    =
+    -\frac{i}{\hbar}
+    \int_{t_0}^{t}
+    H(s)U_n(s,t_0)\,ds.
+\end{equation}
+
+展开递推，前两阶分别为
+\begin{align}
+    U_1(t,t_0)
+    &=
+    -\frac{i}{\hbar}
+    \int_{t_0}^{t}H(t_1)\,dt_1,
+    \nonumber\\
+    U_2(t,t_0)
+    &=
+    \left(-\frac{i}{\hbar}\right)^2
+    \int_{t_0}^{t}dt_1
+    \int_{t_0}^{t_1}dt_2\,
+    H(t_1)H(t_2).
+\end{align}
+继续迭代可得一般的第 $n$ 阶项
+\begin{align}
+    U_n(t,t_0)
+    &=
+    \left(-\frac{i}{\hbar}\right)^n
+    \int_{t_0}^{t}dt_1
+    \int_{t_0}^{t_1}dt_2
+    \cdots
+    \int_{t_0}^{t_{n-1}}dt_n
+    \nonumber\\
+    &\qquad\qquad\times
+    H(t_1)H(t_2)\cdots H(t_n).
+\end{align}
+其中算子作用在量子态上时候$H(t_n)$先作用，依次到$H(t_1)$。积分变量自动满足
+\[
+t_0\leq t_n\leq t_{n-1}\leq\cdots\leq t_1\leq t.
+\]
+因此引入编时单纯形
+\begin{equation}
+    \Delta_n[t_0,t]
+    :=
+    \left\{
+    (t_1,\ldots,t_n)\in\mathbb R^n:
+    t_0\leq t_n\leq\cdots\leq t_1\leq t
+    \right\}.
+\end{equation}
+于是可以简写为
+\begin{equation}
+    U_n(t,t_0)
+    =
+    \left(-\frac{i}{\hbar}\right)^n
+    \int_{\Delta_n[t_0,t]}
+    H(t_1)\cdots H(t_n)\,
+    dt_1\cdots dt_n.
+\end{equation}
+
+\subsubsection*{时间排序算符}
+
+为了把单纯形积分改写成整个立方体
+$[t_0,t]^n$ 上的积分，引入时间排序算符 $\mathcal T$。它把不同时刻的算符按照时间从晚到早重新排列：
+\begin{equation}
+    \mathcal T
+    \bigl[
+        H(t_1)\cdots H(t_n)
+    \bigr]
+    :=
+    H(\tilde t_1)\cdots H(\tilde t_n),
+\end{equation}
+其中
+\[
+t_0\leq\tilde t_n\leq\cdots\leq\tilde t_1\leq t
+\]
+是 $t_1,\ldots,t_n$ 的重新排列。
+
+整个立方体 $[t_0,t]^n$ 可以分解成 $n!$ 个时间变量排列不同的编时单纯形，因此
+\begin{align}
+    &
+    \int_{[t_0,t]^n}
+    \mathcal T
+    \bigl[
+        H(t_1)\cdots H(t_n)
+    \bigr]
+    dt_1\cdots dt_n
+    \nonumber\\
+    &\qquad=
+    n!
+    \int_{\Delta_n[t_0,t]}
+    H(t_1)\cdots H(t_n)
+    dt_1\cdots dt_n.
+\end{align}
+于是
+\begin{align}
+    U_n(t,t_0)
+    &=
+    \frac{1}{n!}
+    \left(-\frac{i}{\hbar}\right)^n
+    \int_{[t_0,t]^n}
+    \mathcal T
+    \bigl[
+        H(t_1)\cdots H(t_n)
+    \bigr]
+    dt_1\cdots dt_n
+    \nonumber\\
+    &=
+    \frac{1}{n!}
+    \mathcal T
+    \left[
+        \left(
+        -\frac{i}{\hbar}
+        \int_{t_0}^{t}H(s)\,ds
+        \right)^n
+    \right].
+\end{align}
+
+因此 Dyson 级数为
+\begin{align}
+    U(t,t_0)
+    &=
+    \sum_{n=0}^{\infty}U_n(t,t_0)
+    \nonumber\\
+    &=
+    \mathcal T
+    \left[
+        \sum_{n=0}^{\infty}
+        \frac{1}{n!}
+        \left(
+        -\frac{i}{\hbar}
+        \int_{t_0}^{t}H(s)\,ds
+        \right)^n
+    \right]
+    \nonumber\\
+    &=
+    \mathcal T
+    \exp\left[
+        -\frac{i}{\hbar}
+        \int_{t_0}^{t}H(s)\,ds
+    \right].
+\end{align}
+
+这里的 $\mathcal T$ 是关键：一般而言
+$H(t_1)$ 与 $H(t_2)$ 不对易，因此不能把不同时间的 Hamiltonian 当作普通数随意交换次序。
+
+\subsubsection*{有效生成元 $\Omega$ 与 Magnus 展开}
+
+Dyson 展开把 $U$ 写成算符级数
+\[
+U=I+U_1+U_2+\cdots.
+\]
+还可以换一种组织方式，将整个演化算符写成一个指数：
+\begin{equation}
+    U(t,t_0)
+    =
+    e^{\Omega(t,t_0)}.
+\end{equation}
+这里的 $\Omega$ 可以看作描述整个有限时间演化的\textbf{有效生成元}。
+
+\paragraph{算符对数的级数展开}
+
+先从普通函数出发。对于固定的 $y$，引入参数
+\[
+F(s)=1+sy,\qquad 0\leq s\leq1,
+\]
+于是 $F(0)=1$、$F(1)=1+y$。因此可以沿这条参数路径写成
+\begin{align}
+    \log(1+y)
+    &=
+    \log F(1)-\log F(0)
+    \nonumber\\
+    &=
+    \int_0^1
+    \frac{d}{ds}\log F(s)\,ds
+    \nonumber\\
+    &=
+    \int_0^1
+    \frac{y}{1+sy}\,ds.
+\end{align}
+当 $|y|<1$ 时，对所有 $s\in[0,1]$ 都有 $|sy|<1$，因此可利用几何级数
+\[
+\frac{1}{1+sy}
+=
+\sum_{n=0}^{\infty}(-sy)^n.
+\]
+代入上式并逐项积分，
+\begin{align}
+    \log(1+y)
+    &=
+    \int_0^1
+    y\sum_{n=0}^{\infty}(-sy)^n\,ds
+    \nonumber\\
+    &=
+    \sum_{n=0}^{\infty}
+    (-1)^n y^{n+1}
+    \int_0^1s^n\,ds
+    \nonumber\\
+    &=
+    \sum_{n=0}^{\infty}
+    \frac{(-1)^n}{n+1}y^{n+1}
+    \nonumber\\
+    &=
+    y-\frac12y^2+\frac13y^3-\frac14y^4+\cdots.
+\end{align}
+
+算符情形采用完全相同的参数化。对于有界算符 $Y$，定义
+\[
+F(s)=I+sY,\qquad 0\leq s\leq1.
+\]
+若 $\|Y\|<1$，则 $\|sY\|<1$，因此 $I+sY$ 对所有
+$s\in[0,1]$ 都可逆，并且 Neumann 级数
+\begin{equation}
+    (I+sY)^{-1}
+    =
+    \sum_{n=0}^{\infty}(-sY)^n
+\end{equation}
+在算符范数下收敛。
+
+由于 $Y$ 与 $I+sY$ 以及 $(I+sY)^{-1}$ 都彼此对易，可以沿同一条算符路径定义
+\begin{align}
+    \log(I+Y)
+    &:=
+    \int_0^1
+    Y(I+sY)^{-1}\,ds
+    \nonumber\\
+    &=
+    \int_0^1
+    Y\sum_{n=0}^{\infty}(-sY)^n\,ds
+    \nonumber\\
+    &=
+    \int_0^1
+    \sum_{n=0}^{\infty}
+    (-1)^ns^nY^{n+1}\,ds
+    \nonumber\\
+    &=
+    \sum_{n=0}^{\infty}
+    (-1)^nY^{n+1}
+    \int_0^1s^n\,ds
+    \nonumber\\
+    &=
+    \sum_{n=0}^{\infty}
+    \frac{(-1)^n}{n+1}Y^{n+1}
+    \nonumber\\
+    &=
+    Y-\frac12Y^2+\frac13Y^3-\frac14Y^4+\cdots.
+\end{align}
+
+这里的积分变量始终是普通实参数 $s$；只是被积函数
+$Y(I+sY)^{-1}$ 的取值位于有界算符空间 $\mathcal B(H)$ 中，因此积分按照算符范数意义理解。需要注意，这种与普通微积分完全类似的写法依赖于整条路径均由同一个算符 $Y$ 生成，相关算符彼此对易；对于一般不对易的算符路径，算符对数的微分不再具有如此简单的形式。
+
+
+按照 Hamiltonian 的阶数重新整理。由于 Dyson 展开中
+$U_n$ 是关于 $H$ 的 $n$ 阶项，因此
+\[
+Y
+=
+U-I
+=
+U_1+U_2+U_3+\cdots.
+\]
+若只保留到三阶，则
+\begin{align}
+    Y
+    &=
+    U_1+U_2+U_3+O(H^4),
+    \nonumber\\
+    Y^2
+    &=
+    (U_1+U_2+U_3+\cdots)^2
+    \nonumber\\
+    &=
+    U_1^2
+    +U_1U_2
+    +U_2U_1
+    +O(H^4),
+    \nonumber\\
+    Y^3
+    &=
+    (U_1+U_2+U_3+\cdots)^3
+    \nonumber\\
+    &=
+    U_1^3+O(H^4).
+\end{align}
+这里使用了
+$U_mU_n=O(H^{m+n})$。特别地，由于算符一般不对易，$U_1U_2$ 与 $U_2U_1$ 必须分别保留。
+
+将以上结果代入
+\[
+\Omega
+=
+Y-\frac12Y^2+\frac13Y^3+O(H^4),
+\]
+得到
+\begin{align}
+    \Omega
+    &=
+    \left(U_1+U_2+U_3\right)
+    -\frac12
+    \left(
+        U_1^2+U_1U_2+U_2U_1
+    \right)
+    +\frac13U_1^3
+    +O(H^4)
+    \nonumber\\
+    &=
+    U_1
+    +
+    \left(
+        U_2-\frac12U_1^2
+    \right)
+    \nonumber\\
+    &\quad+
+    \left[
+        U_3
+        -\frac12
+        \left(
+            U_1U_2+U_2U_1
+        \right)
+        +\frac13U_1^3
+    \right]
+    +O(H^4).
+\end{align}
+
+另一方面，将有效生成元本身按 Hamiltonian 的阶数展开为
+\begin{equation}
+    \Omega
+    =
+    \Omega_1+\Omega_2+\Omega_3+\cdots,
+\end{equation}
+其中 $\Omega_n=O(H^n)$。逐阶比较上式两边，便得到
+\begin{align}
+    \Omega_1
+    &=U_1,
+    \nonumber\\
+    \Omega_2
+    &=U_2-\frac12U_1^2,
+    \nonumber\\
+    \Omega_3
+    &=
+    U_3
+    -\frac12
+    \left(
+        U_1U_2+U_2U_1
+    \right)
+    +\frac13U_1^3.
+\end{align}
+下面分别计算有效生成元 $\Omega$ 的前三阶。为了清楚处理不同时间变量的排列，先引入\textbf{编时积分区域}的记号。
+
+\begin{definition}[编时单纯形与编时积分记号]
+记时间区间为
+\[
+I=[t_0,t].
+\]
+对于 $n$ 个时间变量以及排列 $\sigma\in S_n$，定义编时单纯形
+\begin{equation}
+    \Delta_\sigma
+    :=
+    \left\{
+        (t_1,\ldots,t_n)\in I^n:
+        t_{\sigma(1)}>
+        t_{\sigma(2)}>
+        \cdots>
+        t_{\sigma(n)}
+    \right\}.
+\end{equation}
+除去测度为零的边界 $t_i=t_j$ 后，
+\[
+I^n
+=
+\bigcup_{\sigma\in S_n}\Delta_\sigma.
+\]
+
+本文将 $\int_{\Delta_\sigma}$ 本身作为一个编时积分算符的简记，定义为
+\begin{equation}
+    \int_{\Delta_\sigma}
+    :=
+    \int_{t_0}^{t}dt_{\sigma(1)}
+    \int_{t_0}^{t_{\sigma(1)}}dt_{\sigma(2)}
+    \cdots
+    \int_{t_0}^{t_{\sigma(n-1)}}dt_{\sigma(n)}.
+\end{equation}
+因此，$\int_{\Delta_\sigma}$ 只规定积分区域及时间变量的积分次序，
+并不规定被积算符的乘法次序。例如
+\[
+\int_{\Delta_{21}}H(t_1)H(t_2)
+\]
+表示在 $t_2>t_1$ 的区域上对原来的算符乘积
+$H(t_1)H(t_2)$ 积分。
+
+当所有编时区域通过重新命名哑变量统一到
+\[
+\Delta:=\Delta_{12\cdots n}
+=
+\{t_1>t_2>\cdots>t_n\}
+\]
+时，不同区域之间的区别将表现为被积算符的不同排列。
+\end{definition}
+
+以下简记
+\[
+H_j:=H(t_j),
+\qquad
+\lambda:=-\frac{i}{\hbar}.
+\]
+
+\begin{itemize}
+    \item \textbf{一阶项}
+
+    由 $\Omega_1=U_1$，立即得到
+    \begin{equation}
+        \Omega_1(t,t_0)
+        =
+        \lambda
+        \int_{t_0}^{t}H(t_1)\,dt_1
+        =
+        -\frac{i}{\hbar}
+        \int_{t_0}^{t}H(t_1)\,dt_1.
+    \end{equation}
+
+    \item \textbf{二阶项}
+
+    由
+    \[
+    \Omega_2
+    =
+    U_2-\frac12U_1^2
+    \]
+    出发。首先，$U_1^2$ 中两个时间变量彼此独立，因此积分区域是整个正方形 $I^2$：
+    \begin{equation}
+        U_1^2
+        =
+        \lambda^2
+        \int_{I^2}H_1H_2.
+    \end{equation}
+    正方形可以分成两个编时三角形
+    \[
+    I^2
+    =
+    \Delta_{12}\cup\Delta_{21},
+    \]
+    因而
+    \begin{align}
+        U_1^2
+        &=
+        \lambda^2
+        \left[
+            \int_{\Delta_{12}}H_1H_2
+            +
+            \int_{\Delta_{21}}H_1H_2
+        \right].
+    \end{align}
+
+    现在将第二个三角形中的哑变量交换
+    $t_1\leftrightarrow t_2$。于是两个积分区域都可以统一写成标准编时区域
+    $\Delta=\{t_1>t_2\}$，但第二项中的算符排列相应改变：
+    \begin{align}
+        \int_{\Delta_{12}}H_1H_2
+        &=
+        \int_{\Delta}H_1H_2,
+        \nonumber\\
+        \int_{\Delta_{21}}H_1H_2
+        &=
+        \int_{\Delta}H_2H_1.
+    \end{align}
+    因此
+    \begin{equation}
+        U_1^2
+        =
+        \lambda^2
+        \int_{\Delta}
+        \left(
+            H_1H_2+H_2H_1
+        \right).
+    \end{equation}
+
+    另一方面，Dyson 二阶项本身已经带有时间排序，
+    \begin{equation}
+        U_2
+        =
+        \lambda^2
+        \int_{\Delta}H_1H_2.
+    \end{equation}
+    因而
+    \begin{align}
+        \Omega_2
+        &=
+        U_2-\frac12U_1^2
+        \nonumber\\
+        &=
+        \lambda^2
+        \int_{\Delta}
+        \left[
+            H_1H_2
+            -\frac12
+            \left(
+                H_1H_2+H_2H_1
+            \right)
+        \right]
+        \nonumber\\
+        &=
+        \frac{\lambda^2}{2}
+        \int_{\Delta}
+        \left(
+            H_1H_2-H_2H_1
+        \right)
+        \nonumber\\
+        &=
+        \frac12
+        \left(-\frac{i}{\hbar}\right)^2
+        \int_{\Delta}
+        [H_1,H_2].
+    \end{align}
+
+    因此，$\Omega_2$ 正是由不同时刻 Hamiltonian 的不对易性产生的第一项修正。
+
+    \item \textbf{三阶项}
+
+    三阶项为
+    \begin{equation}
+        \Omega_3
+        =
+        U_3
+        -\frac12
+        \left(
+            U_1U_2+U_2U_1
+        \right)
+        +\frac13U_1^3.
+    \end{equation}
+
+    首先，Dyson 三阶项已经完全按照
+    $t_1>t_2>t_3$ 编时，因此
+    \begin{equation}
+        U_3
+        =
+        \lambda^3
+        \int_{\Delta}
+        H_1H_2H_3.
+    \end{equation}
+
+    对于 $U_1U_2$，设来自 $U_1$ 的时间变量为 $t_1$，
+    而 $U_2$ 中已有 $t_2>t_3$。由于 $t_1$ 相对于 $t_2,t_3$
+    没有预先规定的位置，其积分区域分成三部分：
+    \[
+    \Delta_{123},
+    \qquad
+    \Delta_{213},
+    \qquad
+    \Delta_{231}.
+    \]
+    因此
+    \begin{align}
+        U_1U_2
+        &=
+        \lambda^3
+        \left[
+            \int_{\Delta_{123}}H_1H_2H_3
+            +
+            \int_{\Delta_{213}}H_1H_2H_3
+            +
+            \int_{\Delta_{231}}H_1H_2H_3
+        \right].
+    \end{align}
+    分别重新命名哑变量，将三个区域统一到标准
+    $\Delta=\{t_1>t_2>t_3\}$，得到
+    \begin{equation}
+        U_1U_2
+        =
+        \lambda^3
+        \int_{\Delta}
+        \left(
+            H_1H_2H_3
+            +H_2H_1H_3
+            +H_3H_1H_2
+        \right).
+    \end{equation}
+
+    同理，在 $U_2U_1$ 中，前两个时间变量已经满足
+    $t_1>t_2$，而来自右侧 $U_1$ 的 $t_3$ 可以出现在三个不同位置，因此
+    \begin{align}
+        U_2U_1
+        &=
+        \lambda^3
+        \left[
+            \int_{\Delta_{123}}H_1H_2H_3
+            +
+            \int_{\Delta_{132}}H_1H_2H_3
+            +
+            \int_{\Delta_{312}}H_1H_2H_3
+        \right]
+        \nonumber\\
+        &=
+        \lambda^3
+        \int_{\Delta}
+        \left(
+            H_1H_2H_3
+            +H_1H_3H_2
+            +H_2H_3H_1
+        \right).
+    \end{align}
+
+    最后，$U_1^3$ 中三个时间变量完全独立，因此积分区域是整个立方体
+    $I^3$：
+    \begin{equation}
+        U_1^3
+        =
+        \lambda^3
+        \int_{I^3}H_1H_2H_3.
+    \end{equation}
+    除去边界以后，
+    \begin{align}
+        I^3
+        &=
+        \Delta_{123}
+        \cup\Delta_{132}
+        \cup\Delta_{213}
+        \cup\Delta_{231}
+        \cup\Delta_{312}
+        \cup\Delta_{321}.
+    \end{align}
+    将六个区域全部重新命名并统一到标准 $\Delta$，得到
+    \begin{align}
+        U_1^3
+        &=
+        \lambda^3
+        \int_{\Delta}
+        \Bigl(
+            H_1H_2H_3
+            +H_1H_3H_2
+            +H_2H_1H_3
+            \nonumber\\
+        &\qquad\qquad
+            +H_2H_3H_1
+            +H_3H_1H_2
+            +H_3H_2H_1
+        \Bigr).
+    \end{align}
+
+    将以上各项代入 $\Omega_3$。逐项比较六种算符排列的系数，有
+    \begin{align}
+        H_1H_2H_3:
+        &\qquad
+        1-\frac12-\frac12+\frac13
+        =
+        \frac13,
+        \nonumber\\
+        H_3H_2H_1:
+        &\qquad
+        \frac13,
+        \nonumber\\
+        H_1H_3H_2,\;
+        H_2H_1H_3,\;
+        H_2H_3H_1,\;
+        H_3H_1H_2:
+        &\qquad
+        -\frac12+\frac13
+        =
+        -\frac16.
+    \end{align}
+    因此
+    \begin{align}
+        \Omega_3
+        &=
+        \frac{\lambda^3}{6}
+        \int_{\Delta}
+        \Bigl(
+            2H_1H_2H_3
+            -H_1H_3H_2
+            -H_2H_1H_3
+            \nonumber\\
+        &\qquad\qquad
+            -H_2H_3H_1
+            -H_3H_1H_2
+            +2H_3H_2H_1
+        \Bigr).
+    \end{align}
+
+    又因为
+    \begin{align}
+        [H_1,[H_2,H_3]]
+        &=
+        H_1H_2H_3
+        -H_1H_3H_2
+        -H_2H_3H_1
+        +H_3H_2H_1,
+        \nonumber\\
+        [H_3,[H_2,H_1]]
+        &=
+        H_3H_2H_1
+        -H_3H_1H_2
+        -H_2H_1H_3
+        +H_1H_2H_3,
+    \end{align}
+    两式相加恰好得到上述六项组合，所以
+    \begin{align}
+        \Omega_3
+        &=
+        \frac16
+        \left(-\frac{i}{\hbar}\right)^3
+        \int_{\Delta}
+        \left\{
+            [H_1,[H_2,H_3]]
+            +
+            [H_3,[H_2,H_1]]
+        \right\}.
+    \end{align}
+
+    因此，三阶修正由 Hamiltonian 的嵌套对易子决定。
+\end{itemize}
+
+\begin{proposition}[Magnus 展开]
+对于含时 Hamiltonian $H(t)$，在 Magnus 级数收敛的条件下，时间演化算符可以写成
+\begin{equation}
+    U(t,t_0)
+    =
+    \exp\bigl[\Omega(t,t_0)\bigr],
+\end{equation}
+其中
+\begin{equation}
+    \Omega
+    =
+    \Omega_1+\Omega_2+\Omega_3+\cdots.
+\end{equation}
+记 $H_j=H(t_j)$，并令 $\Delta$ 表示相应阶数下的标准编时单纯形
+$t_1>t_2>\cdots$，则前三阶为
+\begin{align}
+    \Omega_1
+    &=
+    -\frac{i}{\hbar}
+    \int_{t_0}^{t}H(t_1)\,dt_1,
+    \nonumber\\
+    \Omega_2
+    &=
+    \frac12
+    \left(-\frac{i}{\hbar}\right)^2
+    \int_{\Delta}
+    [H_1,H_2],
+    \nonumber\\
+    \Omega_3
+    &=
+    \frac16
+    \left(-\frac{i}{\hbar}\right)^3
+    \int_{\Delta}
+    \left\{
+        [H_1,[H_2,H_3]]
+        +
+        [H_3,[H_2,H_1]]
+    \right\}.
+\end{align}
+
+因此 Magnus 展开把时间排序效应重新组织到有效生成元 $\Omega$ 中：
+$\Omega_1$ 是 Hamiltonian 的普通时间积分，
+$\Omega_2$ 由一次对易子给出，
+而 $\Omega_3$ 由嵌套对易子给出。
+\end{proposition}
+
+特别地，若任意两个时刻的 Hamiltonian 都对易，
+\begin{equation}
+    [H(t_1),H(t_2)]=0,
+    \qquad
+    \forall\,t_1,t_2,
+\end{equation}
+则所有高阶修正都消失，
+\begin{align}
+    \Omega
+    &=\Omega_1
+    =
+    -\frac{i}{\hbar}
+    \int_{t_0}^{t}H(s)\,ds,
+    \nonumber\\
+    U(t,t_0)
+    &=
+    \exp\left[
+        -\frac{i}{\hbar}
+        \int_{t_0}^{t}H(s)\,ds
+    \right].
+\end{align}
+若进一步 $H$ 与时间无关，则恢复平稳系统的结果
+\begin{equation}
+    U(t,t_0)
+    =
+    e^{-\frac{i}{\hbar}(t-t_0)H}.
+\end{equation}
+
+\subsubsection*{Dyson 截断与 Magnus 截断}
+
+实际计算中无穷级数通常需要截断。若直接截断 Dyson 级数，
+\begin{equation}
+    U(t,t_0)
+    \approx
+    I+U_1+\cdots+U_N,
+\end{equation}
+有限阶多项式一般不能严格保持
+$U^\dagger U=I$，因此截断后的算符通常不再严格幺正。
+
+Magnus 展开则截断指数中的有效生成元：
+\begin{equation}
+    U(t,t_0)
+    \approx
+    \exp\left(
+        \Omega_1+\cdots+\Omega_N
+    \right).
+\end{equation}
+对于自伴的 $H(t)$，Magnus 展开的每一阶
+$\Omega_n$ 都是反自伴的，因此有限阶截断后
+$\Omega_1+\cdots+\Omega_N$ 仍为反自伴算符，其指数仍然保持幺正性。
+
+因此，两种展开虽然描述的是同一个演化算符，但组织方式不同：
+Dyson 展开直接展开 $U$，而 Magnus 展开则展开其有效生成元
+$\Omega=\log U$。在需要有限阶近似并希望严格保持幺正结构时，Magnus 展开通常更加自然。
+
+
+% ==========================================================
+\newpage
+\chapter{复合系统、纠缠与全同粒子}
+
+前面主要讨论单个量子系统。现在考虑由多个子系统组成的\textbf{复合系统}。首先从经典多粒子系统出发说明问题的来源。考虑一维空间中的 $N$ 个经典粒子，其 Hamiltonian 一般可以写成
+\begin{align}
+    H(p_1,\ldots,p_N,q_1,\ldots,q_N)
+    &=
+    \frac{1}{2m}
+    \left(
+        p_1^2+\cdots+p_N^2
+    \right)
+    \nonumber\\
+    &\quad+
+    V(q_1)+\cdots+V(q_N)
+    +
+    H_{\mathrm{int}},
+\end{align}
+或者写成
+\begin{equation}
+    H
+    =
+    H_1(p_1,q_1)
+    +\cdots+
+    H_N(p_N,q_N)
+    +
+    H_{\mathrm{int}},
+\end{equation}
+其中 $H_{\mathrm{int}}$ 描述粒子之间的相互作用。虽然每个粒子只在一维空间中运动，但整个系统的构型需要由
+\[
+(q_1,\ldots,q_N)\in\mathbb R^N
+\]
+共同描述。因此，一维空间中的 $N$ 粒子系统，其\textbf{构型空间}是$\mathbb R^N$。这已经提示我们：进入量子力学以后，多粒子波函数也应当同时依赖多个粒子的坐标。
+
+以两个粒子为例。单粒子的 Hilbert 空间取为
+\[
+H=L^2(\mathbb R).
+\]
+若分别给定两个单粒子态
+\[
+\phi_1(x)\in H,
+\qquad
+\phi_2(y)\in H,
+\]
+那么二粒子系统的整体波函数应当依赖两个坐标，
+\begin{equation}
+    \Psi(x,y)\in L^2(\mathbb R^2).
+\end{equation}
+
+这里立刻出现一个新的问题：
+
+\textbf{Q：已知两个单粒子的 Hilbert 空间及其状态
+$\phi_1,\phi_2$，应当如何系统地构造二粒子的整体 Hilbert 空间和复合态
+$\Psi$？}
+
+设第一个粒子的可观测量为 $A_1$，谱测度为 $E_{A_1}$；第二个粒子的可观测量为 $A_2$，谱测度为 $E_{A_2}$。若单粒子态均已归一化，则 Born 规则给出
+\begin{align}
+    P_{\phi_1}(A_1\in B_1)
+    &=
+    \langle
+        \phi_1,
+        E_{A_1}(B_1)\phi_1
+    \rangle,
+    \nonumber\\
+    P_{\phi_2}(A_2\in B_2)
+    &=
+    \langle
+        \phi_2,
+        E_{A_2}(B_2)\phi_2
+    \rangle.
+\end{align}
+
+现在考虑两个分别独立制备的粒子。在没有额外关联的情形下，我们希望两个测量事件的联合概率满足普通概率论中的独立性关系
+\begin{align}
+    &
+    P\bigl(
+        (A_1\in B_1)
+        \cap
+        (A_2\in B_2)
+    \bigr)
+    \nonumber\\
+    &\qquad=
+    P_{\phi_1}(A_1\in B_1)\,
+    P_{\phi_2}(A_2\in B_2).
+\end{align}
+于是问题进一步转化为：
+\textbf{Q：给定两个 Hilbert 空间 $H_1$ 和 $H_2$，如何构造一个新的 Hilbert 空间 $H_{12}$，使得两个子系统的状态、可观测量以及联合测量概率都能够在其中自然表示？}这正是复合量子系统态空间结构所要解决的问题。下面将从 Hilbert 空间的构造开始讨论这一问题。
+
+\section{Hilbert 空间的张量积}
+
+上一节的问题是：给定两个量子系统的态空间 $H_1$ 和 $H_2$，如何构造复合系统的态空间？在进入 Hilbert 空间结构之前，先从一般复向量空间 $V$ 和 $W$ 出发，构造它们的\textbf{代数张量积}。
+
+\subsection{代数张量积}
+
+直观上，我们希望把一对向量 $(v,w)$ 组合成一个新的对象 $v\otimes w$，并要求这种组合对两个变量分别线性，例如
+\[
+(v_1+v_2)\otimes w
+=
+v_1\otimes w+v_2\otimes w,
+\qquad
+v\otimes(w_1+w_2)
+=
+v\otimes w_1+v\otimes w_2.
+\]
+构造张量积的核心就是从所有形式上的向量对 $(v,w)$ 出发，再把这些双线性关系加入进去。
+
+\begin{definition}[商空间与陪集]
+设 $\mathcal L$ 是一个向量空间，$\mathcal R\subset\mathcal L$ 是其线性子空间。规定
+\[
+x\sim y
+\quad\Longleftrightarrow\quad
+x-y\in\mathcal R.
+\]
+这意味着只要两个向量之差属于 $\mathcal R$，就把它们视为同一个元素。向量 $x$ 所在的等价类称为它关于 $\mathcal R$ 的\textbf{陪集}，
+\begin{equation}
+    x+\mathcal R
+    :=
+    \{x+r:r\in\mathcal R\}.
+\end{equation}
+所有陪集组成的集合记为
+\begin{equation}
+    \mathcal L/\mathcal R
+    :=
+    \{x+\mathcal R:x\in\mathcal L\},
+\end{equation}
+称为 $\mathcal L$ 对 $\mathcal R$ 的\textbf{商空间}。
+\end{definition}
+
+商空间可以理解为把 $\mathcal R$ 中的所有向量都视为零。由于
+$r\in\mathcal R$ 与 $0$ 的差仍属于 $\mathcal R$，在商空间中有
+$r+\mathcal R=\mathcal R$；因此两个向量只要相差一个 $\mathcal R$ 中的元素，就代表同一个陪集。
+
+现在考虑集合 $V\times W$。先取由所有有序对 $(v,w)$ 生成的形式线性空间
+\begin{equation}
+    \mathcal L
+    :=
+    \left\{
+        \sum_{k=1}^{N}
+        c_k(v_k,w_k):
+        c_k\in\mathbb C,\;
+        v_k\in V,\;
+        w_k\in W,\;
+        N<\infty
+    \right\}.
+\end{equation}
+这里的 $(v,w)$ 暂时只是一个形式符号；例如 $(v_1+v_2,w)$ 与
+$(v_1,w)+(v_2,w)$ 在 $\mathcal L$ 中最初被看作不同的元素。为了使最终的组合对 $v$ 和 $w$ 分别线性，引入由下列元素生成的线性子空间 $\mathcal R\subset\mathcal L$：
+\begin{align}
+    &(v_1+v_2,w)-(v_1,w)-(v_2,w),\nonumber\\
+    &(v,w_1+w_2)-(v,w_1)-(v,w_2),\nonumber\\
+    &(\lambda v,w)-\lambda(v,w),\nonumber\\
+    &(v,\lambda w)-\lambda(v,w),
+\end{align}
+其中 $v,v_1,v_2\in V$，$w,w_1,w_2\in W$，$\lambda\in\mathbb C$。
+
+\begin{definition}[代数张量积]
+向量空间 $V$ 与 $W$ 的\textbf{代数张量积}定义为商空间
+\begin{equation}
+    V\otimes_{\mathrm{alg}}W
+    :=
+    \mathcal L/\mathcal R.
+\end{equation}
+通常简记为 $V\otimes W$。有序对 $(v,w)$ 所对应的陪集记为
+\begin{equation}
+    v\otimes w
+    :=
+    (v,w)+\mathcal R,
+\end{equation}
+称为一个\textbf{单纯张量}。
+\end{definition}
+
+这个商空间定义的作用可以直接从双线性关系看出。令
+\[
+x=(v_1+v_2,w),
+\qquad
+y=(v_1,w)+(v_2,w).
+\]
+按照 $\mathcal R$ 的定义，
+\[
+x-y
+=
+(v_1+v_2,w)-(v_1,w)-(v_2,w)
+\in\mathcal R.
+\]
+根据商空间中的等价关系
+\[
+x\sim y
+\quad\Longleftrightarrow\quad
+x-y\in\mathcal R,
+\]
+可知 $x$ 与 $y$ 属于同一个等价类，因此它们对应同一个陪集，
+\[
+x+\mathcal R
+=
+y+\mathcal R.
+\]
+再利用
+\[
+v\otimes w:=(v,w)+\mathcal R,
+\]
+便得到
+\begin{align}
+    (v_1+v_2)\otimes w
+    &=
+    (v_1+v_2,w)+\mathcal R
+    \nonumber\\
+    &=
+    \bigl[(v_1,w)+(v_2,w)\bigr]+\mathcal R
+    \nonumber\\
+    &=
+    v_1\otimes w+v_2\otimes w.
+\end{align}
+
+\begin{proposition}[张量积的双线性]
+对于 $v,v_1,v_2\in V$，$w,w_1,w_2\in W$ 和
+$\lambda\in\mathbb C$，有
+\begin{align}
+    (v_1+v_2)\otimes w
+    &=
+    v_1\otimes w+v_2\otimes w,
+    \nonumber\\
+    v\otimes(w_1+w_2)
+    &=
+    v\otimes w_1+v\otimes w_2,
+    \nonumber\\
+    (\lambda v)\otimes w
+    &=
+    \lambda(v\otimes w),
+    \nonumber\\
+    v\otimes(\lambda w)
+    &=
+    \lambda(v\otimes w).
+\end{align}
+因此映射
+\[
+V\times W\longrightarrow V\otimes W,
+\qquad
+(v,w)\longmapsto v\otimes w
+\]
+对两个变量分别线性。
+\end{proposition}
+
+张量积具有以下基本性质：
+
+\begin{itemize}
+    \item \textbf{有限线性组合：}任意张量都可以写成有限个单纯张量的线性组合，
+    \begin{equation}
+        V\otimes W
+        =
+        \left\{
+            \sum_{k=1}^{N}v_k\otimes w_k:
+            v_k\in V,\;
+            w_k\in W,\;
+            N<\infty
+        \right\}.
+    \end{equation}
+    一般的张量不一定能够写成单独一个 $v\otimes w$。这一点以后在讨论量子纠缠时会起到重要作用。
+
+    \item \textbf{交换与结合：}张量积具有自然的交换与结合结构，
+    \begin{equation}
+        V\otimes W\cong W\otimes V,
+        \qquad
+        (U\otimes V)\otimes W
+        \cong
+        U\otimes(V\otimes W).
+    \end{equation}
+    这里 $\cong$ 表示两个向量空间之间存在自然的线性同构。例如交换同构由
+    \[
+        v\otimes w\longmapsto w\otimes v
+    \]
+    给出。对于多个相同空间的张量积，可以简记为
+    \begin{equation}
+        V^{\otimes n}
+        :=
+        \underbrace{
+            V\otimes\cdots\otimes V
+        }_{n\text{ 个}}.
+    \end{equation}
+
+    \item \textbf{线性映射的张量积：}若
+    \[
+        f:V_1\to V_2,
+        \qquad
+        g:W_1\to W_2
+    \]
+    是线性映射，则它们自然诱导线性映射
+    \begin{equation}
+        f\otimes g:
+        V_1\otimes W_1
+        \longrightarrow
+        V_2\otimes W_2,
+    \end{equation}
+    并在单纯张量上定义为
+    \begin{equation}
+        (f\otimes g)(v\otimes w)
+        :=
+        f(v)\otimes g(w).
+    \end{equation}
+    再利用线性性即可将其延拓到整个张量积空间。
+
+    \item \textbf{基与维数：}若有限维向量空间 $V$ 与 $W$ 分别具有基
+    \[
+        \{e_1,\ldots,e_n\},
+        \qquad
+        \{f_1,\ldots,f_m\},
+    \]
+    则
+    \begin{equation}
+        \left\{
+            e_i\otimes f_j:
+            1\leq i\leq n,\;
+            1\leq j\leq m
+        \right\}
+    \end{equation}
+    构成 $V\otimes W$ 的一组基。因此
+    \begin{equation}
+        \dim(V\otimes W)
+        =
+        \dim V\,\dim W.
+    \end{equation}
+
+        \item \textbf{内积：}若 $V$ 和 $W$ 本身是内积空间，则可以在单纯张量上定义
+    \begin{equation}
+        \left\langle
+            v_1\otimes w_1,
+            v_2\otimes w_2
+        \right\rangle
+        :=
+        \langle v_1,v_2\rangle_V
+        \langle w_1,w_2\rangle_W.
+    \end{equation}
+    再按照内积的线性性质延拓到一般有限线性组合。若
+    $\Phi=\sum_i v_i\otimes w_i$、$\Psi=\sum_j v'_j\otimes w'_j$，则
+    \begin{equation}
+        \langle\Phi,\Psi\rangle
+        :=
+        \sum_{i,j}
+        \langle v_i,v'_j\rangle_V
+        \langle w_i,w'_j\rangle_W.
+    \end{equation}
+    特别地，单纯张量满足
+    \begin{equation}
+        \|v\otimes w\|
+        =
+        \|v\|\,\|w\|.
+    \end{equation}
+    若 $V$ 和 $W$ 是有限维 Hilbert 空间，则代数张量积已经完备；若它们是无限维 Hilbert 空间，则 $V\otimes_{\mathrm{alg}}W$ 在上述内积诱导的范数下一般还不完备，需要进一步取完备化，
+    \begin{equation}
+        V\widehat{\otimes}W
+        :=
+        \overline{V\otimes_{\mathrm{alg}}W}.
+    \end{equation}
+    这个完备化后的空间称为 Hilbert 空间张量积。后文若不会产生混淆，仍简记为 $V\otimes W$。
+\end{itemize}
+
+\subsection{分析意义下的张量积与完备正交基}
+
+\begin{definition}[Hilbert 空间张量积与完备化]
+记
+\[
+X:=H_A\otimes_{\mathrm{alg}}H_B,
+\]
+并赋予前面已经定义的张量积内积及其诱导范数。无限维时候， $X$ 在该范数下不完备，我们可以通过 Cauchy 列补入其中缺失的极限。
+
+记 $\mathcal C(X)$ 为 $X$ 中所有 Cauchy 列组成的集合。对于
+$\{\alpha_n\},\{\beta_n\}\in\mathcal C(X)$，定义等价关系
+\begin{equation}
+    \{\alpha_n\}\sim\{\beta_n\}
+    \quad\Longleftrightarrow\quad
+    \|\alpha_n-\beta_n\|\to0.
+\end{equation}
+因此，两列只要在极限意义下彼此趋近，就被认为代表同一个新的极限点。记
+\[
+\mathcal N
+:=
+\left\{
+    \{\alpha_n\}\in\mathcal C(X):
+    \|\alpha_n\|\to0
+\right\},
+\]
+则上述等价关系等价于
+$\{\alpha_n\}-\{\beta_n\}\in\mathcal N$，于是完备化空间可以写成商空间
+\begin{equation}
+    \widehat X
+    :=
+    \mathcal C(X)/\mathcal N.
+\end{equation}
+
+一个元素记为 $[\alpha_n]$，表示 Cauchy 列
+$\{\alpha_n\}$ 的等价类。向量空间运算逐项定义：
+\[
+[\alpha_n]+[\beta_n]
+:=
+[\alpha_n+\beta_n],
+\qquad
+\lambda[\alpha_n]
+:=
+[\lambda\alpha_n].
+\]
+其内积定义为
+\begin{equation}
+    \bigl\langle[\alpha_n],[\beta_n]\bigr\rangle_{\widehat X}
+    :=
+    \lim_{n\to\infty}
+    \langle\alpha_n,\beta_n\rangle_X,
+\end{equation}
+相应地
+\[
+\|[\alpha_n]\|
+=
+\lim_{n\to\infty}\|\alpha_n\|.
+\]
+这些定义与所选的代表 Cauchy 列无关。
+
+原空间 $X$ 通过常值列自然嵌入 $\widehat X$：
+\begin{equation}
+    \iota:X\longrightarrow\widehat X,
+    \qquad
+    \alpha\longmapsto
+    [\alpha,\alpha,\alpha,\ldots].
+\end{equation}
+若 $\xi=[\alpha_n]\in\widehat X$，则由于 $\{\alpha_n\}$ 是 Cauchy 列，
+\begin{equation}
+    \|\xi-\iota(\alpha_N)\|
+    =
+    \lim_{n\to\infty}
+    \|\alpha_n-\alpha_N\|
+    \longrightarrow0
+    \qquad(N\to\infty).
+\end{equation}
+因此每个新加入的元素都可以由原空间中的元素任意精度逼近，即
+$\iota(X)$ 在 $\widehat X$ 中稠密。
+
+另一方面，若 $\{\xi_m\}$ 是 $\widehat X$ 中的 Cauchy 列，由稠密性可为每个 $m$ 取
+$\alpha_m\in X$，使
+$\|\xi_m-\iota(\alpha_m)\|<2^{-m}$。由三角不等式可知
+$\{\alpha_m\}$ 是 $X$ 中的 Cauchy 列，因此它本身定义了
+$\xi=[\alpha_m]\in\widehat X$，并且
+$\xi_m\to\xi$。所以 $\widehat X$ 是完备的。
+
+由此得到的完备 Hilbert 空间称为 $H_A$ 与 $H_B$ 的
+\textbf{Hilbert 空间张量积}，
+\begin{equation}
+    H_A\widehat{\otimes}H_B
+    :=
+    \widehat{
+        H_A\otimes_{\mathrm{alg}}H_B
+    }.
+\end{equation}
+由于原来的代数张量积在其中稠密，也常简写为
+\[
+H_A\widehat{\otimes}H_B
+=
+\overline{
+    H_A\otimes_{\mathrm{alg}}H_B
+}.
+\]
+后文若不会引起混淆，仍简记为 $H_A\otimes H_B$。
+\end{definition}
+\begin{proposition}[张量积空间的完备正交归一基]
+设
+\[
+\{e_i\}_{i=1}^{\infty},
+\qquad
+\{f_k\}_{k=1}^{\infty}
+\]
+分别是 $H_A$ 与 $H_B$ 的完备正交归一基，则
+\begin{equation}
+    \{e_i\otimes f_k\}_{i,k=1}^{\infty}
+\end{equation}
+是 $H_A\widehat{\otimes}H_B$ 的完备正交归一基。
+\end{proposition}
+
+\begin{proofblock}
+首先验证正交归一性。由张量积内积的定义，
+\begin{align}
+    \langle e_i\otimes f_k,e_j\otimes f_l\rangle
+    &=
+    \langle e_i,e_j\rangle_{H_A}
+    \langle f_k,f_l\rangle_{H_B}
+    \nonumber\\
+    &=
+    \delta_{ij}\delta_{kl}.
+\end{align}
+因此 $\{e_i\otimes f_k\}$ 是一组正交归一向量。下面证明其完备性。
+
+对于 $N_A,N_B\in\mathbb N$，定义
+$P_{N_A,N_B}$ 为到有限维子空间
+\[
+\operatorname{span}
+\left\{
+    e_i\otimes f_k:
+    1\leq i\leq N_A,\;
+    1\leq k\leq N_B
+\right\}
+\]
+上的正交投影，即
+\begin{equation}
+    P_{N_A,N_B}\alpha
+    =
+    \sum_{i=1}^{N_A}
+    \sum_{k=1}^{N_B}
+    \langle e_i\otimes f_k,\alpha\rangle\,
+    e_i\otimes f_k.
+\end{equation}
+我们要证明
+\begin{equation}
+    \lim_{N_A,N_B\to\infty}
+    \|
+        \alpha-P_{N_A,N_B}\alpha
+    \|
+    =
+    0
+\end{equation}
+对任意
+$\alpha\in H_A\widehat{\otimes}H_B$ 都成立。
+
+给定 $\varepsilon>0$。由于代数张量积在
+$H_A\widehat{\otimes}H_B$ 中稠密，可以先取
+\begin{equation}
+    \widetilde{\alpha}
+    =
+    \sum_{l=1}^{M}
+    \phi_l\otimes\psi_l
+\end{equation}
+使得
+\begin{equation}
+    \|\alpha-\widetilde{\alpha}\|
+    <
+    \frac{\varepsilon}{2}.
+\end{equation}
+
+由于 $\{e_i\}$ 和 $\{f_k\}$ 分别是完备正交归一基，对于每个
+$\phi_l$ 和 $\psi_l$ 都有范数收敛的 Fourier 展开
+\begin{align}
+    \phi_l
+    &=
+    \sum_{i=1}^{\infty}
+    \langle e_i,\phi_l\rangle e_i,
+    \nonumber\\
+    \psi_l
+    &=
+    \sum_{k=1}^{\infty}
+    \langle f_k,\psi_l\rangle f_k.
+\end{align}
+记有限截断为
+\begin{align}
+    \widetilde{\phi}_l
+    &:=
+    \sum_{i=1}^{N_A}
+    \langle e_i,\phi_l\rangle e_i,
+    \nonumber\\
+    \widetilde{\psi}_l
+    &:=
+    \sum_{k=1}^{N_B}
+    \langle f_k,\psi_l\rangle f_k.
+\end{align}
+则随着 $N_A,N_B\to\infty$，
+\begin{equation}
+    \|\phi_l-\widetilde{\phi}_l\|\to0,
+    \qquad
+    \|\psi_l-\widetilde{\psi}_l\|\to0.
+\end{equation}
+
+另一方面，由投影的定义，
+\begin{align}
+    P_{N_A,N_B}\widetilde{\alpha}
+    &=
+    \sum_{i=1}^{N_A}
+    \sum_{k=1}^{N_B}
+    \langle e_i\otimes f_k,
+    \sum_{l=1}^{M} \phi_l\otimes\psi_l\rangle
+    e_i\otimes f_k
+    \nonumber\\
+    &=
+    \sum_{l=1}^{M}
+    \left(
+        \sum_{i=1}^{N_A}
+        \langle e_i,\phi_l\rangle e_i
+    \right)
+    \otimes
+    \left(
+        \sum_{k=1}^{N_B}
+        \langle f_k,\psi_l\rangle f_k
+    \right)
+    \nonumber\\
+    &=
+    \sum_{l=1}^{M}
+    \widetilde{\phi}_l
+    \otimes
+    \widetilde{\psi}_l.
+\end{align}
+因此
+\begin{align}
+    \widetilde{\alpha}
+    -
+    P_{N_A,N_B}\widetilde{\alpha}
+    &=
+    \sum_{l=1}^{M}
+    \left(
+        \phi_l\otimes\psi_l
+        -
+        \widetilde{\phi}_l\otimes\widetilde{\psi}_l
+    \right)
+    \nonumber\\
+    &=
+    \sum_{l=1}^{M}
+    \left[
+        (\phi_l-\widetilde{\phi}_l)\otimes\psi_l
+        +
+        \widetilde{\phi}_l
+        \otimes
+        (\psi_l-\widetilde{\psi}_l)
+    \right].
+\end{align}
+利用
+$\|u\otimes v\|=\|u\|\,\|v\|$ 以及三角不等式，
+\begin{align}
+    \|
+        \widetilde{\alpha}
+        -
+        P_{N_A,N_B}\widetilde{\alpha}
+    \|
+    &\leq
+    \sum_{l=1}^{M}
+    \Bigl(
+        \|\phi_l-\widetilde{\phi}_l\|
+        \|\psi_l\|
+        \nonumber\\
+    &\qquad\qquad+
+        \|\widetilde{\phi}_l\|
+        \|\psi_l-\widetilde{\psi}_l\|
+    \Bigr).
+\end{align}
+又因为 $\widetilde{\phi}_l$ 是 $\phi_l$ 的正交投影，
+$\|\widetilde{\phi}_l\|\leq\|\phi_l\|$。令
+\begin{equation}
+    C
+    :=
+    1+
+    \sum_{l=1}^{M}
+    \left(
+        \|\phi_l\|+\|\psi_l\|
+    \right),
+\end{equation}
+由于 $M$ 有限，而
+\[
+\widetilde{\phi}_l\to\phi_l,
+\qquad
+\widetilde{\psi}_l\to\psi_l
+\]
+均为范数收敛，所以可以同时取足够大的 $N_A,N_B$，使得对于所有
+$l=1,\ldots,M$ 都有
+\begin{equation}
+    \|\phi_l-\widetilde{\phi}_l\|
+    <
+    \frac{\varepsilon}{2C},
+    \qquad
+    \|\psi_l-\widetilde{\psi}_l\|
+    <
+    \frac{\varepsilon}{2C}.
+\end{equation}
+代入上面的估计式，
+\begin{align}
+    \|
+        \widetilde{\alpha}
+        -
+        P_{N_A,N_B}\widetilde{\alpha}
+    \|
+    &<
+    \sum_{l=1}^{M}
+    \left[
+        \frac{\varepsilon}{2C}\|\psi_l\|
+        +
+        \|\phi_l\|
+        \frac{\varepsilon}{2C}
+    \right]
+    \nonumber\\
+    &=
+    \frac{\varepsilon}{2C}
+    \sum_{l=1}^{M}
+    \left(
+        \|\phi_l\|+\|\psi_l\|
+    \right)
+    \nonumber\\
+    &<
+    \frac{\varepsilon}{2C}\,C
+    \nonumber\\
+    &=
+    \frac{\varepsilon}{2}.
+\end{align}
+因此
+\begin{equation}
+    \|
+        \widetilde{\alpha}
+        -
+        P_{N_A,N_B}\widetilde{\alpha}
+    \|
+    <
+    \frac{\varepsilon}{2}.
+\end{equation}
+
+最后利用
+\[
+\alpha-P_{N_A,N_B}\alpha
+=
+(I-P_{N_A,N_B})(\alpha-\widetilde{\alpha})
++
+\left(
+    \widetilde{\alpha}
+    -
+    P_{N_A,N_B}\widetilde{\alpha}
+\right).
+\]
+由于 $P_{N_A,N_B}$ 是正交投影，
+$I-P_{N_A,N_B}$ 也是正交投影，因此
+\[
+\|I-P_{N_A,N_B}\|\leq1.
+\]
+从而
+\begin{align}
+    \|
+        \alpha-P_{N_A,N_B}\alpha
+    \|
+    &\leq
+    \|
+        (I-P_{N_A,N_B})
+        (\alpha-\widetilde{\alpha})
+    \|
+    \nonumber\\
+    &\quad+
+    \|
+        \widetilde{\alpha}
+        -
+        P_{N_A,N_B}\widetilde{\alpha}
+    \|
+    \nonumber\\
+    &\leq
+    \|\alpha-\widetilde{\alpha}\|
+    +
+    \|
+        \widetilde{\alpha}
+        -
+        P_{N_A,N_B}\widetilde{\alpha}
+    \|
+    \nonumber\\
+    &<
+    \varepsilon.
+\end{align}
+因此
+\begin{equation}
+    P_{N_A,N_B}\alpha
+    \longrightarrow
+    \alpha
+\end{equation}
+在 $H_A\widehat{\otimes}H_B$ 的范数下成立，从而
+$\{e_i\otimes f_k\}$ 的线性张成在整个
+$H_A\widehat{\otimes}H_B$ 中稠密，即它构成完备正交归一基。
+\end{proofblock}
+
+\section{复合系统的测量、动力学与纠缠}
+
+前面已经构造了两个 Hilbert 空间的张量积。下面回到量子力学，讨论复合系统中的测量、Hamiltonian 以及由张量积结构产生的纠缠现象。
+
+\subsection{复合系统的联合测量}
+
+设两个子系统的 Hilbert 空间分别为 $H_A=L^2(\mathbb R)$ 和 $H_B=L^2(\mathbb R)$，则复合系统的 Hilbert 空间满足 $H_A\widehat{\otimes}H_B\cong L^2(\mathbb R^2)$。因此一般复合态可以写成二变量波函数 $\Psi(x,y)\in L^2(\mathbb R^2)$。由代数张量积在 Hilbert 张量积中的稠密性，对于任意 $\Psi$ 和任意 $\varepsilon>0$，总可以找到有限个 $\phi_l\in H_A$、$\psi_l\in H_B$，使得
+\begin{equation}
+    \left\|
+        \Psi-
+        \sum_{l=1}^{M}\phi_l\otimes\psi_l
+    \right\|
+    <\varepsilon,
+\end{equation}
+其中单纯张量在位置表象中对应 $(\phi_l\otimes\psi_l)(x,y)=\phi_l(x)\psi_l(y)$。特别地，当整个复合态本身可以写成单个单纯张量 $\Psi=\phi\otimes\psi$ 时，在位置表象中即为 $\Psi(x,y)=\phi(x)\psi(y)$，这种状态称为乘积态。
+
+现在考虑 $H_A$ 上的自伴可观测量 $A$ 和 $H_B$ 上的自伴可观测量 $B$。在复合 Hilbert 空间 $H_A\widehat{\otimes}H_B$ 上，它们分别作用为 $A\otimes I_B$ 和 $I_A\otimes B$。由于二者作用在不同的子空间上，它们的谱投影彼此对易，因此可以定义二者的联合测量。
+
+\begin{definition}[复合系统的联合谱测度]
+设 $A$、$B$ 分别是 $H_A$、$H_B$ 上的自伴算符，谱测度分别为 $E_A$、$E_B$。则 $A\otimes I_B$ 与 $I_A\otimes B$ 在 $H_A\widehat{\otimes}H_B$ 上具有联合谱测度
+\[
+E_{A,B}:\mathcal B(\mathbb R^2)
+\longrightarrow
+\mathcal B(H_A\widehat{\otimes}H_B),
+\]
+其中 $\mathcal B(\mathbb R^2)$ 表示 $\mathbb R^2$ 上的 Borel $\sigma$-代数。对于 Borel 矩形 $B_1\times B_2$，定义
+\begin{equation}
+    E_{A,B}(B_1\times B_2)
+    =
+    E_A(B_1)\otimes E_B(B_2),
+\end{equation}
+并由此唯一延拓到整个 $\mathcal B(\mathbb R^2)$。
+
+若 $\Psi\in H_A\widehat{\otimes}H_B$ 已归一化，则联合测量结果落在
+$C\in\mathcal B(\mathbb R^2)$ 中的概率为
+\begin{equation}
+    P_\Psi\bigl((A,B)\in C\bigr)
+    =
+    \langle\Psi,E_{A,B}(C)\Psi\rangle.
+\end{equation}
+特别地，对于矩形事件 $B_1\times B_2$，
+\begin{equation}
+    P_\Psi(A\in B_1,\;B\in B_2)
+    =
+    \left\langle
+        \Psi,
+        \bigl(E_A(B_1)\otimes E_B(B_2)\bigr)\Psi
+    \right\rangle.
+\end{equation}
+\end{definition}
+
+联合谱测度把两个子系统各自的谱测量统一为 $\mathbb R^2$ 上的一个概率测度。若复合态为乘积态 $\Psi=\phi\otimes\psi$，则由张量积内积的乘法性质，
+\begin{align}
+    P_{\phi\otimes\psi}(A\in B_1,\;B\in B_2)
+    &=
+    \langle\phi,E_A(B_1)\phi\rangle
+    \langle\psi,E_B(B_2)\psi\rangle
+    \nonumber\\
+    &=
+    P_\phi(A\in B_1)\,
+    P_\psi(B\in B_2).
+\end{align}
+因此乘积态对应两个子系统测量统计的乘积结构；一般复合态不必满足这一分解，这为后面讨论纠缠提供了概率论上的入口。
+
+\subsection{复合系统的 Hamiltonian}
+
+先考虑两个彼此独立的子系统。设
+$\phi(t)\in H_A$ 与 $\psi(t)\in H_B$ 分别满足
+\begin{align}
+    i\hbar\frac{\partial\phi}{\partial t}
+    &=H_A\phi,
+    \nonumber\\
+    i\hbar\frac{\partial\psi}{\partial t}
+    &=H_B\psi.
+\end{align}
+取独立复合态
+\[
+\Psi(t)=\phi(t)\otimes\psi(t).
+\]
+利用乘积求导，
+\begin{align}
+    i\hbar\frac{\partial\Psi}{\partial t}
+    &=
+    i\hbar
+    \left(
+        \frac{\partial\phi}{\partial t}\otimes\psi
+        +
+        \phi\otimes\frac{\partial\psi}{\partial t}
+    \right)
+    \nonumber\\
+    &=
+    (H_A\phi)\otimes\psi
+    +
+    \phi\otimes(H_B\psi)
+    \nonumber\\
+    &=
+    \left(
+        H_A\otimes I_B
+        +
+        I_A\otimes H_B
+    \right)
+    (\phi\otimes\psi).
+\end{align}
+因此无相互作用的复合 Hamiltonian 为
+\begin{equation}
+    H_0
+    =
+    H_A\otimes I_B
+    +
+    I_A\otimes H_B.
+\end{equation}
+由于有限张量和在复合 Hilbert 空间中稠密，上式可以由线性性推广到一般复合态；对于无界算符，严格处理还需同时考虑相应的定义域。
+
+若两个子系统之间存在相互作用，则进一步加入相互作用项
+\begin{equation}
+    H
+    =
+    H_A\otimes I_B
+    +
+    I_A\otimes H_B
+    +
+    H_{\mathrm{int}}.
+\end{equation}
+
+当 $H_{\mathrm{int}}=0$ 时，若初态为乘积态
+$\Psi(0)=\phi_0\otimes\psi_0$，则
+\begin{equation}
+    \Psi(t)
+    =
+    e^{-\frac{i}{\hbar}tH_A}\phi_0
+    \otimes
+    e^{-\frac{i}{\hbar}tH_B}\psi_0,
+\end{equation}
+仍保持乘积形式。相互作用项 $H_{\mathrm{int}}$ 则可以使原来的乘积态演化为纠缠态。
+
+这里的张量积结构也与通常的分离变量法相联系。若一个 Hamiltonian 可以写成
+\[
+H=H_1(q_1,\partial_{q_1})+H_2(q_2,\partial_{q_2}),
+\]
+则可以尝试乘积形式
+$\Psi(q_1,q_2)=\psi_1(q_1)\psi_2(q_2)$，从而把原来的多变量方程分解为较低维的方程。例如氢原子 Schrödinger 方程中的径向部分与角向部分便可以利用类似的分离变量思想处理。这里的变量分离与两个物理子系统的张量积分解在概念上需要加以区分。
+
+\subsection{可分态与纠缠态}
+
+张量积空间中的一般向量可以写成
+\begin{equation}
+    \Psi
+    =
+    \sum_{l}
+    \phi_l\otimes\psi_l.
+\end{equation}
+其中只有一部分状态能够写成单个乘积
+\[
+\Psi=\phi\otimes\psi.
+\]
+这种状态称为\textbf{可分纯态}；不能写成单个乘积的纯态称为\textbf{纠缠态}。
+
+\textbf{以两个 qubit 为例}。设单 qubit 空间为
+$H=\mathbb C^2$，取正交归一基
+$\{|0\rangle,|1\rangle\}$。一般二 qubit 纯态可以写成
+\begin{equation}
+    |\Psi\rangle
+    =
+    a|00\rangle
+    +
+    b|01\rangle
+    +
+    c|10\rangle
+    +
+    d|11\rangle.
+\end{equation}
+若它是乘积态，则存在复数
+$\alpha,\beta,\gamma,\delta$ 使
+\begin{align}
+    |\Psi\rangle
+    &=
+    (\alpha|0\rangle+\beta|1\rangle)
+    \otimes
+    (\gamma|0\rangle+\delta|1\rangle)
+    \nonumber\\
+    &=
+    \alpha\gamma|00\rangle
+    +
+    \alpha\delta|01\rangle
+    +
+    \beta\gamma|10\rangle
+    +
+    \beta\delta|11\rangle.
+\end{align}
+因此
+\[
+a=\alpha\gamma,\qquad
+b=\alpha\delta,\qquad
+c=\beta\gamma,\qquad
+d=\beta\delta,
+\]
+从而必有
+\begin{equation}
+    ad-bc=0.
+\end{equation}
+反过来，若
+$ad-bc=0$，系数矩阵
+\[
+\begin{pmatrix}
+a&b\\
+c&d
+\end{pmatrix}
+\]
+的秩不超过 $1$，因此可以分解为一个列向量和一个行向量的乘积，从而
+$|\Psi\rangle$ 可以写成单个张量积。于是二 qubit 纯态满足
+\begin{equation}
+    \boxed{
+    |\Psi\rangle\text{ 可分}
+    \quad\Longleftrightarrow\quad
+    ad-bc=0
+    }.
+\end{equation}
+若 $ad-bc\neq0$，则该态为纠缠态。
+
+
+\begin{tcolorbox}[
+    enhanced,breakable,
+    colback=white,
+    colframe=black!50,
+    boxrule=0.7pt,
+    arc=1mm,
+    left=2mm,right=2mm,top=1.5mm,bottom=1.5mm,
+    title={补充：EPR 佯谬、Bell 定理与纠缠的物理意义},
+    fonttitle=\bfseries
+]
+
+1935 年 Einstein、Podolsky 和 Rosen 提出 EPR 论证，试图说明量子力学的波函数可能并不是对物理实在的完整描述。原始 EPR 论证使用位置与动量的连续变量；下面采用 Bohm 后来常用的两 qubit 版本说明其核心思想。
+
+考虑 Bell 态
+\begin{equation}
+    |\Phi^+\rangle
+    =
+    \frac{1}{\sqrt2}
+    \left(
+        |00\rangle+|11\rangle
+    \right).
+\end{equation}
+设两个 qubit 已经相距很远。若对第一个 qubit 在
+$Z$ 基 $\{|0\rangle,|1\rangle\}$ 中测量，得到 $0$ 的概率为 $1/2$。一旦第一个 qubit 测得 $0$，投影后的整体状态为
+\begin{equation}
+    \frac{
+        (|0\rangle\langle0|\otimes I)|\Phi^+\rangle
+    }{
+        \|
+        (|0\rangle\langle0|\otimes I)|\Phi^+\rangle
+        \|
+    }
+    =
+    |00\rangle.
+\end{equation}
+因此随后测量第二个 qubit 必然得到 $0$。同理，若第一个测得 $1$，第二个必然得到 $1$。单独看任何一个 qubit 的结果都是随机的，但二者之间具有完全相关性。
+
+更关键的是，这种相关性并不只存在于这一组测量基中。定义
+$|\pm\rangle=(|0\rangle\pm|1\rangle)/\sqrt2$，则
+\begin{equation}
+    |\Phi^+\rangle
+    =
+    \frac{1}{\sqrt2}
+    \left(
+        |++\rangle+|--\rangle
+    \right).
+\end{equation}
+因此若第一个 qubit 改为在 $X$ 基 $\{|+\rangle,|-\rangle\}$ 中测量，测得 $+$ 后第二个 qubit 在同一基中必然也是 $+$；测得 $-$ 后第二个必然也是 $-$。
+
+这正是 EPR 问题的核心。Alice 可以在相距很远的位置自由选择测量$Z$ 或 $X$。无论她选择哪一个，都能够在不直接操作 Bob 的 qubit 的情况下，以确定性预测 Bob 对应测量的结果。若坚持 EPR 的\textbf{局域性假设}：Alice 在远处选择什么测量不应瞬间改变 Bob 所具有的物理实在；再结合 EPR 的\textbf{实在性判据}：若能够在不扰动一个系统的情况下确定预测某个物理量，则该物理量应具有确定的物理实在；那么似乎只能认为 Bob 的 qubit 在测量以前就已经同时具有确定的
+$Z$ 与 $X$ 测量结果。
+
+然而 $X$ 与 $Z$ 是不对易可观测量，标准量子态并不给它们同时指定确定值。于是EPR认为：若坚持上述局域实在性的要求，波函数并没有包含系统全部的物理信息，量子力学应当存在某种更完整的“隐藏变量”描述。当时留下的问题是：能否存在一个更深层的局域隐藏变量理论，使两个粒子的测量结果实际上早已由某些尚未写入波函数的变量决定？
+
+1964 年 Bell 给出了决定性的回答。若测量结果由局域隐藏变量预先决定，
+则不同测量方向之间的关联必须满足 Bell 不等式。以 CHSH 形式为例，
+\begin{equation}
+    |S|
+    =
+    \left|
+        E(a,b)+E(a,b')
+        +E(a',b)-E(a',b')
+    \right|
+    \leq2.
+\end{equation}
+量子力学对纠缠态和适当的测量方向却预言
+\begin{equation}
+    |S|=2\sqrt2>2.
+\end{equation}
+后来的 Bell 实验反复观察到了Bell 不等式失效的反例。因此，能够同时满足 Bell 意义下局域性并以隐藏变量预先决定这些测量结果的理论，不能覆盖量子力学的全部实验结果。
+
+顺带一提：后续可知道EPR并没有出现可用于超光速通信的信号。对于 Bell 态，Bob 单独拥有的约化态为
+\begin{equation}
+    \rho_B
+    =
+    \operatorname{Tr}_A
+    |\Phi^+\rangle\langle\Phi^+|
+    =
+    \frac12 I.
+\end{equation}
+Alice 无论选择测量 $Z$ 还是 $X$，只要 Bob 不知道 Alice 的具体测量结果，他看到的局域统计始终都是 $1/2$ 与 $1/2$。因此纠缠相关性并不允许Bob 从本地测量中判断 Alice 做了什么，也不能用来进行超光速通信。
+\end{tcolorbox}
+
+
+\begin{proposition}[公设五：可分辨复合系统]
+若两个可分辨量子系统的 Hilbert 空间分别为 $H_A$ 和 $H_B$，则复合系统的态空间为 Hilbert 空间张量积
+\begin{equation}
+    H_{AB}
+    =
+    H_A\widehat{\otimes}H_B.
+\end{equation}
+作用于单个子系统的可观测量分别提升为
+\[
+A\longmapsto A\otimes I_B,
+\qquad
+B\longmapsto I_A\otimes B.
+\]
+复合系统的 Hamiltonian 具有形式
+\begin{equation}
+    H
+    =
+    H_A\otimes I_B
+    +
+    I_A\otimes H_B
+    +
+    H_{\mathrm{int}},
+\end{equation}
+其中 $H_{\mathrm{int}}$ 描述两个子系统之间的相互作用。
+\end{proposition}
+
+\section{全同粒子与交换对称性}
+
+\paragraph{全同粒子的不可分辨性}
+
+在讨论全同粒子之前，需要区分\textbf{性质相同}与\textbf{可分辨性}。所谓性质相同，是指两个粒子具有相同的内禀物理参数并服从相同的动力学规律，例如具有相同的质量、电荷、自旋等；这并不要求它们处于相同的状态，也不要求它们具有相同的位置和动量。所谓可分辨，是指粒子标签可以与某种可追踪的物理历史或可观测信息建立对应，从而原则上能够回答“现在的这个粒子是哪一个”。例如两个经典粒子即使具有完全相同的质量、电荷等内禀性质，只要能够沿各自连续的时空轨迹追踪，就可以持续地称其中一个为“粒子 1”、另一个为“粒子 2”，这里的标签对应着可以在时间演化中保持的个体身份。
+
+在量子力学中，全同粒子具有相同的内禀物理属性，并由相同的单粒子 Hilbert 空间描述。对于由多个全同粒子组成的系统，张量积中的“粒子 1”“粒子 2”等标签只是构造复合态时使用的数学记号；若交换这些标签后，所有可观测量的测量概率都保持不变，则这种交换不产生新的物理状态，粒子标签本身不携带额外的可观测信息。因而量子力学只保留由整体波函数和可观测量所确定的物理内容，而不为每个全同粒子额外赋予一种可持续追踪的个体身份。至于粒子在全部可测性质之外是否还具有某种不可观测的“独特个性”，属于形而上学问题，量子理论本身并不需要引入这种额外结构。由此，全同粒子交换后物理预测保持不变，这正是交换对称性的物理基础。
+
+以两个全同粒子为例。定义交换算符 $P_{12}$，
+\begin{equation}
+    P_{12}
+    (\phi_1\otimes\phi_2)
+    =
+    \phi_2\otimes\phi_1.
+\end{equation}
+全同粒子的物理态满足
+\begin{equation}
+    P_{12}\Psi
+    =
+    \pm\Psi.
+\end{equation}
+正号对应玻色子，负号对应费米子。因此由两个单粒子态
+$\phi_1,\phi_2$ 可以构造
+\begin{equation}
+    \Psi_\pm
+    \propto
+    \phi_1\otimes\phi_2
+    \pm
+    \phi_2\otimes\phi_1.
+\end{equation}
+若 $\phi_1,\phi_2$ 正交归一，则归一化形式为
+\begin{equation}
+    \Psi_\pm
+    =
+    \frac{1}{\sqrt2}
+    \left(
+        \phi_1\otimes\phi_2
+        \pm
+        \phi_2\otimes\phi_1
+    \right).
+\end{equation}
+
+对于费米子，若
+$\phi_1=\phi_2=\phi$，则
+\begin{equation}
+    \phi\otimes\phi
+    -
+    \phi\otimes\phi
+    =
+    0.
+\end{equation}
+因此两个全同费米子不能占据完全相同的单粒子态，这就是 Pauli 不相容原理在两粒子情形中的直接体现。
+
+更一般地，设单粒子 Hilbert 空间为 $H$，对任意排列
+$\sigma\in S_N$ 定义置换算符
+\begin{equation}
+    P_\sigma
+    (\phi_1\otimes\cdots\otimes\phi_N)
+    :=
+    \phi_{\sigma^{-1}(1)}
+    \otimes\cdots\otimes
+    \phi_{\sigma^{-1}(N)}.
+\end{equation}
+则玻色子态空间为
+\begin{equation}
+    \operatorname{Sym}^N(H)
+    :=
+    \left\{
+        \Psi\in H^{\otimes N}:
+        P_\sigma\Psi=\Psi,\;
+        \forall\sigma\in S_N
+    \right\},
+\end{equation}
+费米子态空间为
+\begin{equation}
+    \bigwedge^N H
+    :=
+    \left\{
+        \Psi\in H^{\otimes N}:
+        P_\sigma\Psi
+        =
+        \operatorname{sgn}(\sigma)\Psi,\;
+        \forall\sigma\in S_N
+    \right\}.
+\end{equation}
+
+\begin{proposition}[公设六：全同粒子的对称化公设]
+由相同种类的全同粒子组成的量子系统，其物理态只占据张量积空间中特定的交换对称子空间。对于玻色子，
+\[
+H_N
+=
+\operatorname{Sym}^N(H),
+\]
+态在任意粒子交换下保持不变；对于费米子，
+\[
+H_N
+=
+\bigwedge^N H,
+\]
+态在奇置换下改变符号。
+
+在非相对论量子力学中，这一交换对称性作为全同粒子的基本公设使用。整数自旋粒子服从玻色统计、半整数自旋粒子服从费米统计的对应关系则由相对论性量子场论中的自旋--统计定理给出。
+\end{proposition}
+
+\subsection{经典与量子多粒子系统的差别}
+
+考虑 $N$ 个谐振自由度。经典情况下，一个 $N$ 维各向同性谐振子具有 Hamiltonian
+\begin{equation}
+    H
+    =
+    \frac12
+    \left(
+        p_1^2+\cdots+p_N^2
+    \right)
+    +
+    \frac12
+    \left(
+        q_1^2+\cdots+q_N^2
+    \right).
+\end{equation}
+而 $N$ 个彼此独立的一维谐振子，也得到
+\begin{equation}
+    H
+    =
+    \sum_{j=1}^{N}
+    \frac12
+    \left(
+        p_j^2+q_j^2
+    \right).
+\end{equation}
+两种描述都使用同一个 $2N$ 维经典相空间，数学形式完全一致。因此两种描述是等价的。
+
+量子情况下，一个粒子在 $N$ 维空间中的态空间为
+\begin{equation}
+    L^2(\mathbb R^N).
+\end{equation}
+而 $N$ 个可分辨的一维粒子的态空间为
+\begin{equation}
+    \underbrace{
+        L^2(\mathbb R)
+        \widehat{\otimes}\cdots\widehat{\otimes}
+        L^2(\mathbb R)
+    }_{N\text{ 个}}
+    \cong
+    L^2(\mathbb R^N).
+\end{equation}
+因此对于可分辨粒子，这两种数学描述仍然可以自然对应。
+
+若这 $N$ 个粒子是全同粒子，则交换不可分辨性进一步限制了允许的状态。对于全同玻色子，
+\begin{equation}
+    H_N^{\mathrm{boson}}
+    =
+    \operatorname{Sym}^N
+    \bigl(
+        L^2(\mathbb R)
+    \bigr),
+\end{equation}
+而对于全同费米子，
+\begin{equation}
+    H_N^{\mathrm{fermion}}
+    =
+    \bigwedge^N
+    L^2(\mathbb R).
+\end{equation}
+它们只占据完整张量积
+$L^2(\mathbb R)^{\otimes N}$ 的对称或反对称子空间。因此在量子多粒子体系中，“$N$ 个全同粒子”与“一个具有 $N$ 个独立坐标的粒子”在态空间结构上出现了本质区别；这一差别直接来自全同粒子的交换不可分辨性。
+
+\newpage
+\chapter{Dirac 记号与算符表示}
+
+\section{Dirac 记号}
+
+Dirac 记号是量子力学中表示 Hilbert 空间向量、对偶向量以及算符作用的一套记号体系。其名称来自英文 \textit{bracket}：Dirac 将表示内积的一对尖括号 $\langle\,\cdot\,|\,\cdot\,\rangle$ 拆成左半边 \textit{bra} 与右半边 \textit{ket}，从而得到 bra--ket 记号。
+
+常见括号在中文、英式英语与美式英语中的名称如下：
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{cccc}
+        \toprule
+        符号 & 中文 & 英式英语 & 美式英语 \\
+        \midrule
+        $(\,)$ & 圆括号 & round brackets & parentheses \\
+        $[\,]$ & 方括号 & square brackets & brackets \\
+        $\{\,\}$ & 花括号 & curly brackets & braces \\
+        $\langle\,\rangle$ & 尖括号 & angle brackets & angle brackets \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Ket、Bra 与对偶空间}
+
+先设 $H^*$ 为 Hilbert 空间 $H$ 的对偶空间。对于 $f\in H^*$ 与 $\psi\in H$，记自然配对为 $\langle f,\psi\rangle:=f(\psi)$。
+
+\begin{definition}[Dirac 的 bra--ket 记号]
+在 Hilbert 空间 $H$ 上，定义 \textbf{ket 记号}
+\begin{equation}
+    |\cdot\rangle:H\to H,
+    \qquad
+    \psi\longmapsto|\psi\rangle,
+\end{equation}
+即用 $|\psi\rangle$ 表示态向量 $\psi\in H$。
+
+定义 \textbf{bra 记号}
+\begin{equation}
+    \langle\cdot|:H\to H^*,
+    \qquad
+    \phi\longmapsto\langle\phi|,
+\end{equation}
+其中 $\langle\phi|$ 表示由 $\phi$ 所确定的对偶元素，其作用定义为
+\begin{equation}
+    \langle\phi|\psi\rangle
+    :=
+    \langle\phi,\psi\rangle_H.
+\end{equation}
+因此 $\langle\phi|\psi\rangle$ 就是 bra $\langle\phi|$ 作用于 ket $|\psi\rangle$ 所得到的复数，也就是 Hilbert 空间中的内积。
+\end{definition}
+按照本书采用的物理学约定，内积对第一个变量共轭线性、对第二个变量线性，因此 ket 关于态矢量是线性的，而从 ket 到对应 bra 的映射是共轭线性的：
+\begin{equation}
+    |\lambda\phi\rangle=\lambda|\phi\rangle,
+    \qquad
+    \langle\lambda\phi|
+    =
+    \overline{\lambda}\langle\phi|.
+\end{equation}
+
+因此，在 Hilbert 空间中可以把 Dirac 记号理解为
+\[
+|\psi\rangle\in H,
+\qquad
+\langle\phi|\in H^*,
+\qquad
+\langle\phi|\psi\rangle\in\mathbb C.
+\]
+
+\subsection{算符的 Dirac 表示}
+
+设 $A:H\to H$ 是线性算符。其作用在 ket 上定义为
+\begin{equation}
+    A|\psi\rangle:=|A\psi\rangle.
+\end{equation}
+因此对于任意 $\phi,\psi\in H$，
+\begin{equation}
+    \langle\phi|A|\psi\rangle:=\langle\phi,A\psi\rangle.
+\end{equation}
+若 $A^\dagger$ 为 $A$ 的伴随算符，则由伴随的定义
+\begin{equation}
+    \langle\phi,A\psi\rangle
+    =
+    \langle A^\dagger\phi,\psi\rangle,
+\end{equation}
+从而
+\begin{equation}
+    \langle\phi|A
+    =
+    \langle A^\dagger\phi|.
+\end{equation}
+
+\textbf{通过算符的伴随，可以定义bra和ket的伴随}，首先：
+
+\begin{definition}[算符的伴随]
+对于两个 Hilbert 空间 $H_1,H_2$，若 $T:H_1\to H_2$ 是有界线性算符，则其\textbf{伴随算符} $T^\dagger:H_2\to H_1$ 定义为满足
+\begin{equation}
+    \langle \phi,T\psi\rangle_{H_2}
+    =
+    \langle T^\dagger\phi,\psi\rangle_{H_1},
+    \qquad
+    \forall\,\phi\in H_2,\;\psi\in H_1
+\end{equation}
+的唯一线性算符。
+\end{definition}
+然后将态向量看成所用在标量上的算符，就可以得到ket的伴随。
+\begin{proposition}[Ket 的伴随正是 Bra]
+给定 $\psi\in H$，将 ket $|\psi\rangle$ 视为线性算符
+\begin{equation}
+    |\psi\rangle:\mathbb C\to H,
+    \qquad
+    z\longmapsto z\psi.
+\end{equation}
+则其伴随算符
+\[
+    (|\psi\rangle)^\dagger:H\to\mathbb C
+\]
+恰好是由 $\psi$ 所确定的 bra，即
+\begin{equation}
+    \boxed{
+        (|\psi\rangle)^\dagger
+        =
+        \langle\psi|
+    }.
+\end{equation}
+\end{proposition}
+
+\begin{proofblock}
+在 $\mathbb C$ 上取标准内积
+$\langle z_1,z_2\rangle_{\mathbb C}=\overline{z_1}z_2$。根据伴随算符的定义，对于任意 $\phi\in H$ 和 $z\in\mathbb C$，
+\begin{align}
+    \langle\phi,|\psi\rangle z\rangle_H
+    &=
+    \langle\phi,z\psi\rangle_H
+    \nonumber\\
+    &=
+    z\langle\phi,\psi\rangle_H,
+\end{align}
+另一方面，
+\begin{align}
+    \langle(|\psi\rangle)^\dagger\phi,z\rangle_{\mathbb C}
+    &=
+    \overline{(|\psi\rangle)^\dagger\phi}\,z.
+\end{align}
+由伴随关系，两式必须对任意 $z\in\mathbb C$ 相等，因此
+\begin{equation}
+    \overline{(|\psi\rangle)^\dagger\phi}
+    =
+    \langle\phi,\psi\rangle_H.
+\end{equation}
+利用内积的共轭对称性，
+\begin{equation}
+    (|\psi\rangle)^\dagger\phi
+    =
+    \langle\psi,\phi\rangle_H.
+\end{equation}
+而 bra $\langle\psi|$ 的定义正是
+\[
+    \langle\psi|:\phi\longmapsto\langle\psi,\phi\rangle_H.
+\]
+因此
+\begin{equation}
+    (|\psi\rangle)^\dagger
+    =
+    \langle\psi|.
+\end{equation}
+\end{proofblock}
+
+\begin{proposition}[算符和态矢复合的伴随]
+对任意 $|\phi\rangle$，由伴随算符的定义，
+\begin{align}
+    \bigl(A|\psi\rangle\bigr)^\dagger|\phi\rangle
+    &=
+    \langle A\psi|\phi\rangle
+    \nonumber\\
+    &=
+    \langle\psi|A^\dagger|\phi\rangle.
+\end{align}
+由于该等式对任意 $|\phi\rangle$ 都成立，因此
+\begin{equation}
+    \bigl(A|\psi\rangle\bigr)^\dagger
+    =
+    \langle\psi|A^\dagger.
+\end{equation}    
+\end{proposition}
+
+
+\textbf{在有限维空间中，bra和ket可以类比线性代数}。若选定一组正交归一基并把 ket 写成列向量
+\[
+|\psi\rangle
+\longleftrightarrow
+\begin{pmatrix}
+\psi_1\\
+\vdots\\
+\psi_n
+\end{pmatrix},
+\]
+则相应的 bra 写成共轭转置的行向量
+\[
+\langle\phi|
+\longleftrightarrow
+\begin{pmatrix}
+\overline{\phi_1}&\cdots&\overline{\phi_n}
+\end{pmatrix},
+\]
+而线性算符 $A$ 表示为矩阵。因此
+\begin{equation}
+    \langle\phi|A|\psi\rangle
+\end{equation}
+正对应通常线性代数中的“行向量 $\times$ 矩阵 $\times$ 列向量”。Dirac 记号的优点在于，算子可以随需求作用在bra或者ket上。
+
+\subsection{外积与秩一算符}
+
+除了给出标量的内积 $\langle\phi|\psi\rangle$，还可以交换 bra 和 ket 的位置，得到
+\[
+|\psi\rangle\langle\phi|.
+\]
+它表示一个从 $H$ 到 $H$ 的线性算符，其作用定义为
+\begin{equation}
+    \bigl(|\psi\rangle\langle\phi|\bigr)|\xi\rangle
+    :=
+    |\psi\rangle\langle\phi|\xi\rangle.
+\end{equation}
+即先由 $\langle\phi|$ 把 $|\xi\rangle$ 映射成复数 $\langle\phi|\xi\rangle$，再乘以向量 $|\psi\rangle$。其像空间至多是一维的，因此称为\textbf{秩一算符}。
+
+由前面的结论
+\[
+(|\psi\rangle)^\dagger=\langle\psi|,
+\qquad
+(\langle\phi|)^\dagger=|\phi\rangle,
+\]
+以及算符乘积的伴随满足 $(ST)^\dagger=T^\dagger S^\dagger$，可直接得到
+\begin{align}
+    \bigl(|\psi\rangle\langle\phi|\bigr)^\dagger
+    &=
+    (\langle\phi|)^\dagger
+    (|\psi\rangle)^\dagger
+    \nonumber\\
+    &=
+    |\phi\rangle\langle\psi|.
+\end{align}
+因此
+\begin{equation}
+    \boxed{
+        \bigl(|\psi\rangle\langle\phi|\bigr)^\dagger
+        =
+        |\phi\rangle\langle\psi|
+    }.
+\end{equation}
+
+\section{投影算符与完备性关系}
+
+\subsection{投影算符}
+
+设 $|\phi\rangle$ 是归一化向量，即 $\langle\phi|\phi\rangle=1$。定义
+\begin{equation}
+    P_\phi
+    :=
+    |\phi\rangle\langle\phi|.
+\end{equation}
+对任意 $|\psi\rangle\in H$，
+\begin{equation}
+    P_\phi|\psi\rangle
+    =
+    |\phi\rangle\langle\phi|\psi\rangle,
+\end{equation}
+即把 $|\psi\rangle$ 投影到由 $|\phi\rangle$ 张成的一维子空间。
+
+\begin{definition}[Braket 记号下的一维投影算符]
+设 $|\phi\rangle\in H$ 为归一化向量，即 $\langle\phi|\phi\rangle=1$。定义到一维子空间 $\operatorname{span}\{|\phi\rangle\}$ 的投影算符
+\begin{equation}
+    P_\phi:=|\phi\rangle\langle\phi|.
+\end{equation}
+对于任意 $|\psi\rangle\in H$，
+\begin{equation}
+    P_\phi|\psi\rangle
+    =
+    |\phi\rangle\langle\phi|\psi\rangle,
+\end{equation}
+其中 $\langle\phi|\psi\rangle$ 是 $|\psi\rangle$ 在 $|\phi\rangle$ 方向上的展开系数，因此 $P_\phi|\psi\rangle$ 是 $|\psi\rangle$ 在 $\operatorname{span}\{|\phi\rangle\}$ 上的投影。
+\end{definition}
+
+投影算符具有以下基本性质：
+
+\begin{itemize}
+    \item \textbf{自伴性：}利用外积的伴随关系，
+    \begin{align}
+        P_\phi^\dagger
+        &=
+        \bigl(|\phi\rangle\langle\phi|\bigr)^\dagger
+        \nonumber\\
+        &=
+        |\phi\rangle\langle\phi|
+        =
+        P_\phi.
+    \end{align}
+
+    \item \textbf{幂等性：}由于 $\langle\phi|\phi\rangle=1$，
+    \begin{align}
+        P_\phi^2
+        &=
+        |\phi\rangle\langle\phi|
+        \phi\rangle\langle\phi|
+        \nonumber\\
+        &=
+        |\phi\rangle
+        \langle\phi|\phi\rangle
+        \langle\phi|
+        \nonumber\\
+        &=
+        |\phi\rangle\langle\phi|
+        =
+        P_\phi.
+    \end{align}
+    因此 $P_\phi$ 满足 $P_\phi^\dagger=P_\phi$ 和 $P_\phi^2=P_\phi$，所以是正交投影算符。
+
+    \item \textbf{几何正交性：}将 $|\psi\rangle$ 分解为投影部分与剩余部分，
+    \begin{equation}
+        |\psi\rangle
+        =
+        P_\phi|\psi\rangle
+        +
+        (I-P_\phi)|\psi\rangle.
+    \end{equation}
+    两部分的内积为
+    \begin{align}
+        \langle P_\phi\psi|(I-P_\phi)\psi\rangle
+        &=
+        \langle\psi|
+        P_\phi^\dagger(I-P_\phi)
+        |\psi\rangle
+        \nonumber\\
+        &=
+        \langle\psi|
+        P_\phi(I-P_\phi)
+        |\psi\rangle
+        \nonumber\\
+        &=
+        \langle\psi|
+        (P_\phi-P_\phi^2)
+        |\psi\rangle
+        \nonumber\\
+        &=
+        0.
+    \end{align}
+    因此投影分量 $P_\phi|\psi\rangle$ 与剩余分量 $(I-P_\phi)|\psi\rangle$ 正交，这正是正交投影的几何意义。
+
+    \item \textbf{高维子空间上的投影：}若 $\{|e_k\rangle\}_{k=1}^{m}$ 是一组正交归一向量，则到子空间 $\operatorname{span}\{|e_1\rangle,\ldots,|e_m\rangle\}$ 的正交投影为
+    \begin{equation}
+        P
+        =
+        \sum_{k=1}^{m}
+        |e_k\rangle\langle e_k|.
+    \end{equation}
+    对任意 $|\psi\rangle$，
+    \begin{equation}
+        P|\psi\rangle
+        =
+        \sum_{k=1}^{m}
+        |e_k\rangle
+        \langle e_k|\psi\rangle,
+    \end{equation}
+    即保留 $|\psi\rangle$ 在该正交子空间中的各个分量。由正交归一性可直接验证
+    \begin{equation}
+        P^\dagger=P,
+        \qquad
+        P^2=P.
+    \end{equation}
+\end{itemize}
+\subsection{完备正交基与单位算符}
+
+设 $\{|e_k\rangle\}_{k=1}^{\infty}$ 是 Hilbert 空间 $H$ 的完备正交归一基，则任意 $|\phi\rangle\in H$ 都具有 Fourier 展开
+\begin{equation}
+    |\phi\rangle
+    =
+    \sum_{k=1}^{\infty}
+    |e_k\rangle
+    \langle e_k|\phi\rangle,
+\end{equation}
+其中级数在 Hilbert 空间范数下收敛。由于该等式对任意 $|\phi\rangle$ 都成立，因此可以写成算符形式
+\begin{equation}
+    \boxed{
+    I
+    =
+    \sum_{k=1}^{\infty}
+    |e_k\rangle\langle e_k|
+    }.
+\end{equation}
+这称为\textbf{完备性关系}或\textbf{单位算符的分解}。在无限维情形下，这里的算符级数按照强算符意义理解，即对每个固定的 $|\phi\rangle$，
+\begin{equation}
+    \lim_{N\to\infty}
+    \left\|
+        |\phi\rangle
+        -
+        \sum_{k=1}^{N}
+        |e_k\rangle\langle e_k|\phi\rangle
+    \right\|
+    =
+    0.
+\end{equation}
+
+由正交归一性还得到 Parseval 等式
+\begin{equation}
+    \boxed{
+    \|\phi\|^2
+    =
+    \sum_{k=1}^{\infty}
+    |\langle e_k|\phi\rangle|^2
+    }.
+\end{equation}
+它说明一个向量的范数平方等于其在任意完备正交归一基上的各展开系数模平方之和。
+
+\section{自伴算符的谱分解}
+
+考虑具有离散谱的自伴算符 $A$。若 $\{|n\rangle\}$ 是由 $A$ 的本征向量组成的一组完备正交归一基，
+\begin{equation}
+    A|n\rangle
+    =
+    a_n|n\rangle,
+\end{equation}
+其中允许不同的 $n$ 对应相同的本征值，即允许本征值具有简并度。利用完备性关系
+$I=\sum_n|n\rangle\langle n|$，有
+\begin{align}
+    A
+    &=
+    AI
+    \nonumber\\
+    &=
+    \sum_n
+    A|n\rangle\langle n|
+    \nonumber\\
+    &=
+    \sum_n
+    a_n|n\rangle\langle n|.
+\end{align}
+因此
+\begin{equation}
+    \boxed{
+    A
+    =
+    \sum_n
+    a_n|n\rangle\langle n|
+    }.
+\end{equation}
+
+若希望把相同的本征值合并，设 $\lambda$ 遍历所有不同的本征值，$\{|\lambda,\alpha\rangle\}_{\alpha=1}^{m_\lambda}$ 是对应本征子空间的一组正交归一基，其中 $m_\lambda$ 是简并度。定义本征空间上的谱投影
+\begin{equation}
+    P_\lambda
+    :=
+    \sum_{\alpha=1}^{m_\lambda}
+    |\lambda,\alpha\rangle
+    \langle\lambda,\alpha|.
+\end{equation}
+则
+\begin{equation}
+    \boxed{
+    A
+    =
+    \sum_{\lambda}
+    \lambda P_\lambda
+    }.
+\end{equation}
+同时
+\begin{equation}
+    P_\lambda P_\mu
+    =
+    \delta_{\lambda\mu}P_\lambda,
+    \qquad
+    \sum_\lambda P_\lambda
+    =
+    I.
+\end{equation}
+这正是前面有限维谱分解
+$A=\sum_\lambda\lambda P_\lambda$
+在 Dirac 记号下的表达。
+
+% ==========================================================
+% 数学补遗
+% ==========================================================
+\appendix
+\newpage
+\chapter{数学补遗 I：从集合到概率——测度论的基本结构}
+
+测度论研究如何给集合赋予“大小”。这个大小可以是长度、面积和体积，也可以是离散集合的元素个数或随机事件的概率。
+
+在讨论一个集合有多大之前，首先需要确定哪些集合允许被测量。这一步由 $\sigma$-代数完成。
+
+% ==========================================================
+\section{$\sigma$-代数与可测集合}
+
+设 $X$ 为一个集合。若某些子集被允许进行测量，那么对这些集合取补集、可数并以后，所得集合也应当仍然可以测量。满足这些要求的集合族称为 $\sigma$-代数。
+
+\begin{definition}[$\sigma$-代数]
+设 $\mathcal F$ 是 $X$ 的一族子集。若满足：
+\begin{enumerate}
+    \item $X\in\mathcal F$；
+    \item 若 $A\in\mathcal F$，则 $A^c\in\mathcal F$；
+    \item 若 $A_1,A_2,\ldots\in\mathcal F$，则
+    \[
+        \bigcup_{n=1}^{\infty}A_n\in\mathcal F,
+    \]
+\end{enumerate}
+则称 $\mathcal F$ 为 $X$ 上的一个 $\sigma$-代数，其中的元素称为\textbf{可测集合}。
+\end{definition}
+
+由 De Morgan 公式，
+\[
+\bigcap_{n=1}^{\infty}A_n
+=
+\left(
+\bigcup_{n=1}^{\infty}A_n^c
+\right)^c,
+\]
+因此 $\sigma$-代数也自动对可数交封闭。
+
+实际问题中通常不是直接写出完整的 $\sigma$-代数，而是先给出一批基本集合，再加入由补集、可数并和可数交产生的集合。
+
+\begin{definition}[生成的 $\sigma$-代数]
+设 $\mathcal A$ 是 $X$ 的一族子集。包含 $\mathcal A$ 的最小 $\sigma$-代数记作
+\[
+\sigma(\mathcal A),
+\]
+称为由 $\mathcal A$ \textbf{生成的 $\sigma$-代数}。
+\end{definition}
+
+% ==========================================================
+\section{Borel 集与可测空间}
+
+如果空间已经具有拓扑结构，那么其中的开集给出了最自然的一批基本集合。从所有开集出发生成 $\sigma$-代数，就得到 Borel 集合体系。
+
+\begin{definition}[Borel $\sigma$-代数]
+设 $(X,\mathcal T)$ 为拓扑空间，其中 $\mathcal T$ 是所有开集组成的拓扑。定义
+\[
+\mathcal B(X):=\sigma(\mathcal T),
+\]
+称为 $X$ 上的\textbf{Borel $\sigma$-代数}，其中的元素称为\textbf{Borel 集}。
+\end{definition}
+
+在实数轴上，
+\[
+\mathcal B(\mathbb R)
+=
+\sigma\bigl(\{(a,b):a<b\}\bigr),
+\]
+即所有开区间已经足以生成整个 Borel $\sigma$-代数。
+
+例如，闭区间是 Borel 集，因为它可以由开集取补得到；单点集也是 Borel 集，因为
+\[
+\{x_0\}
+=
+\bigcap_{n=1}^{\infty}
+\left(
+x_0-\frac1n,\,
+x_0+\frac1n
+\right).
+\]
+
+选定一个 $\sigma$-代数以后，就明确了空间中哪些集合可以被赋予测度。
+
+\begin{definition}[可测空间]
+设 $\mathcal F$ 是集合 $X$ 上的一个 $\sigma$-代数。二元组
+\[
+(X,\mathcal F)
+\]
+称为一个\textbf{可测空间}。
+\end{definition}
+
+例如 $(\mathbb R,\mathcal B(\mathbb R))$ 是一个可测空间。此时还没有规定集合的长度或概率，只规定了哪些集合允许被测量。
+
+% ==========================================================
+\section{测度}
+
+在确定哪些集合可以被测量以后，下一步是在每个可测集合 $A\in\mathcal F$ 上赋予一个非负数 $\mu(A)$。如果若干集合互不重叠，那么它们合并后的大小应当等于各部分大小之和。这一要求形成测度的可数可加性。
+
+\begin{definition}[测度]
+设 $(X,\mathcal F)$ 是可测空间。映射
+\[
+\mu:\mathcal F\longrightarrow[0,\infty]
+\]
+若满足 $\mu(\varnothing)=0$，并且对于任意两两不交的 $A_1,A_2,\ldots\in\mathcal F$，
+\begin{equation}
+    \mu\left(
+        \bigcup_{n=1}^{\infty}A_n
+    \right)
+    =
+    \sum_{n=1}^{\infty}\mu(A_n),
+\end{equation}
+则称 $\mu$ 为 $(X,\mathcal F)$ 上的一个\textbf{测度}。
+\end{definition}
+
+这里允许 $\mu(A)=\infty$，因为某些空间本身具有无限大小。
+
+\begin{definition}[测度空间]
+若 $\mu$ 是可测空间 $(X,\mathcal F)$ 上的测度，则三元组
+\[
+(X,\mathcal F,\mu)
+\]
+称为一个\textbf{测度空间}。
+\end{definition}
+
+% ----------------------------------------------------------
+\subsection{Lebesgue 测度}
+
+实数轴上的 Lebesgue 测度 $\lambda$ 满足
+\[
+\lambda([a,b])=b-a,
+\]
+因此对应通常的长度。推广到 $\mathbb R^2$ 和 $\mathbb R^3$ 后，分别对应面积和体积。
+
+微积分中的 $dx$、$dx\,dy$ 和 $d^3x$ 可以看作相应 Lebesgue 测度的积分记号。
+
+% ----------------------------------------------------------
+\subsection{计数测度}
+
+对于离散集合，最自然的大小就是集合中元素的个数。
+
+\begin{definition}[计数测度]
+定义
+\[
+\mu(A):=\#A,
+\]
+其中 $\#A$ 表示集合 $A$ 中元素的个数。这样的测度称为\textbf{计数测度}。
+\end{definition}
+
+因此离散求和也可以视为一种测度积分。
+
+% ----------------------------------------------------------
+\subsection{Dirac 测度}
+
+还可以把全部测度集中在某个确定的点上。
+
+\begin{definition}[Dirac 测度]
+给定 $x_0\in X$，定义
+\[
+\delta_{x_0}(A)
+=
+\begin{cases}
+    1, & x_0\in A,\\
+    0, & x_0\notin A.
+\end{cases}
+\]
+称 $\delta_{x_0}$ 为集中于 $x_0$ 的\textbf{Dirac 测度}。
+\end{definition}
+
+它满足
+\[
+\int_X f(x)\,d\delta_{x_0}(x)=f(x_0),
+\]
+这与物理中 Dirac $\delta$ 分布的作用相对应。
+
+% ==========================================================
+\section{概率测度与概率密度}
+
+普通测度不要求整个空间具有有限大小，例如 $\lambda(\mathbb R)=\infty$。概率论则把样本空间 $X$ 看作所有可能结果，因此总概率必须为 $1$。
+
+\begin{definition}[概率测度与概率空间]
+若测度 $P$ 满足
+\[
+P(X)=1,
+\]
+则称 $P$ 为 $(X,\mathcal F)$ 上的\textbf{概率测度}，三元组
+\[
+(X,\mathcal F,P)
+\]
+称为一个\textbf{概率空间}。
+\end{definition}
+
+因此概率测度是归一化的测度。对于 $A\in\mathcal F$，$P(A)$ 就是事件 $A$ 发生的概率。
+
+在连续系统中，概率测度常常可以相对于普通体积测度写成
+\[
+dP(x)=\rho(x)\,dx,
+\]
+其中 $\rho(x)$ 称为概率密度。于是
+\begin{equation}
+    P(A)=\int_A\rho(x)\,dx,
+\end{equation}
+而归一化条件成为
+\[
+\int_X\rho(x)\,dx=1.
+\]
+
+这里 $P(A)$ 是集合 $A$ 的概率，而 $\rho(x)$ 是概率相对于体积的局部密度。对于连续分布，单独一个点通常满足 $P(\{x_0\})=0$，即使 $\rho(x_0)\neq0$。
+
+概率测度比概率密度更基本，因为并不是所有概率测度都能写成 $\rho(x)\,dx$ 的形式。Dirac 测度就是一个典型例子。
+
+% ==========================================================
+\section{可测函数}
+
+概率测度定义在状态空间的集合上，而物理测量通常给出一个数值。因此需要一个函数把状态映射到测量结果。
+
+设 $f:X\to Y$。若 $B\subseteq Y$ 是一组可能的测量结果，那么能够产生这些结果的状态组成其原像
+\[
+f^{-1}(B)
+=
+\{x\in X:f(x)\in B\}.
+\]
+
+如果要给这一事件赋予概率，就必须保证 $f^{-1}(B)$ 是 $X$ 中的可测集合。
+
+\begin{definition}[可测函数]
+设 $(X,\mathcal F)$ 和 $(Y,\mathcal G)$ 为可测空间。若函数 $f:X\to Y$ 满足
+\[
+B\in\mathcal G
+\quad\Longrightarrow\quad
+f^{-1}(B)\in\mathcal F,
+\]
+则称 $f$ 为\textbf{可测函数}。
+\end{definition}
+
+对于实值函数 $f:X\to\mathbb R$，通常取 $\mathcal G=\mathcal B(\mathbb R)$。因此，可测性保证每个允许讨论的测量结果集合，都对应状态空间中的一个可测事件。
+
+% ==========================================================
+\section{推前测度与随机变量的分布}
+
+设 $(X,\mathcal F,P)$ 为概率空间，$f:X\to\mathbb R$ 为可测函数。对于 $B\in\mathcal B(\mathbb R)$，测量结果落入 $B$ 的概率为
+\begin{equation}
+    P(f\in B)
+    =
+    P\!\left(f^{-1}(B)\right).
+\end{equation}
+
+右端已经在实数轴的 Borel 集上定义了一个新的概率测度。
+
+\begin{definition}[推前测度]
+设 $f:X\to Y$ 为可测函数，$\mu$ 为 $X$ 上的测度。在 $Y$ 上定义
+\begin{equation}
+    (f_*\mu)(B)
+    :=
+    \mu\!\left(f^{-1}(B)\right),
+    \qquad
+    B\in\mathcal G.
+\end{equation}
+称 $f_*\mu$ 为 $\mu$ 在映射 $f$ 下的\textbf{推前测度}。
+\end{definition}
+
+若 $\mu=P$ 是概率测度，则 $f_*P$ 就是 $f$ 在结果空间上的概率分布。在概率论中，实值可测函数 $f$ 称为随机变量。
+
+% ==========================================================
+\section{测度积分与期望值}
+
+普通积分隐含使用了某种衡量空间大小的方式。测度积分把这种结构明确写出：
+\[
+\int_X f\,d\mu.
+\]
+
+若测度具有密度 $d\mu(x)=\rho(x)\,dx$，则
+\[
+\int_X f\,d\mu
+=
+\int_X f(x)\rho(x)\,dx.
+\]
+
+因此熟悉的加权积分可以看作测度积分的一种特殊情形。
+
+\begin{definition}[期望值]
+设 $(X,\mathcal F,P)$ 为概率空间，$f:X\to\mathbb R$ 为可积的可测函数。定义 $f$ 的\textbf{期望值}为
+\begin{equation}
+    \mathbb E_P[f]
+    :=
+    \int_X f\,dP.
+\end{equation}
+\end{definition}
+
+若 $dP(x)=\rho(x)\,dx$，则
+\[
+\mathbb E_P[f]
+=
+\int_X f(x)\rho(x)\,dx,
+\]
+即物理中通常使用的统计平均。
+
+% ==========================================================
+\section{经典相空间中的概率结构}
+
+对于具有 $N$ 个自由度的经典系统，状态写为
+\[
+z=(q^1,\ldots,q^N,p^1,\ldots,p^N)\in\Gamma,
+\]
+其中 $\Gamma$ 为相空间。
+
+局部相空间体积元为
+\begin{equation}
+    d\Gamma
+    =
+    \prod_{\ell=1}^{N}dq^\ell\,dp^\ell.
+\end{equation}
+
+若系统在相空间中的概率密度为 $\rho(q,p)$，则概率测度可以写成
+\[
+d\mu
+=
+\rho(q,p)\,d\Gamma,
+\]
+并满足
+\[
+\int_\Gamma\rho(q,p)\,d\Gamma=1.
+\]
+
+因此，相空间区域 $A\subseteq\Gamma$ 的概率为
+\[
+\mu(A)
+=
+\int_A\rho(q,p)\,d\Gamma.
+\]
+
+经典可观测量是一个实值函数
+\[
+f:\Gamma\to\mathbb R.
+\]
+若 $B\in\mathcal B(\mathbb R)$，则测量结果落入 $B$ 等价于系统状态属于 $f^{-1}(B)$，因此
+\begin{equation}
+    P_\mu(f\in B)
+    =
+    \mu\!\left(f^{-1}(B)\right).
+\end{equation}
+
+例如，对于 Hamiltonian $H(q,p)$，能量落在区间 $[E_1,E_2]$ 内的状态构成
+\[
+H^{-1}([E_1,E_2])
+=
+\{(q,p)\in\Gamma:
+E_1\leq H(q,p)\leq E_2\}.
+\]
+相应概率为
+\begin{equation}
+    P(E_1\leq H\leq E_2)
+    =
+    \mu\!\left(H^{-1}([E_1,E_2])\right).
+\end{equation}
+
+可观测量 $f$ 的平均值为
+\begin{equation}
+    \langle f\rangle
+    =
+    \int_\Gamma f\,d\mu
+    =
+    \int_\Gamma f(q,p)\rho(q,p)\,d\Gamma.
+\end{equation}
+
+
+\newpage
+\chapter{数学补遗 II：有界线性算符与 Riesz 表示定理}
+
+本章补充证明正文中反复使用的两个基本结果：线性算符的有界性与连续性等价，以及 Hilbert 空间上的 Riesz 表示定理。
+
+% ==========================================================
+\section{线性算符的有界性与连续性}
+
+先回顾有界线性算符与连续性的定义。
+
+\begin{definition}[有界线性算符]
+设 $X,Y$ 为赋范线性空间，$A:X\to Y$ 为线性算符。若存在常数 $C>0$，使得对任意 $x\in X$ 都有
+\begin{equation}
+    \|Ax\|_Y\leq C\|x\|_X,
+\end{equation}
+则称 $A$ 为\textbf{有界线性算符}。
+\end{definition}
+
+满足上述不等式的最小上界定义为算符范数
+\begin{equation}
+    \|A\|
+    :=
+    \sup_{x\neq0}
+    \frac{\|Ax\|_Y}{\|x\|_X}
+    =
+    \sup_{\|x\|_X=1}\|Ax\|_Y.
+\end{equation}
+
+\begin{definition}[线性算符的连续性]
+若对任意 $x\in X$ 以及任意满足 $x_n\to x$ 的序列 $\{x_n\}$，都有
+\[
+Ax_n\to Ax,
+\]
+则称线性算符 $A:X\to Y$ \textbf{连续}。
+\end{definition}
+
+对于一般映射，有界性与连续性是不同的性质；但在线性结构下，这两个条件实际上完全等价。
+
+\begin{proposition}[有界性与连续性的等价]
+设 $A:X\to Y$ 为线性算符，则
+\begin{equation}
+    A\text{ 有界}
+    \quad\Longleftrightarrow\quad
+    A\text{ 连续}.
+\end{equation}
+事实上，对于线性算符，只要在原点 $0$ 处连续，就已经能够推出在整个空间上连续。
+\end{proposition}
+
+\begin{proofblock}
+\textbf{有界 $\Rightarrow$ 连续。}
+
+设 $A$ 有界，即存在 $C>0$ 使得
+\[
+\|Ax\|_Y\leq C\|x\|_X.
+\]
+对任意 $x,y\in X$，由线性性有
+\begin{equation}
+    \|Ax-Ay\|_Y
+    =
+    \|A(x-y)\|_Y
+    \leq
+    C\|x-y\|_X.
+\end{equation}
+因此当 $x\to y$ 时，必有 $\|Ax-Ay\|_Y\to0$，所以 $A$ 连续。
+
+\medskip
+
+\textbf{连续 $\Rightarrow$ 有界。}
+
+假设 $A$ 连续。由于 $A$ 线性，有 $A0=0$。特别地，$A$ 在原点连续。取 $\varepsilon=1$，则存在 $\delta>0$，使得
+\[
+\|u\|_X<\delta
+\quad\Longrightarrow\quad
+\|Au\|_Y<1.
+\]
+
+现在任取 $x\neq0$，令
+\[
+u
+=
+\frac{\delta}{2\|x\|_X}x.
+\]
+于是 $\|u\|_X=\delta/2<\delta$，因此 $\|Au\|_Y<1$。另一方面，由线性性，
+\[
+Au
+=
+\frac{\delta}{2\|x\|_X}Ax.
+\]
+所以
+\begin{equation}
+    \frac{\delta}{2\|x\|_X}\|Ax\|_Y<1,
+\end{equation}
+即
+\begin{equation}
+    \|Ax\|_Y
+    <
+    \frac{2}{\delta}\|x\|_X.
+\end{equation}
+
+因此存在统一常数 $C=2/\delta$，使得对任意 $x\in X$ 都有
+\[
+\|Ax\|_Y\leq C\|x\|_X.
+\]
+所以 $A$ 有界。
+\end{proofblock}
+
+这里的关键在于线性性：原点附近的局部连续性可以通过线性缩放扩展为整个空间上的统一有界性。若算符只定义在子空间 $D(A)\subseteq H$ 上，只需把 $D(A)$ 看作带有从 $H$ 中继承范数的赋范空间，同样的结论仍然成立。
+
+% ==========================================================
+\section{Riesz 表示定理}
+
+Riesz 表示定理刻画了 Hilbert 空间上的连续线性泛函：每一个这样的泛函，都可以唯一地表示为与某个 Hilbert 空间向量作内积。
+
+在陈述定理之前，先回顾连续对偶空间。
+
+\begin{definition}[连续对偶空间]
+设 $H$ 为复 Hilbert 空间。所有从 $H$ 到 $\mathbb C$ 的连续线性泛函组成的空间称为 $H$ 的\textbf{连续对偶空间}，记为
+\begin{equation}
+    H^+
+    :=
+    \left\{
+    f:H\to\mathbb C:
+    f\text{ 线性且连续}
+    \right\}.
+\end{equation}
+
+连续线性泛函的范数定义为
+\begin{equation}
+    \|f\|
+    :=
+    \sup_{\|\psi\|=1}|f(\psi)|.
+\end{equation}
+\end{definition}
+
+本书采用物理学中的内积约定：内积对第二个变量线性，对第一个变量共轭线性，即
+\[
+\langle \lambda u,v\rangle
+=
+\overline{\lambda}\langle u,v\rangle,
+\qquad
+\langle u,\lambda v\rangle
+=
+\lambda\langle u,v\rangle.
+\]
+
+Riesz 表示定理的证明会使用 Hilbert 空间的正交分解性质：若 $M\subseteq H$ 是闭线性子空间，则
+\begin{equation}
+    H=M\oplus M^\perp,
+\end{equation}
+其中
+\[
+M^\perp
+=
+\left\{
+u\in H:
+\langle u,m\rangle=0,\ 
+\forall\,m\in M
+\right\}.
+\]
+
+\begin{proposition}[Riesz 表示定理]
+设 $H$ 为复 Hilbert 空间。对于任意连续线性泛函 $f\in H^+$，存在唯一的向量 $v_f\in H$，使得对所有 $\psi\in H$ 都有
+\begin{equation}
+    f(\psi)
+    =
+    \langle v_f,\psi\rangle.
+\end{equation}
+并且
+\begin{equation}
+    \|f\|
+    =
+    \|v_f\|.
+\end{equation}
+\end{proposition}
+
+\begin{proofblock}
+\textbf{存在性。}
+
+若 $f=0$，显然取 $v_f=0$ 即可。下面考虑 $f\neq0$ 的情况。
+
+令
+\begin{equation}
+    M
+    :=
+    \ker f
+    =
+    \{\psi\in H:f(\psi)=0\}.
+\end{equation}
+
+由于 $f$ 连续，$M$ 是 $H$ 的闭线性子空间。又因为 $f\neq0$，所以 $M\neq H$。由 Hilbert 空间的正交分解，
+\[
+H=M\oplus M^\perp,
+\]
+因此 $M^\perp$ 中存在非零向量 $u$。
+
+由于 $u\notin M$，必有
+\[
+f(u)\neq0.
+\]
+
+现在任取 $\psi\in H$，构造
+\begin{equation}
+    m
+    :=
+    \psi-\frac{f(\psi)}{f(u)}u.
+\end{equation}
+
+利用 $f$ 的线性性，
+\[
+f(m)
+=
+f(\psi)
+-
+\frac{f(\psi)}{f(u)}f(u)
+=
+0,
+\]
+所以 $m\in M$。
+
+而 $u\in M^\perp$，因此 $\langle u,m\rangle=0$。代入 $m$ 的表达式，
+\begin{equation}
+    0
+    =
+    \left\langle
+    u,
+    \psi-\frac{f(\psi)}{f(u)}u
+    \right\rangle
+    =
+    \langle u,\psi\rangle
+    -
+    \frac{f(\psi)}{f(u)}
+    \|u\|^2.
+\end{equation}
+
+于是
+\begin{equation}
+    f(\psi)
+    =
+    \frac{f(u)}{\|u\|^2}
+    \langle u,\psi\rangle.
+\end{equation}
+
+定义
+\begin{equation}
+    v_f
+    :=
+    \frac{\overline{f(u)}}{\|u\|^2}u.
+\end{equation}
+
+由于内积对第一个变量共轭线性，
+\[
+\langle v_f,\psi\rangle
+=
+\frac{f(u)}{\|u\|^2}
+\langle u,\psi\rangle
+=
+f(\psi).
+\]
+
+因此存在 $v_f\in H$，使得对所有 $\psi\in H$ 都有
+\[
+f(\psi)
+=
+\langle v_f,\psi\rangle.
+\]
+
+\medskip
+
+\textbf{唯一性。}
+
+若 $v_1,v_2\in H$ 都满足
+\[
+f(\psi)
+=
+\langle v_1,\psi\rangle
+=
+\langle v_2,\psi\rangle,
+\qquad
+\forall\,\psi\in H,
+\]
+则
+\[
+\langle v_1-v_2,\psi\rangle
+=
+0,
+\qquad
+\forall\,\psi\in H.
+\]
+
+特别取 $\psi=v_1-v_2$，得到
+\[
+\|v_1-v_2\|^2=0,
+\]
+因此
+\[
+v_1=v_2.
+\]
+
+\medskip
+
+\textbf{范数相等。}
+
+由 Cauchy--Schwarz 不等式，
+\[
+|f(\psi)|
+=
+|\langle v_f,\psi\rangle|
+\leq
+\|v_f\|\,\|\psi\|.
+\]
+因此当 $\|\psi\|=1$ 时有 $|f(\psi)|\leq\|v_f\|$，从而
+\begin{equation}
+    \|f\|
+    \leq
+    \|v_f\|.
+\end{equation}
+
+若 $v_f\neq0$，取
+\[
+\psi
+=
+\frac{v_f}{\|v_f\|},
+\]
+则
+\[
+|f(\psi)|
+=
+\left|
+\left\langle
+v_f,
+\frac{v_f}{\|v_f\|}
+\right\rangle
+\right|
+=
+\|v_f\|.
+\]
+因此
+\[
+\|f\|
+\geq
+\|v_f\|.
+\]
+结合两式，
+\begin{equation}
+    \boxed{
+    \|f\|
+    =
+    \|v_f\|
+    }.
+\end{equation}
+
+若 $v_f=0$，则 $f=0$，结论同样成立。
+\end{proofblock}
+
+\end{document}
